@@ -1,3 +1,4 @@
+import { useTheme } from '../../contexts/ThemeContext';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import NotificationBell from '../NotificationBell';

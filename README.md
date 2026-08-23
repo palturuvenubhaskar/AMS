@@ -72,9 +72,3 @@ The backend includes a comprehensive Jest test suite ensuring data integrity and
 cd backend
 npm test
 \`\`\`
-
-## 👥 Default Test Accounts
-If you use the included `seed.sql`, the following default accounts are available with the password **`Ams@2026`**:
-- **Admin**: `admin@ams.edu`
-- **Faculty**: `sruthi@alits.edu.in`
-- **Student**: `242G1A05Y9@alits.edu.in`

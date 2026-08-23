@@ -91,12 +91,12 @@ function MiniCalendar() {
   const days = Array(firstDay).fill(null).concat(Array.from({length: daysInMonth}, (_, i) => i + 1));
 
   return (
-    <div className="bg-white rounded-[32px] border border-gray-100 p-6 shadow-glass relative overflow-hidden group">
+    <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 p-6 shadow-glass relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-32 h-32 bg-pastel-pink/20 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110 blur-xl" />
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => setDate(new Date(year, month - 1, 1))} className="p-1.5 hover:bg-gray-100 rounded-xl transition-colors"><ChevronLeft size={16} className="text-gray-500" /></button>
-        <h3 className="text-gray-900 font-bold text-sm tracking-wide">{monthName}</h3>
-        <button onClick={() => setDate(new Date(year, month + 1, 1))} className="p-1.5 hover:bg-gray-100 rounded-xl transition-colors"><ChevronRight size={16} className="text-gray-500" /></button>
+        <button onClick={() => setDate(new Date(year, month - 1, 1))} className="p-1.5 hover:bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors"><ChevronLeft size={16} className="text-gray-500 dark:text-gray-400" /></button>
+        <h3 className="text-gray-900 dark:text-gray-100 font-bold text-sm tracking-wide">{monthName}</h3>
+        <button onClick={() => setDate(new Date(year, month + 1, 1))} className="p-1.5 hover:bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors"><ChevronRight size={16} className="text-gray-500 dark:text-gray-400" /></button>
       </div>
       <div className="grid grid-cols-7 gap-y-3 gap-x-1 text-center">
         {['S','M','T','W','T','F','S'].map((d, i) => (
@@ -108,7 +108,7 @@ function MiniCalendar() {
             <div key={i} className={`text-xs py-2 rounded-xl font-bold transition-all relative ${
               !d ? '' :
               isToday ? 'bg-brand-purple text-white shadow-sm transform scale-105' :
-              'text-gray-600 hover:bg-pastel-blue/50 cursor-pointer'
+              'text-gray-600 dark:text-gray-400 hover:bg-pastel-blue/50 cursor-pointer'
             }`}>
               {d || ''}
               {d && !isToday && Math.random() > 0.7 && (
@@ -233,9 +233,9 @@ export default function FacultyDashboard() {
   ];
 
   const statCards = summary ? [
-    { label: 'Total Students', value: summary.totalStudents, icon: Users, bgClass: 'bg-pastel-purple', iconColor: 'text-[#6941C6]', text: 'text-gray-900', trend: '+2 this week' },
-    { label: 'Present Today', value: summary.todayPresent, icon: CheckCircle, bgClass: 'bg-pastel-mint', iconColor: 'text-[#10b981]', text: 'text-gray-900', trend: 'Optimal' },
-    { label: 'Absent Today', value: summary.todayAbsent, icon: XCircle, bgClass: 'bg-pastel-pink', iconColor: 'text-[#ef4444]', text: 'text-gray-900', trend: '-1 from yesterday' },
+    { label: 'Total Students', value: summary.totalStudents, icon: Users, bgClass: 'bg-pastel-purple', iconColor: 'text-[#6941C6]', text: 'text-gray-900 dark:text-gray-100', trend: '+2 this week' },
+    { label: 'Present Today', value: summary.todayPresent, icon: CheckCircle, bgClass: 'bg-pastel-mint', iconColor: 'text-[#10b981]', text: 'text-gray-900 dark:text-gray-100', trend: 'Optimal' },
+    { label: 'Absent Today', value: summary.todayAbsent, icon: XCircle, bgClass: 'bg-pastel-pink', iconColor: 'text-[#ef4444]', text: 'text-gray-900 dark:text-gray-100', trend: '-1 from yesterday' },
     { label: 'Avg. Attendance', value: `${summary.avgAttendancePct}%`, icon: TrendingUp, bgClass: 'bg-pastel-peach', iconColor: 'text-[#f59e0b]', isPercent: true, trend: 'Top 10% in dept' },
   ] : [];
 
@@ -259,23 +259,23 @@ export default function FacultyDashboard() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-gray-900 text-3xl font-black tracking-tight">Class Dashboard</h1>
+            <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight">Class Dashboard</h1>
             {isMocking && (
               <span className="bg-palette-dark text-palette-medium text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-widest shadow-sm">Preview Mode</span>
             )}
           </div>
-          <p className="text-gray-500 text-sm font-medium">Real-time attendance analytics & insights</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Real-time attendance analytics & insights</p>
         </div>
         <div className="relative group">
           <select
-            className="w-72 h-12 px-5 rounded-2xl bg-white border border-gray-200 text-gray-900 font-semibold focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium cursor-pointer shadow-sm appearance-none transition-all group-hover:shadow-md"
+            className="w-72 h-12 px-5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-semibold focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium cursor-pointer shadow-sm appearance-none transition-all group-hover:shadow-md"
             value={selectedClass} onChange={e => setSelectedClass(e.target.value)}
           >
             {classes.map(c => (
               <option key={c.id} value={c.id}>{c.department_code} {c.name}-{c.section} (Sem {c.semester})</option>
             ))}
           </select>
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 dark:text-gray-400 transition-colors">
             <ChevronRight size={18} className="transform rotate-90" />
           </div>
         </div>
@@ -290,16 +290,16 @@ export default function FacultyDashboard() {
               <div key={i} className={`${card.bgClass} rounded-[32px] p-6 flex flex-col shadow-sm hover:shadow-glass-hover hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group border border-white/40`}>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-bl-full blur-2xl -z-10" />
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-white/60 shadow-sm backdrop-blur-md transform group-hover:scale-105 transition-transform duration-300`}>
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-white/60 dark:bg-gray-800/60 shadow-sm backdrop-blur-md transform group-hover:scale-105 transition-transform duration-300`}>
                     <Icon size={26} className={card.iconColor} strokeWidth={2.5} />
                   </div>
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider bg-white/50 backdrop-blur-md px-3 py-1.5 rounded-full">{card.trend}</span>
+                  <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-white/50 dark:bg-gray-800/50 backdrop-blur-md px-3 py-1.5 rounded-full">{card.trend}</span>
                 </div>
                 <div>
-                  <div className="text-gray-900 text-4xl font-black tracking-tight leading-none mb-1">
+                  <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
                     {card.isPercent ? card.value : <AnimatedNumber value={card.value} />}
                   </div>
-                  <div className="text-gray-600 text-sm font-bold">{card.label}</div>
+                  <div className="text-gray-600 dark:text-gray-400 text-sm font-bold">{card.label}</div>
                 </div>
               </div>
             );
@@ -310,10 +310,10 @@ export default function FacultyDashboard() {
       {/* ── Charts Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Attendance Trend */}
-        <div className="lg:col-span-2 bg-white rounded-[32px] border border-gray-100 p-8 shadow-glass relative">
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 p-8 shadow-glass relative">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-gray-900 font-black text-xl">Attendance Trend</h3>
+              <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Attendance Trend</h3>
               <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mt-1">Last 7 Days Average</p>
             </div>
             <div className="flex items-center gap-2 bg-pastel-blue/30 px-3 py-1.5 rounded-full border border-pastel-blue">
@@ -339,22 +339,22 @@ export default function FacultyDashboard() {
         {/* Today's Schedule */}
         <div className="bg-pastel-purple/30 rounded-[32px] border border-pastel-purple p-8 shadow-glass">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-gray-900 font-black text-xl">Today's Schedule</h3>
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+            <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Today's Schedule</h3>
+            <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center shadow-sm">
               <Calendar size={18} className="text-brand-purple" />
             </div>
           </div>
           
           <div className="space-y-4">
             {schedule.map((s, i) => (
-              <div key={i} className="group relative p-4 rounded-2xl bg-white hover:shadow-glass transition-all duration-300 cursor-pointer border border-transparent hover:border-brand-purple/20">
+              <div key={i} className="group relative p-4 rounded-2xl bg-white dark:bg-gray-800 hover:shadow-glass transition-all duration-300 cursor-pointer border border-transparent hover:border-brand-purple/20">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg flex-shrink-0 bg-pastel-purple text-brand-purple`}>
                     {s.subject_code?.slice(0, 2) || '??'}
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <p className="text-gray-900 font-bold text-sm truncate">{s.subject_name || s.subject_code}</p>
-                    <p className="text-gray-500 text-xs font-bold mt-1">{s.time_slot} • Room {s.room_no}</p>
+                    <p className="text-gray-900 dark:text-gray-100 font-bold text-sm truncate">{s.subject_name || s.subject_code}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-xs font-bold mt-1">{s.time_slot} • Room {s.room_no}</p>
                   </div>
                 </div>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-brand-light flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300 shadow-sm">
@@ -370,7 +370,7 @@ export default function FacultyDashboard() {
             )}
           </div>
           
-          <button className="w-full mt-6 py-3.5 rounded-2xl bg-white border border-gray-200 text-gray-700 font-bold text-sm hover:border-brand-purple/30 hover:text-brand-purple hover:shadow-glass transition-all">
+          <button className="w-full mt-6 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold text-sm hover:border-brand-purple/30 hover:text-brand-purple hover:shadow-glass transition-all">
             View Full Timetable
           </button>
         </div>
@@ -379,9 +379,9 @@ export default function FacultyDashboard() {
       {/* ── Bottom Row: Zone Donut + Pending Actions + Calendar ── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Zone Distribution Donut */}
-        <div className="bg-white rounded-[32px] border border-gray-100 p-8 shadow-glass relative overflow-hidden group">
+        <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 p-8 shadow-glass relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#10b981] via-[#f59e0b] to-[#ef4444] opacity-30" />
-          <h3 className="text-gray-900 font-black text-xl mb-6">Attendance Status</h3>
+          <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl mb-6">Attendance Status</h3>
           <div className="relative">
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -392,7 +392,7 @@ export default function FacultyDashboard() {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-              <span className="block text-4xl font-black text-gray-900">{summary?.totalStudents || 0}</span>
+              <span className="block text-4xl font-black text-gray-900 dark:text-gray-100">{summary?.totalStudents || 0}</span>
               <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Total</span>
             </div>
           </div>
@@ -401,7 +401,7 @@ export default function FacultyDashboard() {
               <div key={z.name} className="flex flex-col items-center">
                 <div className="flex items-center gap-1.5 mb-1">
                   <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: z.color }} />
-                  <span className="font-black text-gray-900">{z.value}</span>
+                  <span className="font-black text-gray-900 dark:text-gray-100">{z.value}</span>
                 </div>
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{z.name.split(' ')[0]}</span>
               </div>
@@ -468,17 +468,17 @@ export default function FacultyDashboard() {
       />
 
       {/* ── Student Overview Table ── */}
-      <div className="bg-white rounded-[32px] border border-gray-100 shadow-glass overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 shadow-glass overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center justify-between p-6 lg:px-8 border-b border-gray-50">
           <div>
-            <h3 className="text-gray-900 font-black text-xl">Student List</h3>
+            <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Student List</h3>
             <p className="text-gray-400 text-xs font-bold mt-1">Manage and view individual attendance</p>
           </div>
           <div className="mt-4 sm:mt-0 relative w-full sm:w-72">
             <input type="text" placeholder="Search by name or roll no..."
-              className="w-full h-11 pl-4 pr-10 rounded-2xl bg-gray-50 border border-transparent text-sm text-gray-900 placeholder-gray-400 focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all focus:outline-none"
+              className="w-full h-11 pl-4 pr-10 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all focus:outline-none"
               value={search} onChange={e => setSearch(e.target.value)} />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-lg border border-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400 shadow-sm">/</div>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400 shadow-sm">/</div>
           </div>
         </div>
 
@@ -506,10 +506,10 @@ export default function FacultyDashboard() {
                         </div>
                         <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${s.zone === 'green' ? 'bg-[#10b981]' : s.zone === 'yellow' ? 'bg-[#f59e0b]' : 'bg-[#ef4444]'}`} />
                       </div>
-                      <span className="text-gray-900 font-bold text-sm group-hover:text-brand-purple transition-colors">{s.student_name}</span>
+                      <span className="text-gray-900 dark:text-gray-100 font-bold text-sm group-hover:text-brand-purple transition-colors">{s.student_name}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-sm text-gray-500 font-mono font-bold tracking-tight">{s.roll_no}</td>
+                  <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400 font-mono font-bold tracking-tight">{s.roll_no}</td>
                   <td className="text-center px-4 py-4 text-sm font-black text-[#10b981]">{s.total_present}</td>
                   <td className="text-center px-4 py-4 text-sm font-black text-[#ef4444]">{s.total_absent}</td>
                   <td className="text-center px-4 py-4">
@@ -531,10 +531,10 @@ export default function FacultyDashboard() {
               {filteredStudents.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-900 mb-4">
                       <Users size={24} className="text-gray-300" />
                     </div>
-                    <p className="text-gray-900 font-bold">No students found</p>
+                    <p className="text-gray-900 dark:text-gray-100 font-bold">No students found</p>
                     <p className="text-gray-400 text-sm mt-1">Try adjusting your search query.</p>
                   </td>
                 </tr>
@@ -549,29 +549,29 @@ export default function FacultyDashboard() {
       {showAlertsModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onClick={() => setShowAlertsModal(false)} />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
+          <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div>
-                <h3 className="text-gray-900 font-black text-2xl">Action Required</h3>
-                <p className="text-gray-500 text-sm font-medium mt-1">Review all alerts and pending tasks</p>
+                <h3 className="text-gray-900 dark:text-gray-100 font-black text-2xl">Action Required</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">Review all alerts and pending tasks</p>
               </div>
               <button 
                 onClick={() => setShowAlertsModal(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
             <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
               {alerts.map((a, i) => (
-                <div key={i} className="p-5 rounded-2xl bg-gray-50 border border-gray-100 hover:border-brand-purple/30 hover:shadow-md transition-all">
+                <div key={i} className="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 hover:border-brand-purple/30 hover:shadow-md transition-all">
                   <div className="flex items-start gap-4">
                     <div className={`p-3 rounded-xl mt-1 ${a.type === 'critical' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
                       {a.type === 'critical' ? <AlertTriangle size={20} /> : <FileText size={20} />}
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-gray-900 font-bold text-lg">{a.title}</h4>
-                      <p className="text-gray-600 text-sm mt-1">{a.message}</p>
+                      <h4 className="text-gray-900 dark:text-gray-100 font-bold text-lg">{a.title}</h4>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{a.message}</p>
                     </div>
                   </div>
                 </div>

@@ -215,12 +215,12 @@ export default function TimetableSetup() {
       <div className="fixed bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-pastel-pink/30 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 backdrop-blur-2xl p-8 rounded-[32px] border border-white/60 shadow-glass">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-2xl p-8 rounded-[32px] border border-white/60 dark:border-gray-700/60 shadow-glass">
         <div className="flex items-center gap-4">
           {view === 'timetable' && (
             <button 
               onClick={() => setView('classes')}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white hover:bg-gray-50 text-gray-500 hover:text-brand-purple shadow-sm transition-all"
+              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 hover:text-brand-purple shadow-sm transition-all"
             >
               <ArrowLeft size={24} />
             </button>
@@ -229,10 +229,10 @@ export default function TimetableSetup() {
             <CalendarIcon size={28} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-gray-900 text-3xl font-black tracking-tight mb-1">
+            <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-1">
               {view === 'classes' ? 'Timetable Management' : `Timetable: ${selectedClass?.name} - ${selectedClass?.section}`}
             </h1>
-            <p className="text-gray-500 text-sm font-bold">
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">
               {view === 'classes' ? 'Select a class to view or edit its schedule' : `Semester ${selectedClass?.semester}`}
             </p>
           </div>
@@ -246,18 +246,18 @@ export default function TimetableSetup() {
             <div 
               key={cls.id}
               onClick={() => handleClassClick(cls)}
-              className="bg-white/60 backdrop-blur-md p-8 rounded-[32px] border border-white/60 shadow-glass hover:shadow-glass-hover hover:-translate-y-1 hover:border-white transition-all cursor-pointer group"
+              className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md p-8 rounded-[32px] border border-white/60 dark:border-gray-700/60 shadow-glass hover:shadow-glass-hover hover:-translate-y-1 hover:border-white transition-all cursor-pointer group"
             >
               <div className="flex justify-between items-start mb-6">
                 <div className="w-14 h-14 bg-pastel-purple rounded-2xl flex items-center justify-center text-brand-purple shadow-sm group-hover:scale-105 transition-transform">
                   <Users size={28} />
                 </div>
-                <div className="bg-white text-gray-500 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
+                <div className="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
                   Sem {cls.semester}
                 </div>
               </div>
-              <h3 className="text-2xl font-black text-gray-900 mb-1">{cls.name}</h3>
-              <p className="text-gray-500 font-bold">Section {cls.section}</p>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-1">{cls.name}</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-bold">Section {cls.section}</p>
             </div>
           ))}
         </div>
@@ -265,17 +265,17 @@ export default function TimetableSetup() {
 
       {/* VIEW 2: Timetable Grid */}
       {view === 'timetable' && (
-        <div className="bg-white/60 backdrop-blur-2xl rounded-[32px] border border-white/60 shadow-glass overflow-hidden animate-[fadeIn_0.3s]">
+        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-2xl rounded-[32px] border border-white/60 dark:border-gray-700/60 shadow-glass overflow-hidden animate-[fadeIn_0.3s]">
           {/* Toolbar */}
-          <div className="p-8 border-b border-white/40 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40">
+          <div className="p-8 border-b border-white/40 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40 dark:bg-gray-800/40">
             <div>
-              <h3 className="font-black text-gray-900 text-xl">Weekly Schedule</h3>
-              <p className="text-gray-500 text-sm font-bold mt-1">Click any cell to edit. Save when done.</p>
+              <h3 className="font-black text-gray-900 dark:text-gray-100 text-xl">Weekly Schedule</h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-bold mt-1">Click any cell to edit. Save when done.</p>
             </div>
             <div className="flex gap-3">
               <button 
                 onClick={openSetupModal}
-                className="px-6 py-3 rounded-2xl text-sm font-bold bg-white text-gray-700 hover:bg-gray-50 shadow-sm border border-white transition-all flex items-center gap-2 hover:shadow-md"
+                className="px-6 py-3 rounded-2xl text-sm font-bold bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-900 shadow-sm border border-white transition-all flex items-center gap-2 hover:shadow-md"
               >
                 <Settings size={18} /> Setup Periods
               </button>
@@ -292,11 +292,11 @@ export default function TimetableSetup() {
           <div className="p-8 overflow-x-auto">
             {periods.length === 0 ? (
               <div className="py-24 text-center flex flex-col items-center">
-                <div className="w-20 h-20 bg-white rounded-[32px] shadow-sm flex items-center justify-center text-gray-300 mb-6 border border-white">
+                <div className="w-20 h-20 bg-white dark:bg-gray-800 rounded-[32px] shadow-sm flex items-center justify-center text-gray-300 mb-6 border border-white">
                   <CalendarIcon size={40} />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 mb-2">No Schedule Configured</h3>
-                <p className="text-gray-500 font-bold max-w-md">This class does not have a timetable yet. Click "Setup Periods" above to define the time slots and start building.</p>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-gray-100 mb-2">No Schedule Configured</h3>
+                <p className="text-gray-500 dark:text-gray-400 font-bold max-w-md">This class does not have a timetable yet. Click "Setup Periods" above to define the time slots and start building.</p>
               </div>
             ) : (
               <table className="w-full border-separate border-spacing-2 min-w-[800px]">
@@ -304,9 +304,9 @@ export default function TimetableSetup() {
                   <tr>
                     <th className="w-24"></th>
                     {periods.map((p, idx) => (
-                      <th key={idx} className="p-4 bg-white rounded-2xl shadow-sm text-center border border-white/60">
+                      <th key={idx} className="p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm text-center border border-white/60 dark:border-gray-700/60">
                         <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Period {idx + 1}</div>
-                        <div className="text-xs font-bold text-gray-900 mt-1 bg-gray-50 px-2 py-1 rounded-lg inline-block">{p.startTime} - {p.endTime}</div>
+                        <div className="text-xs font-bold text-gray-900 dark:text-gray-100 mt-1 bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded-lg inline-block">{p.startTime} - {p.endTime}</div>
                       </th>
                     ))}
                   </tr>
@@ -314,7 +314,7 @@ export default function TimetableSetup() {
                 <tbody>
                   {DAYS.map(day => (
                     <tr key={day}>
-                      <td className="p-4 bg-white rounded-2xl shadow-sm text-center border border-white/60 font-black text-gray-500 text-sm">{DAY_NAMES[day].slice(0, 3)}</td>
+                      <td className="p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm text-center border border-white/60 dark:border-gray-700/60 font-black text-gray-500 dark:text-gray-400 text-sm">{DAY_NAMES[day].slice(0, 3)}</td>
                       {periods.map((_, idx) => {
                         const cell = grid[day]?.[idx] || {};
                         const subject = mappedSubjects.find(s => s.subject_id === parseInt(cell.subjectId));
@@ -333,7 +333,7 @@ export default function TimetableSetup() {
                                 {cell.room && <div className="text-[10px] font-bold text-blue-600 flex items-center gap-1"><MapPin size={10}/> Room {cell.room}</div>}
                               </div>
                             ) : (
-                              <div className="w-full h-full border-2 border-dashed border-white/60 bg-white/30 rounded-2xl flex items-center justify-center text-gray-400 cursor-pointer hover:border-brand-purple/40 hover:bg-brand-purple/5 hover:text-brand-purple transition-all shadow-sm">
+                              <div className="w-full h-full border-2 border-dashed border-white/60 dark:border-gray-700/60 bg-white/30 rounded-2xl flex items-center justify-center text-gray-400 cursor-pointer hover:border-brand-purple/40 hover:bg-brand-purple/5 hover:text-brand-purple transition-all shadow-sm">
                                 <Plus size={24} />
                               </div>
                             )}
@@ -352,10 +352,10 @@ export default function TimetableSetup() {
       {/* Setup Periods Modal */}
       {setupModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
-          <div className="bg-white/80 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-3xl overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40">
-              <h3 className="font-black text-gray-900 text-xl flex items-center gap-2"><Clock className="text-brand-purple"/> Setup Time Slots</h3>
-              <button onClick={() => setSetupModal(false)} className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"><X size={20} /></button>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-3xl overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-gray-800/40">
+              <h3 className="font-black text-gray-900 dark:text-gray-100 text-xl flex items-center gap-2"><Clock className="text-brand-purple"/> Setup Time Slots</h3>
+              <button onClick={() => setSetupModal(false)} className="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 dark:text-gray-100 transition-colors"><X size={20} /></button>
             </div>
             
             <div className="p-8 max-h-[70vh] overflow-y-auto">
@@ -363,23 +363,23 @@ export default function TimetableSetup() {
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Number of Periods</label>
                 <input 
                   type="number" min="1" max="10"
-                  className="w-32 bg-white border border-transparent text-gray-900 text-xl font-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/30 transition-all text-center shadow-sm"
+                  className="w-32 bg-white dark:bg-gray-800 border border-transparent text-gray-900 dark:text-gray-100 text-xl font-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/30 transition-all text-center shadow-sm"
                   value={setupCount} onChange={e => handleSetupCountChange(e.target.value)}
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {setupPeriods.map((p, idx) => (
-                  <div key={idx} className="bg-white p-5 rounded-3xl shadow-sm border border-white/50 hover:shadow-glass-hover transition-all">
+                  <div key={idx} className="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-white/50 hover:shadow-glass-hover transition-all">
                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Period {idx + 1}</div>
                     <div className="flex gap-2">
                       <div className="w-full">
                         <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Start</label>
-                        <input type="time" value={p.startTime || ''} onChange={e => updateSetupPeriod(idx, 'startTime', e.target.value)} className="w-full bg-gray-50 border border-transparent text-gray-900 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:bg-white" />
+                        <input type="time" value={p.startTime || ''} onChange={e => updateSetupPeriod(idx, 'startTime', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-900 border border-transparent text-gray-900 dark:text-gray-100 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:bg-white dark:bg-gray-800" />
                       </div>
                       <div className="w-full">
                         <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">End</label>
-                        <input type="time" value={p.endTime || ''} onChange={e => updateSetupPeriod(idx, 'endTime', e.target.value)} className="w-full bg-gray-50 border border-transparent text-gray-900 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:bg-white" />
+                        <input type="time" value={p.endTime || ''} onChange={e => updateSetupPeriod(idx, 'endTime', e.target.value)} className="w-full bg-gray-50 dark:bg-gray-900 border border-transparent text-gray-900 dark:text-gray-100 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:bg-white dark:bg-gray-800" />
                       </div>
                     </div>
                   </div>
@@ -387,8 +387,8 @@ export default function TimetableSetup() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-white/50 bg-white/40 flex justify-end gap-3">
-              <button onClick={() => setSetupModal(false)} className="px-6 py-3 rounded-2xl text-sm font-bold text-gray-600 bg-white hover:bg-gray-50 shadow-sm border border-white transition-all">Cancel</button>
+            <div className="p-6 border-t border-white/50 bg-white/40 dark:bg-gray-800/40 flex justify-end gap-3">
+              <button onClick={() => setSetupModal(false)} className="px-6 py-3 rounded-2xl text-sm font-bold text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-900 shadow-sm border border-white transition-all">Cancel</button>
               <button onClick={applySetup} className="px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-all">Apply Periods</button>
             </div>
           </div>
@@ -399,15 +399,15 @@ export default function TimetableSetup() {
       {cellModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/90 backdrop-blur-3xl rounded-[32px] shadow-glass border border-white w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40">
-              <h3 className="font-black text-gray-900 text-lg">{DAY_NAMES[cellModal.day]} <span className="text-gray-400 font-bold">•</span> P{cellModal.periodIdx + 1}</h3>
-              <button onClick={() => setCellModal(null)} className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 transition-colors"><X size={20} /></button>
+            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-gray-800/40">
+              <h3 className="font-black text-gray-900 dark:text-gray-100 text-lg">{DAY_NAMES[cellModal.day]} <span className="text-gray-400 font-bold">•</span> P{cellModal.periodIdx + 1}</h3>
+              <button onClick={() => setCellModal(null)} className="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 dark:text-gray-100 transition-colors"><X size={20} /></button>
             </div>
             <form onSubmit={saveCellData} className="p-8 space-y-5">
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><BookOpen size={12}/> Subject</label>
                 <select 
-                  className="w-full bg-white border border-transparent shadow-sm text-gray-900 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all appearance-none"
+                  className="w-full bg-white dark:bg-gray-800 border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all appearance-none"
                   value={cellModal.data.subjectId} onChange={e => handleSubjectSelectInModal(e.target.value)}
                 >
                   <option value="">-- Free Period --</option>
@@ -420,7 +420,7 @@ export default function TimetableSetup() {
                   <div className="animate-[fadeIn_0.2s_ease-out]">
                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><User size={12}/> Assigned Faculty</label>
                     <select 
-                      className="w-full bg-white border border-transparent shadow-sm text-gray-900 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all appearance-none"
+                      className="w-full bg-white dark:bg-gray-800 border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all appearance-none"
                       value={cellModal.data.facultyId} onChange={e => setCellModal(p => ({...p, data: {...p.data, facultyId: e.target.value}}))}
                     >
                       <option value="">-- Select Faculty --</option>
@@ -432,7 +432,7 @@ export default function TimetableSetup() {
                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><MapPin size={12}/> Room Number</label>
                     <input 
                       type="text"
-                      className="w-full bg-white border border-transparent shadow-sm text-gray-900 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all"
+                      className="w-full bg-white dark:bg-gray-800 border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all"
                       value={cellModal.data.room} onChange={e => setCellModal(p => ({...p, data: {...p.data, room: e.target.value}}))} placeholder="e.g. 101A"
                     />
                   </div>

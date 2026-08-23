@@ -93,20 +93,20 @@ export default function SubjectMapping() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-6 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-palette-light/20 rounded-2xl flex items-center justify-center text-palette-medium shadow-sm">
             <BookOpen size={24} />
           </div>
           <div>
-            <h1 className="text-gray-900 text-2xl font-black tracking-tight mb-1">Assign Faculty</h1>
-            <p className="text-gray-500 text-sm font-medium">Map subjects to classes and assign primary faculty.</p>
+            <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight mb-1">Assign Faculty</h1>
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Map subjects to classes and assign primary faculty.</p>
           </div>
         </div>
 
         <div className="relative w-full sm:w-64">
           <select 
-            className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium transition-all cursor-pointer shadow-sm"
+            className="w-full appearance-none bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium transition-all cursor-pointer shadow-sm"
             value={selectedClass} 
             onChange={e => setSelectedClass(e.target.value)}
           >
@@ -123,17 +123,17 @@ export default function SubjectMapping() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Form to Map New Subject */}
-          <div className="lg:col-span-1 bg-white rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6">
-            <h3 className="font-black text-gray-900 mb-6 flex items-center gap-2">
+          <div className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6">
+            <h3 className="font-black text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
               <Plus size={18} className="text-palette-medium"/> Map Subject to Class
             </h3>
             
             <form onSubmit={handleMapSubject} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Subject</label>
+                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Subject</label>
                 <div className="relative">
                   <select 
-                    className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium transition-all"
+                    className="w-full appearance-none bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium transition-all"
                     value={formSubjectId} onChange={e => setFormSubjectId(e.target.value)} required
                   >
                     <option value="">Select Subject</option>
@@ -144,10 +144,10 @@ export default function SubjectMapping() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Assign Faculty</label>
+                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Assign Faculty</label>
                 <div className="relative">
                   <select 
-                    className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium transition-all"
+                    className="w-full appearance-none bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium transition-all"
                     value={formFacultyId} onChange={e => setFormFacultyId(e.target.value)}
                   >
                     <option value="">-- No Faculty Assigned --</option>
@@ -165,9 +165,9 @@ export default function SubjectMapping() {
           </div>
 
           {/* List of Mapped Subjects */}
-          <div className="lg:col-span-2 bg-white rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-               <h3 className="font-black text-gray-900">Current Assignments</h3>
+               <h3 className="font-black text-gray-900 dark:text-gray-100">Current Assignments</h3>
             </div>
             
             {loading ? (
@@ -186,7 +186,7 @@ export default function SubjectMapping() {
                     {mappedSubjects.map(m => (
                       <tr key={m.id} className="group hover:bg-palette-light/20/30 transition-colors border-b border-gray-50 last:border-0">
                         <td className="px-6 py-4">
-                          <div className="font-bold text-sm text-gray-900">{m.subject_name}</div>
+                          <div className="font-bold text-sm text-gray-900 dark:text-gray-100">{m.subject_name}</div>
                           <div className="text-xs font-medium text-gray-400 mt-0.5">{m.subject_code} • {m.credits} Credits</div>
                         </td>
                         <td className="px-6 py-4">
@@ -195,7 +195,7 @@ export default function SubjectMapping() {
                               <User size={14} /> {m.faculty_name}
                             </div>
                           ) : (
-                            <span className="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Unassigned</span>
+                            <span className="text-xs font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">Unassigned</span>
                           )}
                         </td>
                         <td className="px-6 py-4 text-right">
@@ -224,10 +224,10 @@ export default function SubjectMapping() {
       )}
 
       {!selectedClass && (
-        <div className="bg-white rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-12 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-12 text-center">
           <BookOpen size={48} className="mx-auto text-gray-200 mb-4" />
-          <h3 className="text-xl font-bold text-gray-900 mb-2">Select a Class</h3>
-          <p className="text-gray-500 font-medium">Please select a class from the dropdown above to manage its faculty assignments.</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Select a Class</h3>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">Please select a class from the dropdown above to manage its faculty assignments.</p>
         </div>
       )}
     </div>

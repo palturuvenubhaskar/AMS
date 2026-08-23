@@ -52,38 +52,38 @@ export default function LeaveInbox() {
 
   return (
     <div>
-      <h1 className="text-gray-900 text-2xl font-black tracking-tight">Leave Inbox</h1>
-      <p className="text-gray-500 text-sm font-medium mt-1 mb-8">Review Yellow Zone leave requests (40-75% attendance)</p>
+      <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight">Leave Inbox</h1>
+      <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1 mb-8">Review Yellow Zone leave requests (40-75% attendance)</p>
 
       {leaves.length === 0 ? (
-        <div className="bg-white/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-16 text-center max-w-2xl mx-auto mt-12">
+        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-16 text-center max-w-2xl mx-auto mt-12">
           <div className="w-24 h-24 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
             📫
           </div>
-          <h3 className="text-gray-900 text-xl font-bold mb-2">No pending requests</h3>
-          <p className="text-gray-500 font-medium">All yellow zone leave requests have been processed</p>
+          <h3 className="text-gray-900 dark:text-gray-100 text-xl font-bold mb-2">No pending requests</h3>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">All yellow zone leave requests have been processed</p>
         </div>
       ) : (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white/60 p-4 rounded-2xl border border-white/50 shadow-sm gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white/60 dark:bg-gray-800/60 p-4 rounded-2xl border border-white/50 shadow-sm gap-4">
             <div className="flex items-center gap-3">
               <input 
                 type="checkbox" 
-                className="w-5 h-5 rounded border-gray-300 text-brand-purple focus:ring-brand-purple"
+                className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-brand-purple focus:ring-brand-purple"
                 checked={leaves.length > 0 && selected.size === leaves.length}
                 onChange={e => {
                   if (e.target.checked) setSelected(new Set(leaves.map(l => l.id)));
                   else setSelected(new Set());
                 }}
               />
-              <span className="font-bold text-gray-700">Select All ({selected.size} selected)</span>
+              <span className="font-bold text-gray-700 dark:text-gray-300">Select All ({selected.size} selected)</span>
             </div>
             {selected.size > 0 && (
               <div className="flex items-center gap-3 flex-wrap">
                 <input 
                   type="text" 
                   placeholder="Bulk remarks..." 
-                  className="px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/20"
+                  className="px-4 py-2.5 text-sm rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-purple/20"
                   value={bulkRemarks}
                   onChange={e => setBulkRemarks(e.target.value)}
                 />
@@ -100,11 +100,11 @@ export default function LeaveInbox() {
           </div>
 
           {leaves.map(l => (
-            <div key={l.id} className="bg-white/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 transition-all hover:bg-white/80 flex gap-4">
+            <div key={l.id} className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 transition-all hover:bg-white/80 dark:bg-gray-800/80 flex gap-4">
               <div className="pt-1">
                 <input 
                   type="checkbox" 
-                  className="w-5 h-5 rounded border-gray-300 text-brand-purple focus:ring-brand-purple"
+                  className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-brand-purple focus:ring-brand-purple"
                   checked={selected.has(l.id)}
                   onChange={() => toggleSelect(l.id)}
                 />
@@ -112,11 +112,11 @@ export default function LeaveInbox() {
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h3 className="text-gray-900 text-lg font-bold flex items-center gap-2">
+                    <h3 className="text-gray-900 dark:text-gray-100 text-lg font-bold flex items-center gap-2">
                       {l.student_name} 
-                      <span className="font-mono text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">{l.roll_no}</span>
+                      <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded">{l.roll_no}</span>
                     </h3>
-                    <p className="text-gray-500 text-sm font-medium mt-1">Class: {l.class_name}-{l.section}</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">Class: {l.class_name}-{l.section}</p>
                   </div>
                   <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 shadow-sm">
                     🟡 Yellow Zone — {l.attendance_pct_snapshot}%
@@ -124,21 +124,21 @@ export default function LeaveInbox() {
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50/50 rounded-2xl p-6 mb-6 border border-gray-100/50">
-                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">From</span><p className="font-bold text-gray-900">{new Date(l.from_date).toLocaleDateString()}</p></div>
-                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">To</span><p className="font-bold text-gray-900">{new Date(l.to_date).toLocaleDateString()}</p></div>
-                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Reason</span><p className="font-bold text-gray-900">{l.reason}</p></div>
+                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">From</span><p className="font-bold text-gray-900 dark:text-gray-100">{new Date(l.from_date).toLocaleDateString()}</p></div>
+                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">To</span><p className="font-bold text-gray-900 dark:text-gray-100">{new Date(l.to_date).toLocaleDateString()}</p></div>
+                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Reason</span><p className="font-bold text-gray-900 dark:text-gray-100">{l.reason}</p></div>
                   <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Attendance</span><p className="font-black text-yellow-600">{l.attendance_pct_snapshot}%</p></div>
                 </div>
                 
                 {l.description && (
-                  <div className="mb-6 pl-4 border-l-4 border-gray-200">
-                    <p className="text-gray-600 italic text-sm">"{l.description}"</p>
+                  <div className="mb-6 pl-4 border-l-4 border-gray-200 dark:border-gray-700">
+                    <p className="text-gray-600 dark:text-gray-400 italic text-sm">"{l.description}"</p>
                   </div>
                 )}
                 
                 <div className="mb-6">
                   <input 
-                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all shadow-sm" 
+                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all shadow-sm" 
                     placeholder="Add remarks (optional)..." 
                     value={remarks[l.id] || ''} 
                     onChange={e => setRemarks(p => ({...p, [l.id]: e.target.value}))} 

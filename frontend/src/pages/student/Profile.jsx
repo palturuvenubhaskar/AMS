@@ -15,7 +15,7 @@ export default function Profile() {
   return (
     <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
       <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-8">My Profile</h1>
-      <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl p-8 shadow-glass max-w-2xl">
+      <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl p-8 shadow-glass max-w-2xl">
         <div className="flex items-center gap-6 mb-8">
           <div className="w-20 h-20 rounded-full bg-brand-purple flex items-center justify-center text-3xl font-black text-white shadow-md shadow-brand-purple/20">
             {profile.full_name?.[0]}

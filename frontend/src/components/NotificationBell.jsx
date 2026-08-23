@@ -49,7 +49,7 @@ export default function NotificationBell({ className }) {
   return (
     <div className="relative" ref={ref}>
       <button 
-        className={className || "w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-glass flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-brand-purple hover:scale-105 transition-all border border-gray-100 relative"} 
+        className={className || "w-10 h-10 rounded-full bg-white dark:bg-[#111111] shadow-glass flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-brand-purple hover:scale-105 transition-all border border-slate-200 dark:border-[#222] relative"} 
         onClick={() => setOpen(!open)}
       >
         <HiOutlineBell size={18} />
@@ -61,8 +61,8 @@ export default function NotificationBell({ className }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-3 w-80 bg-white/80 dark:bg-gray-800/80 backdrop-blur-2xl border border-white/50 rounded-3xl shadow-glass z-50 overflow-hidden flex flex-col max-h-[400px] animate-[fadeIn_0.2s_ease-out]">
-          <div className="p-4 flex justify-between items-center border-b border-gray-100/50 bg-white/40 dark:bg-gray-800/40">
+        <div className="absolute right-0 mt-3 w-80 bg-white/80 dark:bg-[#111111]/80 backdrop-blur-2xl border border-white/50 rounded-3xl shadow-glass z-50 overflow-hidden flex flex-col max-h-[400px] animate-[fadeIn_0.2s_ease-out]">
+          <div className="p-4 flex justify-between items-center border-b border-gray-100/50 bg-white/40 dark:bg-[#111111]/40">
             <span className="font-black text-gray-900 dark:text-gray-100">Notifications</span>
             {unread > 0 && (
               <button onClick={markAllRead} className="text-[10px] font-bold uppercase tracking-widest text-brand-purple hover:text-brand-dark transition-colors px-2 py-1 rounded-md hover:bg-brand-purple/10">
@@ -76,7 +76,7 @@ export default function NotificationBell({ className }) {
             ) : notifs.slice(0, 10).map(n => (
               <div 
                 key={n.id} 
-                className={`p-3 rounded-2xl cursor-pointer transition-colors relative overflow-hidden ${!n.is_read ? 'bg-brand-purple/5 hover:bg-brand-purple/10' : 'hover:bg-white/60 dark:bg-gray-800/60'}`} 
+                className={`p-3 rounded-2xl cursor-pointer transition-colors relative overflow-hidden ${!n.is_read ? 'bg-brand-purple/5 hover:bg-brand-purple/10' : 'hover:bg-white/60 dark:bg-[#111111]/60'}`} 
                 onClick={() => markRead(n.id)}
               >
                 {!n.is_read && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-purple" />}

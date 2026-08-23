@@ -48,11 +48,11 @@ export default function DisputesInbox() {
         <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Review student attendance appeals and justifications.</p>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-glass border border-gray-100 overflow-hidden">
+      <div className="bg-white dark:bg-[#111111] rounded-3xl shadow-glass border border-slate-200 dark:border-[#222] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-900">
+              <tr className="bg-slate-50 dark:bg-black">
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date & Time</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subject & Class</th>

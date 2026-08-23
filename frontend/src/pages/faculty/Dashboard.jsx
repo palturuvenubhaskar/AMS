@@ -91,12 +91,12 @@ function MiniCalendar() {
   const days = Array(firstDay).fill(null).concat(Array.from({length: daysInMonth}, (_, i) => i + 1));
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 p-6 shadow-glass relative overflow-hidden group">
+    <div className="bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] p-6 shadow-glass relative overflow-hidden group">
       <div className="absolute top-0 right-0 w-32 h-32 bg-pastel-pink/20 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110 blur-xl" />
       <div className="flex items-center justify-between mb-6">
-        <button onClick={() => setDate(new Date(year, month - 1, 1))} className="p-1.5 hover:bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors"><ChevronLeft size={16} className="text-gray-500 dark:text-gray-400" /></button>
+        <button onClick={() => setDate(new Date(year, month - 1, 1))} className="p-1.5 hover:bg-slate-100 dark:bg-[#111111] rounded-xl transition-colors"><ChevronLeft size={16} className="text-gray-500 dark:text-gray-400" /></button>
         <h3 className="text-gray-900 dark:text-gray-100 font-bold text-sm tracking-wide">{monthName}</h3>
-        <button onClick={() => setDate(new Date(year, month + 1, 1))} className="p-1.5 hover:bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors"><ChevronRight size={16} className="text-gray-500 dark:text-gray-400" /></button>
+        <button onClick={() => setDate(new Date(year, month + 1, 1))} className="p-1.5 hover:bg-slate-100 dark:bg-[#111111] rounded-xl transition-colors"><ChevronRight size={16} className="text-gray-500 dark:text-gray-400" /></button>
       </div>
       <div className="grid grid-cols-7 gap-y-3 gap-x-1 text-center">
         {['S','M','T','W','T','F','S'].map((d, i) => (
@@ -268,7 +268,7 @@ export default function FacultyDashboard() {
         </div>
         <div className="relative group">
           <select
-            className="w-72 h-12 px-5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-semibold focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium cursor-pointer shadow-sm appearance-none transition-all group-hover:shadow-md"
+            className="w-72 h-12 px-5 rounded-2xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-semibold focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium cursor-pointer shadow-sm appearance-none transition-all group-hover:shadow-md"
             value={selectedClass} onChange={e => setSelectedClass(e.target.value)}
           >
             {classes.map(c => (
@@ -290,10 +290,10 @@ export default function FacultyDashboard() {
               <div key={i} className={`${card.bgClass} rounded-[32px] p-6 flex flex-col shadow-sm hover:shadow-glass-hover hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group border border-white/40`}>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-bl-full blur-2xl -z-10" />
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-white/60 dark:bg-gray-800/60 shadow-sm backdrop-blur-md transform group-hover:scale-105 transition-transform duration-300`}>
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-white/60 dark:bg-[#111111]/60 shadow-sm backdrop-blur-md transform group-hover:scale-105 transition-transform duration-300`}>
                     <Icon size={26} className={card.iconColor} strokeWidth={2.5} />
                   </div>
-                  <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-white/50 dark:bg-gray-800/50 backdrop-blur-md px-3 py-1.5 rounded-full">{card.trend}</span>
+                  <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-white/50 dark:bg-[#111111]/50 backdrop-blur-md px-3 py-1.5 rounded-full">{card.trend}</span>
                 </div>
                 <div>
                   <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
@@ -310,7 +310,7 @@ export default function FacultyDashboard() {
       {/* ── Charts Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Attendance Trend */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 p-8 shadow-glass relative">
+        <div className="lg:col-span-2 bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] p-8 shadow-glass relative">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Attendance Trend</h3>
@@ -340,14 +340,14 @@ export default function FacultyDashboard() {
         <div className="bg-pastel-purple/30 rounded-[32px] border border-pastel-purple p-8 shadow-glass">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Today's Schedule</h3>
-            <div className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-white dark:bg-[#111111] flex items-center justify-center shadow-sm">
               <Calendar size={18} className="text-brand-purple" />
             </div>
           </div>
           
           <div className="space-y-4">
             {schedule.map((s, i) => (
-              <div key={i} className="group relative p-4 rounded-2xl bg-white dark:bg-gray-800 hover:shadow-glass transition-all duration-300 cursor-pointer border border-transparent hover:border-brand-purple/20">
+              <div key={i} className="group relative p-4 rounded-2xl bg-white dark:bg-[#111111] hover:shadow-glass transition-all duration-300 cursor-pointer border border-transparent hover:border-brand-purple/20">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg flex-shrink-0 bg-pastel-purple text-brand-purple`}>
                     {s.subject_code?.slice(0, 2) || '??'}
@@ -370,7 +370,7 @@ export default function FacultyDashboard() {
             )}
           </div>
           
-          <button className="w-full mt-6 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold text-sm hover:border-brand-purple/30 hover:text-brand-purple hover:shadow-glass transition-all">
+          <button className="w-full mt-6 py-3.5 rounded-2xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-700 dark:text-gray-300 font-bold text-sm hover:border-brand-purple/30 hover:text-brand-purple hover:shadow-glass transition-all">
             View Full Timetable
           </button>
         </div>
@@ -379,7 +379,7 @@ export default function FacultyDashboard() {
       {/* ── Bottom Row: Zone Donut + Pending Actions + Calendar ── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Zone Distribution Donut */}
-        <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 p-8 shadow-glass relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] p-8 shadow-glass relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#10b981] via-[#f59e0b] to-[#ef4444] opacity-30" />
           <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl mb-6">Attendance Status</h3>
           <div className="relative">
@@ -468,7 +468,7 @@ export default function FacultyDashboard() {
       />
 
       {/* ── Student Overview Table ── */}
-      <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-gray-100 shadow-glass overflow-hidden">
+      <div className="bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] shadow-glass overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center justify-between p-6 lg:px-8 border-b border-gray-50">
           <div>
             <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Student List</h3>
@@ -476,9 +476,9 @@ export default function FacultyDashboard() {
           </div>
           <div className="mt-4 sm:mt-0 relative w-full sm:w-72">
             <input type="text" placeholder="Search by name or roll no..."
-              className="w-full h-11 pl-4 pr-10 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all focus:outline-none"
+              className="w-full h-11 pl-4 pr-10 rounded-2xl bg-slate-50 dark:bg-black border border-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all focus:outline-none"
               value={search} onChange={e => setSearch(e.target.value)} />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400 shadow-sm">/</div>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white dark:bg-[#111111] rounded-lg border border-slate-200 dark:border-[#222] flex items-center justify-center text-[10px] font-bold text-gray-400 shadow-sm">/</div>
           </div>
         </div>
 
@@ -531,7 +531,7 @@ export default function FacultyDashboard() {
               {filteredStudents.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-900 mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 dark:bg-black mb-4">
                       <Users size={24} className="text-gray-300" />
                     </div>
                     <p className="text-gray-900 dark:text-gray-100 font-bold">No students found</p>
@@ -549,7 +549,7 @@ export default function FacultyDashboard() {
       {showAlertsModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onClick={() => setShowAlertsModal(false)} />
-          <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
+          <div className="relative bg-white dark:bg-[#111111] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div>
                 <h3 className="text-gray-900 dark:text-gray-100 font-black text-2xl">Action Required</h3>
@@ -557,14 +557,14 @@ export default function FacultyDashboard() {
               </div>
               <button 
                 onClick={() => setShowAlertsModal(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-[#111111] hover:bg-slate-200 dark:bg-[#222] text-gray-500 dark:text-gray-400 transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
             <div className="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-4">
               {alerts.map((a, i) => (
-                <div key={i} className="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 hover:border-brand-purple/30 hover:shadow-md transition-all">
+                <div key={i} className="p-5 rounded-2xl bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] hover:border-brand-purple/30 hover:shadow-md transition-all">
                   <div className="flex items-start gap-4">
                     <div className={`p-3 rounded-xl mt-1 ${a.type === 'critical' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
                       {a.type === 'critical' ? <AlertTriangle size={20} /> : <FileText size={20} />}

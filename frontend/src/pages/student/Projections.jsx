@@ -25,7 +25,7 @@ export default function Projections() {
 
   if (!data) {
     return (
-      <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-bold bg-white dark:bg-gray-800 rounded-3xl shadow-glass border border-gray-100">
+      <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-bold bg-white dark:bg-[#111111] rounded-3xl shadow-glass border border-slate-200 dark:border-[#222]">
         No attendance data found to run projections.
       </div>
     );
@@ -41,19 +41,19 @@ export default function Projections() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-glass border border-gray-100 flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#111111] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222] flex flex-col justify-between">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Conducted Classes</div>
           <div className="text-4xl font-black text-gray-900 dark:text-gray-100">{data.totalConducted}</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Classes held so far</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-glass border border-gray-100 flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#111111] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222] flex flex-col justify-between">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Remaining Classes</div>
           <div className="text-4xl font-black text-gray-900 dark:text-gray-100">{data.remainingClasses}</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Estimated until end of semester</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-glass border border-gray-100 flex flex-col justify-between relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#111111] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222] flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <TrendingUp size={64} />
           </div>
@@ -62,7 +62,7 @@ export default function Projections() {
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">If you attend every remaining class</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-glass border border-gray-100 flex flex-col justify-between relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#111111] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222] flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <TrendingDown size={64} />
           </div>
@@ -72,11 +72,11 @@ export default function Projections() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-glass border border-gray-100 mt-8">
+      <div className="bg-white dark:bg-[#111111] rounded-3xl p-8 shadow-glass border border-slate-200 dark:border-[#222] mt-8">
         <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-6">Actionable Insights</h2>
         
         <div className="space-y-4">
-          <div className="flex items-start gap-4 p-5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100">
+          <div className="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222]">
             <ShieldCheck className="text-brand-purple mt-1 flex-shrink-0" size={24} />
             <div>
               <h3 className="font-bold text-gray-900 dark:text-gray-100">Target: 75% Attendance</h3>

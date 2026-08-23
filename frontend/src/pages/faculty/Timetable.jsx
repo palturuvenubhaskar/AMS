@@ -121,7 +121,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-6 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#111111] p-6 rounded-[24px] border border-slate-200 dark:border-[#222] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
             <Calendar size={24} />
@@ -134,7 +134,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
         {!readOnly && classes.length > 0 && (
           <div className="relative w-full sm:w-64">
             <select 
-              className="w-full appearance-none bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
+              className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
               value={selectedClass} 
               onChange={e => setSelectedClass(e.target.value)}
             >
@@ -145,16 +145,16 @@ export default function Timetable({ readOnly = false, classId = null }) {
         )}
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+      <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         <div className="overflow-x-auto p-4">
           <table className="w-full min-w-[800px] border-separate border-spacing-2">
             <thead>
               <tr>
-                <th className="w-24 px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-xl text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center shadow-sm">
+                <th className="w-24 px-4 py-3 bg-slate-50 dark:bg-black rounded-xl text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center shadow-sm">
                   Time
                 </th>
                 {[1,2,3,4,5,6].map(d => (
-                  <th key={d} className="px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 text-center shadow-sm">
+                  <th key={d} className="px-4 py-3 bg-slate-50 dark:bg-black rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 text-center shadow-sm">
                     {DAYS[d]}
                   </th>
                 ))}
@@ -165,7 +165,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
                 const [start, end] = ts.split('-');
                 return (
                   <tr key={ts} className="group">
-                    <td className="p-3 bg-gray-50/50 rounded-xl border border-gray-100 text-center group-hover:bg-indigo-50/30 transition-colors">
+                    <td className="p-3 bg-gray-50/50 rounded-xl border border-slate-200 dark:border-[#222] text-center group-hover:bg-indigo-50/30 transition-colors">
                       <div className="text-gray-900 dark:text-gray-100 font-bold text-sm tracking-tight">{start}</div>
                       <div className="text-gray-400 text-[10px] font-bold uppercase mt-0.5">{end}</div>
                     </td>
@@ -192,7 +192,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
                               </div>
                             </div>
                           ) : (
-                            <div className="h-full w-full rounded-xl border border-gray-100 border-dashed bg-gray-50/30 flex items-center justify-center min-h-[80px]">
+                            <div className="h-full w-full rounded-xl border border-slate-200 dark:border-[#222] border-dashed bg-gray-50/30 flex items-center justify-center min-h-[80px]">
                               <span className="text-gray-300 text-sm font-medium">—</span>
                             </div>
                           )}

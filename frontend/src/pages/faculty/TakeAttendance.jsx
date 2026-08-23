@@ -160,7 +160,7 @@ export default function TakeAttendance() {
               ? 'bg-brand-purple/10 text-brand-purple border-b-2 border-brand-purple/30' 
               : step === i + 1 
                 ? 'bg-brand-purple text-white shadow-lg shadow-brand-purple/30 border-b-2 border-transparent scale-[1.02]' 
-                : 'bg-white/60 dark:bg-gray-800/60 backdrop-blur-md text-gray-400 border border-white/50 border-b-2 border-b-transparent'
+                : 'bg-white/60 dark:bg-[#111111]/60 backdrop-blur-md text-gray-400 border border-white/50 border-b-2 border-b-transparent'
           }`}>
             {i+1}. {label}
           </div>
@@ -169,12 +169,12 @@ export default function TakeAttendance() {
 
       {/* Step 1: Select Class */}
       {step === 1 && (
-        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
+        <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
           <h3 className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-6">Step 1: Select Class</h3>
           <div className="mb-6">
             <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Class</label>
             <select 
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
               value={selectedClass} onChange={e => setSelectedClass(e.target.value)}
             >
               <option value="">-- Select Class --</option>
@@ -189,13 +189,13 @@ export default function TakeAttendance() {
 
       {/* Step 2: Subject & Time */}
       {step === 2 && (
-        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
+        <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
           <h3 className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-6">Step 2: Subject & Time Slot</h3>
           
           <div className="mb-5">
             <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Subject</label>
             <select 
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
               value={selectedSubject} onChange={e => setSelectedSubject(e.target.value)}
             >
               <option value="">-- Select Subject --</option>
@@ -208,7 +208,7 @@ export default function TakeAttendance() {
               <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Date</label>
               <input 
                 type="date" 
-                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all"
                 value={date} onChange={e => {
                   const day = new Date(e.target.value).getDay();
                   if (day === 0) return toast.error('Cannot select a Sunday (Holiday).');
@@ -219,7 +219,7 @@ export default function TakeAttendance() {
             <div>
               <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Time Slot</label>
               <select 
-                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
+                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
                 value={timeSlot} onChange={e => setTimeSlot(e.target.value)}
               >
                 <option value="">-- Select --</option>
@@ -236,11 +236,11 @@ export default function TakeAttendance() {
           <div className="mb-8">
             <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-3">Attendance Mode</label>
             <div className="flex gap-4">
-              <label className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'manual' ? 'border-brand-purple bg-brand-purple/5 text-brand-purple' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-900'}`}>
+              <label className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'manual' ? 'border-brand-purple bg-brand-purple/5 text-brand-purple' : 'border-slate-200 dark:border-[#222] bg-white dark:bg-[#111111] text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-black'}`}>
                 <input type="radio" value="manual" checked={mode === 'manual'} onChange={e => setMode(e.target.value)} className="hidden" />
                 <span className="font-bold text-sm">Manual Entry</span>
               </label>
-              <label className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'frs' ? 'border-brand-purple bg-brand-purple/5 text-brand-purple' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-900'}`}>
+              <label className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 cursor-pointer transition-all ${mode === 'frs' ? 'border-brand-purple bg-brand-purple/5 text-brand-purple' : 'border-slate-200 dark:border-[#222] bg-white dark:bg-[#111111] text-gray-600 dark:text-gray-400 hover:bg-slate-50 dark:bg-black'}`}>
                 <input type="radio" value="frs" checked={mode === 'frs'} onChange={e => setMode(e.target.value)} className="hidden" />
                 <span className="font-bold text-sm">Facial Recognition</span>
               </label>
@@ -248,7 +248,7 @@ export default function TakeAttendance() {
           </div>
 
           <div className="flex gap-3">
-            <button className="flex-1 py-3.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-bold hover:bg-gray-50 dark:bg-gray-900 transition-all" onClick={() => setStep(1)}>← Back</button>
+            <button className="flex-1 py-3.5 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-600 dark:text-gray-400 font-bold hover:bg-slate-50 dark:bg-black transition-all" onClick={() => setStep(1)}>← Back</button>
             <button 
               className="flex-[2] py-3.5 rounded-xl bg-brand-purple text-white font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 hover:scale-[1.01] transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed" 
               disabled={!selectedSubject || !timeSlot} onClick={() => setStep(3)}>Next →</button>
@@ -258,7 +258,7 @@ export default function TakeAttendance() {
 
       {/* Step 3: Mark Attendance */}
       {step === 3 && (
-        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-4xl">
+        <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-4xl">
           <div className="flex justify-between items-center mb-8">
             <div>
               <h3 className="text-gray-900 dark:text-gray-100 text-xl font-bold">
@@ -294,13 +294,13 @@ export default function TakeAttendance() {
 
           <div className="space-y-3">
             {students.map((s, i) => (
-              <div key={s.id} className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+              <div key={s.id} className="flex items-center justify-between bg-white dark:bg-[#111111] rounded-2xl p-4 border border-slate-200 dark:border-[#222] shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-4">
                   <span className="w-6 text-gray-400 font-bold text-xs">{i+1}</span>
-                  <span className="font-mono text-gray-500 dark:text-gray-400 text-sm bg-gray-50 dark:bg-gray-900 px-2 py-1 rounded">{s.roll_no}</span>
+                  <span className="font-mono text-gray-500 dark:text-gray-400 text-sm bg-slate-50 dark:bg-black px-2 py-1 rounded">{s.roll_no}</span>
                   <span className="font-bold text-gray-900 dark:text-gray-100">{s.full_name}</span>
                 </div>
-                <div className="flex bg-gray-50 dark:bg-gray-900 p-1 rounded-xl border border-gray-100">
+                <div className="flex bg-slate-50 dark:bg-black p-1 rounded-xl border border-slate-200 dark:border-[#222]">
                   <button 
                     className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${records[s.id] === 'present' ? 'bg-green-100 text-green-700 shadow-sm' : 'text-gray-400 hover:text-gray-600 dark:text-gray-400'}`}
                     onClick={() => setRecords(p => ({...p, [s.id]: 'present'}))}
@@ -315,7 +315,7 @@ export default function TakeAttendance() {
           </div>
 
           <div className="flex gap-3 mt-8 pt-6 border-t border-gray-100">
-            <button className="flex-1 py-3.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-bold hover:bg-gray-50 dark:bg-gray-900 transition-all max-w-[200px]" onClick={() => setStep(2)}>← Back</button>
+            <button className="flex-1 py-3.5 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-600 dark:text-gray-400 font-bold hover:bg-slate-50 dark:bg-black transition-all max-w-[200px]" onClick={() => setStep(2)}>← Back</button>
             <button 
               className="flex-[2] py-3.5 rounded-xl bg-brand-purple text-white font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all disabled:opacity-50" 
               onClick={submit} disabled={submitting}>
@@ -327,7 +327,7 @@ export default function TakeAttendance() {
 
       {/* Step 4: Done */}
       {step === 4 && result && (
-        <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-12 max-w-lg mx-auto text-center">
+        <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-12 max-w-lg mx-auto text-center">
           <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">
             ✓
           </div>

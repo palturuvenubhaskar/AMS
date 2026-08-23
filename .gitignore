@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment
+.env
+.env.development
+.env.test
+
+# Build and Temp files
+dist/
+build/
+coverage/
+*.log
+test_output.txt
+
+# Databases and Local instances
+local-db/
+*.sqlite
+*.sqlite3
+
+# IDEs and OS
+.DS_Store
+.vscode/
+.idea/
+
+# Uploads
+backend/uploads/

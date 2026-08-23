@@ -44,7 +44,7 @@ export default function DisputesInbox() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-gray-900 dark:text-gray-100 tracking-tight">Disputes Inbox</h1>
+        <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Disputes Inbox</h1>
         <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Review student attendance appeals and justifications.</p>
       </div>
 
@@ -65,15 +65,15 @@ export default function DisputesInbox() {
               {disputes.map(d => (
                 <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4">
-                    <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{new Date(d.date).toLocaleDateString()}</div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{new Date(d.date).toLocaleDateString()}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{d.time_slot}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{d.student_name}</div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{d.student_name}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{d.roll_no}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{d.subject_name}</div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{d.subject_name}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{d.class_name}-{d.section}</div>
                   </td>
                   <td className="px-6 py-4">
@@ -113,7 +113,7 @@ export default function DisputesInbox() {
                 <tr>
                   <td colSpan={6} className="text-center py-12 text-gray-500 dark:text-gray-400">
                     <ShieldAlert size={48} className="mx-auto text-gray-300 mb-3" />
-                    <p className="font-bold text-gray-900 dark:text-gray-100">All clear!</p>
+                    <p className="font-bold text-slate-900 dark:text-slate-100">All clear!</p>
                     <p className="text-sm mt-1">No pending disputes or justifications.</p>
                   </td>
                 </tr>

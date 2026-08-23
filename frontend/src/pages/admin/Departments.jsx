@@ -50,7 +50,7 @@ export default function Departments() {
             <Building2 size={24} />
           </div>
           <div>
-            <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight mb-1">Departments</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Departments</h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Manage university departments</p>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function Departments() {
                 {departments.map(d => (
                   <tr key={d.id} className="group hover:bg-indigo-50/30 transition-colors border-b border-gray-50 last:border-0">
                     <td className="px-6 py-4 font-bold text-sm text-gray-400">#{d.id}</td>
-                    <td className="px-6 py-4 font-bold text-sm text-gray-900 dark:text-gray-100">{d.name}</td>
+                    <td className="px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{d.name}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-palette-light/20 text-palette-dark border border-blue-200 text-xs font-bold tracking-widest">
                         {d.code}
@@ -119,7 +119,7 @@ export default function Departments() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-palette-dark/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white dark:bg-[#111111] rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 className="font-black text-gray-900 dark:text-gray-100">{editing ? 'Edit' : 'Add'} Department</h3>
+              <h3 className="font-black text-slate-900 dark:text-slate-100">{editing ? 'Edit' : 'Add'} Department</h3>
               <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
                 <X size={20} />
               </button>
@@ -128,7 +128,7 @@ export default function Departments() {
               <div>
                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Name</label>
                 <input 
-                  className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   value={form.name} onChange={e => setForm(p => ({...p,name:e.target.value}))} required 
                   placeholder="e.g. Computer Science"
                 />
@@ -136,7 +136,7 @@ export default function Departments() {
               <div>
                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Code</label>
                 <input 
-                  className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   value={form.code} onChange={e => setForm(p => ({...p,code:e.target.value}))} required 
                   placeholder="e.g. CSE"
                 />

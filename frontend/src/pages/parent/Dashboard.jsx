@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out]">
       <div className="mb-8">
-        <h2 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-2">My Wards</h2>
+        <h2 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-2">My Wards</h2>
         <p className="text-gray-500 dark:text-gray-400 font-medium">Overview of your children's academic attendance</p>
       </div>
 
@@ -39,7 +39,7 @@ export default function Dashboard() {
                   {ward.full_name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-gray-900 dark:text-gray-100">{ward.full_name}</h3>
+                  <h3 className="text-xl font-black text-slate-900 dark:text-slate-100">{ward.full_name}</h3>
                   <p className="text-gray-500 dark:text-gray-400 font-medium text-sm flex gap-2">
                     <span>{ward.roll_no}</span> • <span>{ward.class_name}-{ward.section}</span>
                   </p>
@@ -50,7 +50,7 @@ export default function Dashboard() {
                 <div className="bg-white dark:bg-[#111111] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222]">
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Attendance</span>
                   <div className="flex items-end gap-2">
-                    <span className="text-3xl font-black text-gray-900 dark:text-gray-100">{ward.attendance?.attendance_pct || 0}%</span>
+                    <span className="text-3xl font-black text-slate-900 dark:text-slate-100">{ward.attendance?.attendance_pct || 0}%</span>
                   </div>
                 </div>
                 <div className="bg-white dark:bg-[#111111] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222]">
@@ -67,7 +67,7 @@ export default function Dashboard() {
               </div>
 
               <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-50/50 p-4 rounded-2xl border border-slate-200 dark:border-[#222]/50 mt-auto">
-                <div>Classes: <strong className="text-gray-900 dark:text-gray-100">{ward.attendance?.total_classes || 0}</strong></div>
+                <div>Classes: <strong className="text-slate-900 dark:text-slate-100">{ward.attendance?.total_classes || 0}</strong></div>
                 <div>Present: <strong className="text-green-600">{ward.attendance?.present_classes || 0}</strong></div>
                 <div>Absent: <strong className="text-red-500">{ward.attendance?.absent_classes || 0}</strong></div>
               </div>

@@ -63,7 +63,7 @@ export default function NotificationBell({ className }) {
       {open && (
         <div className="absolute right-0 mt-3 w-80 bg-white/80 dark:bg-[#111111]/80 backdrop-blur-2xl border border-white/50 rounded-3xl shadow-glass z-50 overflow-hidden flex flex-col max-h-[400px] animate-[fadeIn_0.2s_ease-out]">
           <div className="p-4 flex justify-between items-center border-b border-gray-100/50 bg-white/40 dark:bg-[#111111]/40">
-            <span className="font-black text-gray-900 dark:text-gray-100">Notifications</span>
+            <span className="font-black text-slate-900 dark:text-slate-100">Notifications</span>
             {unread > 0 && (
               <button onClick={markAllRead} className="text-[10px] font-bold uppercase tracking-widest text-brand-purple hover:text-brand-dark transition-colors px-2 py-1 rounded-md hover:bg-brand-purple/10">
                 Mark all read
@@ -81,7 +81,7 @@ export default function NotificationBell({ className }) {
               >
                 {!n.is_read && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-purple" />}
                 <div className={`pl-2`}>
-                  <h4 className={`text-sm ${!n.is_read ? 'font-bold text-gray-900 dark:text-gray-100' : 'font-semibold text-gray-600 dark:text-gray-400'}`}>{n.title}</h4>
+                  <h4 className={`text-sm ${!n.is_read ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-semibold text-gray-600 dark:text-gray-400'}`}>{n.title}</h4>
                   <p className={`text-xs mt-1 ${!n.is_read ? 'font-medium text-gray-600 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400'}`}>{n.message}</p>
                   <time className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">{timeAgo(n.created_at)}</time>
                 </div>

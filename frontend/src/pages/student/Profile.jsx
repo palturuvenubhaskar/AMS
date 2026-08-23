@@ -14,14 +14,14 @@ export default function Profile() {
 
   return (
     <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
-      <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-8">My Profile</h1>
+      <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-8">My Profile</h1>
       <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl p-8 shadow-glass max-w-2xl">
         <div className="flex items-center gap-6 mb-8">
           <div className="w-20 h-20 rounded-full bg-brand-purple flex items-center justify-center text-3xl font-black text-white shadow-md shadow-brand-purple/20">
             {profile.full_name?.[0]}
           </div>
           <div>
-            <h2 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight mb-1">{profile.full_name}</h2>
+            <h2 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">{profile.full_name}</h2>
             <p className="text-gray-500 dark:text-gray-400 font-medium">Roll No: {profile.roll_no}</p>
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function Profile() {
           ].map(([label, value]) => (
             <div key={label}>
               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{label}</div>
-              <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{value}</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{value}</div>
             </div>
           ))}
         </div>

@@ -36,20 +36,20 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#FDFDFD] dark:bg-[#0f172a] font-sans overflow-hidden">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-black font-sans overflow-hidden">
       
       {/* Background ambient mesh gradients */}
       <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-pastel-purple/40 blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-pastel-pink/30 blur-[100px] pointer-events-none" />
 
       {/* ====== SIDEBAR ====== */}
-      <aside className="w-[260px] bg-[#DCD0FF]/70 dark:bg-gray-900/70 backdrop-blur-xl flex flex-col fixed top-0 left-0 bottom-0 z-50 border-r border-[#DCD0FF]/50 dark:border-gray-800 shadow-[4px_0_24px_rgba(0,0,0,0.03)]">
+      <aside className="w-[260px] bg-white dark:bg-[#0a0a0a] backdrop-blur-xl flex flex-col fixed top-0 left-0 bottom-0 z-50 border-r border-slate-200 dark:border-[#222] shadow-[4px_0_24px_rgba(0,0,0,0.03)]">
         {/* Brand */}
         <div className="px-8 py-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-brand-purple flex items-center justify-center text-white shadow-lg shadow-brand-purple/30">
             <Hexagon size={24} fill="currentColor" strokeWidth={1} />
           </div>
-          <h1 className="text-gray-900 dark:text-gray-100 font-black text-xl tracking-tight">AMS</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 font-black text-xl tracking-tight">AMS</h1>
         </div>
 
         {/* Navigation */}
@@ -69,8 +69,8 @@ export default function AdminLayout() {
                   className={() =>
                     `flex items-center gap-3.5 px-4 py-3 rounded-2xl text-[14px] font-bold transition-all duration-300 group relative ${
                       isActive
-                        ? 'bg-white dark:bg-[#111111] text-gray-900 dark:text-gray-100 shadow-glass'
-                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100 hover:bg-white/50 dark:bg-[#111111]/50'
+                        ? 'bg-white dark:bg-[#111111] text-slate-900 dark:text-slate-100 shadow-glass'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-100 hover:bg-white/50 dark:bg-[#111111]/50'
                     }`
                   }
                 >
@@ -91,7 +91,7 @@ export default function AdminLayout() {
                 {user?.fullName?.[0]?.toUpperCase() || 'A'}
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className="text-gray-900 dark:text-gray-100 text-sm font-bold truncate">{user?.fullName || 'Administrator'}</h4>
+                <h4 className="text-slate-900 dark:text-slate-100 text-sm font-bold truncate">{user?.fullName || 'Administrator'}</h4>
                 <p className="text-gray-500 dark:text-gray-400 text-xs font-medium truncate">{user?.email || 'admin@ams.edu'}</p>
               </div>
             </div>
@@ -114,7 +114,7 @@ export default function AdminLayout() {
             <h2 className="text-gray-500 dark:text-gray-400 text-sm font-medium">
               {getGreeting()}
             </h2>
-            <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight">
+            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight">
               {user?.fullName || 'Administrator'}
             </h1>
           </div>
@@ -126,7 +126,7 @@ export default function AdminLayout() {
               <input
                 type="text"
                 placeholder="Find something..."
-                className="w-[320px] h-[48px] pl-11 pr-12 rounded-full bg-white dark:bg-[#111111] border-2 border-transparent text-sm text-gray-900 dark:text-gray-100 font-medium placeholder-gray-400 focus:outline-none focus:border-brand-purple/20 focus:ring-4 focus:ring-brand-purple/10 shadow-glass transition-all"
+                className="w-[320px] h-[48px] pl-11 pr-12 rounded-full bg-white dark:bg-[#111111] border-2 border-transparent text-sm text-slate-900 dark:text-slate-100 font-medium placeholder-gray-400 focus:outline-none focus:border-brand-purple/20 focus:ring-4 focus:ring-brand-purple/10 shadow-glass transition-all"
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1">
                 <span className="text-[10px] font-bold text-gray-400 bg-slate-100 dark:bg-[#111111] px-1.5 py-0.5 rounded">⌘</span>

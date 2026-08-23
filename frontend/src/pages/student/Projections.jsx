@@ -35,7 +35,7 @@ export default function Projections() {
     <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-1">Attendance Projections</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">Attendance Projections</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Mathematical projection for the remainder of the semester</p>
         </div>
       </div>
@@ -43,13 +43,13 @@ export default function Projections() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white dark:bg-[#111111] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222] flex flex-col justify-between">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Conducted Classes</div>
-          <div className="text-4xl font-black text-gray-900 dark:text-gray-100">{data.totalConducted}</div>
+          <div className="text-4xl font-black text-slate-900 dark:text-slate-100">{data.totalConducted}</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Classes held so far</div>
         </div>
 
         <div className="bg-white dark:bg-[#111111] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222] flex flex-col justify-between">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Remaining Classes</div>
-          <div className="text-4xl font-black text-gray-900 dark:text-gray-100">{data.remainingClasses}</div>
+          <div className="text-4xl font-black text-slate-900 dark:text-slate-100">{data.remainingClasses}</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Estimated until end of semester</div>
         </div>
 
@@ -73,13 +73,13 @@ export default function Projections() {
       </div>
 
       <div className="bg-white dark:bg-[#111111] rounded-3xl p-8 shadow-glass border border-slate-200 dark:border-[#222] mt-8">
-        <h2 className="text-xl font-black text-gray-900 dark:text-gray-100 mb-6">Actionable Insights</h2>
+        <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 mb-6">Actionable Insights</h2>
         
         <div className="space-y-4">
           <div className="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222]">
             <ShieldCheck className="text-brand-purple mt-1 flex-shrink-0" size={24} />
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-gray-100">Target: 75% Attendance</h3>
+              <h3 className="font-bold text-slate-900 dark:text-slate-100">Target: 75% Attendance</h3>
               <p className="text-gray-600 dark:text-gray-400 font-medium text-sm mt-1">
                 You need to attend <strong className="text-brand-purple text-lg">{data.requiredFor75}</strong> more classes out of the remaining {data.remainingClasses} to secure 75% attendance.
               </p>

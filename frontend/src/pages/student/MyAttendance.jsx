@@ -81,7 +81,7 @@ export default function MyAttendance() {
     <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-1">My Attendance</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">My Attendance</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
             {user?.studentInfo?.class_name}-{user?.studentInfo?.section} <span className="mx-2 text-gray-300">|</span> Roll No: <span className="font-mono text-gray-600 dark:text-gray-400">{user?.studentInfo?.roll_no}</span>
           </p>
@@ -113,7 +113,7 @@ export default function MyAttendance() {
             </div>
           </div>
           <div>
-            <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
+            <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
               <AnimatedNumber value={summary?.total_present || 0} />
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Classes Present</div>
@@ -128,7 +128,7 @@ export default function MyAttendance() {
             </div>
           </div>
           <div>
-            <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
+            <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
               <AnimatedNumber value={summary?.total_absent || 0} />
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Classes Absent</div>
@@ -143,7 +143,7 @@ export default function MyAttendance() {
             </div>
           </div>
           <div>
-            <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
+            <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
               <AnimatedNumber value={summary?.total_on_leave || 0} />
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Approved Leaves</div>
@@ -163,7 +163,7 @@ export default function MyAttendance() {
       {/* Attendance Records Table */}
       <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         <div className="px-6 py-5 border-b border-gray-100 bg-white/50 dark:bg-[#111111]/50 backdrop-blur-sm">
-          <h3 className="text-gray-900 dark:text-gray-100 font-bold text-lg">Attendance History</h3>
+          <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg">Attendance History</h3>
           <p className="text-gray-400 text-xs font-medium mt-1">Detailed log of your recent classes</p>
         </div>
         
@@ -182,11 +182,11 @@ export default function MyAttendance() {
               {records.map((r, idx) => (
                 <tr key={r.id} className="hover:bg-gray-50/80 transition-colors" style={{ animation: `fadeIn 0.3s ease-out ${idx * 40}ms both` }}>
                   <td className="px-6 py-4">
-                    <div className="text-gray-900 dark:text-gray-100 font-bold text-sm">{new Date(r.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+                    <div className="text-slate-900 dark:text-slate-100 font-bold text-sm">{new Date(r.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
                     <div className="text-gray-400 text-xs font-medium mt-0.5 flex items-center gap-1"><Clock size={12} /> {r.time_slot}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-gray-900 dark:text-gray-100 font-bold text-sm">{r.subject_name}</div>
+                    <div className="text-slate-900 dark:text-slate-100 font-bold text-sm">{r.subject_name}</div>
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{r.faculty_name}</td>
                   <td className="text-center px-4 py-4">
@@ -224,7 +224,7 @@ export default function MyAttendance() {
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 dark:bg-black mb-4">
                       <Calendar size={24} className="text-gray-300" />
                     </div>
-                    <p className="text-gray-900 dark:text-gray-100 font-bold">No attendance records yet</p>
+                    <p className="text-slate-900 dark:text-slate-100 font-bold">No attendance records yet</p>
                     <p className="text-gray-400 text-sm mt-1">Check back after your first class.</p>
                   </td>
                 </tr>
@@ -245,7 +245,7 @@ export default function MyAttendance() {
       {disputeModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
           <div className="bg-white dark:bg-[#111111] rounded-3xl w-full max-w-md shadow-2xl p-6 relative">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Appeal Absence</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Appeal Absence</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               For {new Date(disputeModal.record?.date).toLocaleDateString()} - {disputeModal.record?.subject_name}
             </p>

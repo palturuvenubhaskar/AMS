@@ -24,11 +24,11 @@ export default function AttendanceHistory() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight">Attendance History</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight">Attendance History</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">View all past attendance sessions</p>
         </div>
         <select 
-          className="w-[240px] px-4 py-2.5 rounded-xl bg-white/60 dark:bg-[#111111]/60 backdrop-blur-md border border-white/50 text-gray-900 dark:text-gray-100 text-sm font-semibold shadow-glass focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all cursor-pointer appearance-none"
+          className="w-[240px] px-4 py-2.5 rounded-xl bg-white/60 dark:bg-[#111111]/60 backdrop-blur-md border border-white/50 text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-glass focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all cursor-pointer appearance-none"
           value={classFilter} 
           onChange={e => setClassFilter(e.target.value)}
         >
@@ -56,8 +56,8 @@ export default function AttendanceHistory() {
             <tbody className="divide-y divide-slate-100 dark:divide-[#222]/50">
               {sessions.map(s => (
                 <tr key={s.id} className="hover:bg-white/40 dark:bg-[#111111]/40 transition-colors">
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-gray-100">{new Date(s.date).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-gray-100">{s.class_name}-{s.section}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(s.date).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{s.class_name}-{s.section}</td>
                   <td className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.subject_name}</td>
                   <td className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.time_slot}</td>
                   <td className="px-6 py-4">

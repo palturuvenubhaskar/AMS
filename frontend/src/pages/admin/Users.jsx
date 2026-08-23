@@ -99,7 +99,7 @@ export default function Users() {
             <UsersIcon size={28} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-1">Users Directory</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">Users Directory</h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">Manage {users.length} registered accounts</p>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default function Users() {
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="relative w-full sm:w-48">
             <select 
-              className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
+              className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
               value={roleFilter} 
               onChange={e => setRoleFilter(e.target.value)}
             >
@@ -119,7 +119,7 @@ export default function Users() {
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs font-black">▼</div>
           </div>
           <button 
-            className="bg-white dark:bg-[#111111] hover:bg-slate-50 dark:bg-black text-gray-900 dark:text-gray-100 border border-slate-200 dark:border-[#222] px-6 py-3 rounded-2xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 flex-shrink-0"
+            className="bg-white dark:bg-[#111111] hover:bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-[#222] px-6 py-3 rounded-2xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 flex-shrink-0"
             onClick={() => setImportModal(true)}
           >
             Bulk Import CSV
@@ -155,7 +155,7 @@ export default function Users() {
                   <tr key={u.id} className="group hover:bg-white/50 dark:bg-[#111111]/50 transition-colors">
                     <td className="px-6 py-5 font-black text-sm text-gray-400">#{u.id}</td>
                     <td className="px-6 py-5">
-                      <div className="font-bold text-sm text-gray-900 dark:text-gray-100 group-hover:text-brand-purple transition-colors">{u.full_name}</div>
+                      <div className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-brand-purple transition-colors">{u.full_name}</div>
                     </td>
                     <td className="px-6 py-5">
                       <div className="text-sm font-bold text-gray-600 dark:text-gray-400">{u.email}</div>
@@ -199,8 +199,8 @@ export default function Users() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#111111]/40">
-              <h3 className="font-black text-gray-900 dark:text-gray-100 text-xl">Add New User</h3>
-              <button onClick={() => setModal(false)} className="w-10 h-10 bg-white dark:bg-[#111111] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 dark:text-gray-100 transition-colors">
+              <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl">Add New User</h3>
+              <button onClick={() => setModal(false)} className="w-10 h-10 bg-white dark:bg-[#111111] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors">
                 <X size={20} />
               </button>
             </div>
@@ -208,7 +208,7 @@ export default function Users() {
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
                 <input 
-                  className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
+                  className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
                   value={form.fullName} onChange={e => setForm(p => ({...p,fullName:e.target.value}))} required placeholder="e.g. John Doe"
                 />
               </div>
@@ -217,7 +217,7 @@ export default function Users() {
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
                   <input 
                     type="email"
-                    className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
+                    className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
                     value={form.email} onChange={e => setForm(p => ({...p,email:e.target.value}))} required placeholder="john@example.com"
                   />
                 </div>
@@ -227,7 +227,7 @@ export default function Users() {
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Role</label>
                   <div className="relative">
                     <select 
-                      className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
+                      className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
                       value={form.role} onChange={e => setForm(p => ({...p,role:e.target.value}))} required
                     >
                       <option value="faculty">Faculty</option>
@@ -240,7 +240,7 @@ export default function Users() {
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Phone</label>
                   <input 
-                    className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
+                    className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
                     value={form.phone} onChange={e => setForm(p => ({...p,phone:e.target.value}))} placeholder="Optional"
                   />
                 </div>
@@ -252,7 +252,7 @@ export default function Users() {
                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Class</label>
                     <div className="relative">
                       <select 
-                        className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
+                        className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
                         value={form.classId} onChange={e => setForm(p => ({...p,classId:e.target.value}))} required
                       >
                         <option value="">-- Select Class --</option>
@@ -264,7 +264,7 @@ export default function Users() {
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Roll No</label>
                     <input 
-                      className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
+                      className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all placeholder-gray-400"
                       value={form.rollNo} onChange={e => setForm(p => ({...p,rollNo:e.target.value}))} required placeholder="e.g. 242G1"
                     />
                   </div>
@@ -288,8 +288,8 @@ export default function Users() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#111111]/40">
-              <h3 className="font-black text-gray-900 dark:text-gray-100 text-xl">Bulk Import Students</h3>
-              <button onClick={() => setImportModal(false)} className="w-10 h-10 bg-white dark:bg-[#111111] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-gray-900 dark:text-gray-100 transition-colors">
+              <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl">Bulk Import Students</h3>
+              <button onClick={() => setImportModal(false)} className="w-10 h-10 bg-white dark:bg-[#111111] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors">
                 <X size={20} />
               </button>
             </div>
@@ -298,7 +298,7 @@ export default function Users() {
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Class</label>
                 <div className="relative">
                   <select 
-                    className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
+                    className="w-full appearance-none bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl pl-4 pr-10 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all cursor-pointer"
                     value={importClass} onChange={e => setImportClass(e.target.value)} required
                   >
                     <option value="">-- Select Class --</option>
@@ -311,7 +311,7 @@ export default function Users() {
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">CSV File</label>
                 <input 
                   type="file" accept=".csv"
-                  className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-gray-900 dark:text-gray-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all"
+                  className="w-full bg-white dark:bg-[#111111] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all"
                   onChange={e => setImportFile(e.target.files[0])} required
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">CSV must have headers: name, roll_no, email(optional), phone(optional)</p>

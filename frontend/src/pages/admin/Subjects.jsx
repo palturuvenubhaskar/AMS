@@ -51,7 +51,7 @@ export default function Subjects() {
             <BookOpen size={24} />
           </div>
           <div>
-            <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight mb-1">Subjects</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Subjects</h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Manage {subjects.length} course subjects</p>
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function Subjects() {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-black font-mono text-xs text-gray-600 dark:text-gray-400 tracking-wider">{s.code}</td>
-                    <td className="px-6 py-4 font-bold text-sm text-gray-900 dark:text-gray-100">{s.name}</td>
+                    <td className="px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{s.name}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 dark:bg-[#111111] text-gray-700 dark:text-gray-300 font-bold text-xs">
                         {s.credits}
@@ -126,7 +126,7 @@ export default function Subjects() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-palette-dark/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white dark:bg-[#111111] rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 className="font-black text-gray-900 dark:text-gray-100">{editing ? 'Edit' : 'Add'} Subject</h3>
+              <h3 className="font-black text-slate-900 dark:text-slate-100">{editing ? 'Edit' : 'Add'} Subject</h3>
               <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
                 <X size={20} />
               </button>
@@ -136,7 +136,7 @@ export default function Subjects() {
                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Department</label>
                 <div className="relative">
                   <select 
-                    className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.departmentId} onChange={e => setForm(p => ({...p,departmentId:e.target.value}))} required
                   >
                     <option value="">-- Select Department --</option>
@@ -149,14 +149,14 @@ export default function Subjects() {
                 <div>
                   <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Code</label>
                   <input 
-                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.code} onChange={e => setForm(p => ({...p,code:e.target.value}))} required placeholder="e.g. CS101"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Credits</label>
                   <input 
-                    type="number" className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    type="number" className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.credits} onChange={e => setForm(p => ({...p,credits:parseInt(e.target.value)}))} required min="1" max="6"
                   />
                 </div>
@@ -164,7 +164,7 @@ export default function Subjects() {
               <div>
                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Subject Name</label>
                 <input 
-                  className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   value={form.name} onChange={e => setForm(p => ({...p,name:e.target.value}))} required placeholder="e.g. Data Structures"
                 />
               </div>

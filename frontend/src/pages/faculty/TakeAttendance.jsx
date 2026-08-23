@@ -149,7 +149,7 @@ export default function TakeAttendance() {
 
   return (
     <div>
-      <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight">Take Attendance</h1>
+      <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight">Take Attendance</h1>
       <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1 mb-8">Record attendance for any class in 4 simple steps</p>
 
       {/* Steps indicator */}
@@ -170,11 +170,11 @@ export default function TakeAttendance() {
       {/* Step 1: Select Class */}
       {step === 1 && (
         <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
-          <h3 className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-6">Step 1: Select Class</h3>
+          <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg mb-6">Step 1: Select Class</h3>
           <div className="mb-6">
             <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Class</label>
             <select 
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
               value={selectedClass} onChange={e => setSelectedClass(e.target.value)}
             >
               <option value="">-- Select Class --</option>
@@ -190,12 +190,12 @@ export default function TakeAttendance() {
       {/* Step 2: Subject & Time */}
       {step === 2 && (
         <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
-          <h3 className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-6">Step 2: Subject & Time Slot</h3>
+          <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg mb-6">Step 2: Subject & Time Slot</h3>
           
           <div className="mb-5">
             <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Subject</label>
             <select 
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
               value={selectedSubject} onChange={e => setSelectedSubject(e.target.value)}
             >
               <option value="">-- Select Subject --</option>
@@ -208,7 +208,7 @@ export default function TakeAttendance() {
               <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Date</label>
               <input 
                 type="date" 
-                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all"
                 value={date} onChange={e => {
                   const day = new Date(e.target.value).getDay();
                   if (day === 0) return toast.error('Cannot select a Sunday (Holiday).');
@@ -219,7 +219,7 @@ export default function TakeAttendance() {
             <div>
               <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Time Slot</label>
               <select 
-                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
+                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all appearance-none cursor-pointer"
                 value={timeSlot} onChange={e => setTimeSlot(e.target.value)}
               >
                 <option value="">-- Select --</option>
@@ -261,7 +261,7 @@ export default function TakeAttendance() {
         <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-4xl">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="text-gray-900 dark:text-gray-100 text-xl font-bold">
+              <h3 className="text-slate-900 dark:text-slate-100 text-xl font-bold">
                 {selectedClassName && `${selectedClassName.name}-${selectedClassName.section}`} | {selectedSubjectName?.name} | {date} | {timeSlot}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">
@@ -279,14 +279,14 @@ export default function TakeAttendance() {
               {!isScanning ? (
                 <>
                   <div className="text-5xl mb-4">📷</div>
-                  <h4 className="text-gray-900 dark:text-gray-100 text-lg font-bold mb-2">Facial Recognition System</h4>
+                  <h4 className="text-slate-900 dark:text-slate-100 text-lg font-bold mb-2">Facial Recognition System</h4>
                   <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">Make sure the classroom camera is connected and positioned correctly.</p>
                   <button className="px-6 py-3 rounded-xl bg-brand-purple text-white font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all" onClick={simulateFRSScan}>Start FRS Scan</button>
                 </>
               ) : (
                 <>
                   <div className="inline-block w-12 h-12 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin mb-4"></div>
-                  <h4 className="text-gray-900 dark:text-gray-100 font-bold">Scanning faces... Please wait.</h4>
+                  <h4 className="text-slate-900 dark:text-slate-100 font-bold">Scanning faces... Please wait.</h4>
                 </>
               )}
             </div>
@@ -298,7 +298,7 @@ export default function TakeAttendance() {
                 <div className="flex items-center gap-4">
                   <span className="w-6 text-gray-400 font-bold text-xs">{i+1}</span>
                   <span className="font-mono text-gray-500 dark:text-gray-400 text-sm bg-slate-50 dark:bg-black px-2 py-1 rounded">{s.roll_no}</span>
-                  <span className="font-bold text-gray-900 dark:text-gray-100">{s.full_name}</span>
+                  <span className="font-bold text-slate-900 dark:text-slate-100">{s.full_name}</span>
                 </div>
                 <div className="flex bg-slate-50 dark:bg-black p-1 rounded-xl border border-slate-200 dark:border-[#222]">
                   <button 
@@ -331,7 +331,7 @@ export default function TakeAttendance() {
           <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">
             ✓
           </div>
-          <h2 className="text-gray-900 dark:text-gray-100 text-2xl font-black mb-2">
+          <h2 className="text-slate-900 dark:text-slate-100 text-2xl font-black mb-2">
             {result.offline ? 'Attendance Saved Offline!' : 'Attendance Submitted!'}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 font-medium mb-10">

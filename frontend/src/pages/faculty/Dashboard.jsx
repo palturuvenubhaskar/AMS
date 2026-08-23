@@ -95,7 +95,7 @@ function MiniCalendar() {
       <div className="absolute top-0 right-0 w-32 h-32 bg-pastel-pink/20 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110 blur-xl" />
       <div className="flex items-center justify-between mb-6">
         <button onClick={() => setDate(new Date(year, month - 1, 1))} className="p-1.5 hover:bg-slate-100 dark:bg-[#111111] rounded-xl transition-colors"><ChevronLeft size={16} className="text-gray-500 dark:text-gray-400" /></button>
-        <h3 className="text-gray-900 dark:text-gray-100 font-bold text-sm tracking-wide">{monthName}</h3>
+        <h3 className="text-slate-900 dark:text-slate-100 font-bold text-sm tracking-wide">{monthName}</h3>
         <button onClick={() => setDate(new Date(year, month + 1, 1))} className="p-1.5 hover:bg-slate-100 dark:bg-[#111111] rounded-xl transition-colors"><ChevronRight size={16} className="text-gray-500 dark:text-gray-400" /></button>
       </div>
       <div className="grid grid-cols-7 gap-y-3 gap-x-1 text-center">
@@ -233,9 +233,9 @@ export default function FacultyDashboard() {
   ];
 
   const statCards = summary ? [
-    { label: 'Total Students', value: summary.totalStudents, icon: Users, bgClass: 'bg-pastel-purple', iconColor: 'text-[#6941C6]', text: 'text-gray-900 dark:text-gray-100', trend: '+2 this week' },
-    { label: 'Present Today', value: summary.todayPresent, icon: CheckCircle, bgClass: 'bg-pastel-mint', iconColor: 'text-[#10b981]', text: 'text-gray-900 dark:text-gray-100', trend: 'Optimal' },
-    { label: 'Absent Today', value: summary.todayAbsent, icon: XCircle, bgClass: 'bg-pastel-pink', iconColor: 'text-[#ef4444]', text: 'text-gray-900 dark:text-gray-100', trend: '-1 from yesterday' },
+    { label: 'Total Students', value: summary.totalStudents, icon: Users, bgClass: 'bg-pastel-purple', iconColor: 'text-[#6941C6]', text: 'text-slate-900 dark:text-slate-100', trend: '+2 this week' },
+    { label: 'Present Today', value: summary.todayPresent, icon: CheckCircle, bgClass: 'bg-pastel-mint', iconColor: 'text-[#10b981]', text: 'text-slate-900 dark:text-slate-100', trend: 'Optimal' },
+    { label: 'Absent Today', value: summary.todayAbsent, icon: XCircle, bgClass: 'bg-pastel-pink', iconColor: 'text-[#ef4444]', text: 'text-slate-900 dark:text-slate-100', trend: '-1 from yesterday' },
     { label: 'Avg. Attendance', value: `${summary.avgAttendancePct}%`, icon: TrendingUp, bgClass: 'bg-pastel-peach', iconColor: 'text-[#f59e0b]', isPercent: true, trend: 'Top 10% in dept' },
   ] : [];
 
@@ -259,7 +259,7 @@ export default function FacultyDashboard() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight">Class Dashboard</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight">Class Dashboard</h1>
             {isMocking && (
               <span className="bg-palette-dark text-palette-medium text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-widest shadow-sm">Preview Mode</span>
             )}
@@ -268,7 +268,7 @@ export default function FacultyDashboard() {
         </div>
         <div className="relative group">
           <select
-            className="w-72 h-12 px-5 rounded-2xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-semibold focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium cursor-pointer shadow-sm appearance-none transition-all group-hover:shadow-md"
+            className="w-72 h-12 px-5 rounded-2xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:ring-4 focus:ring-palette-medium/20 focus:border-palette-medium cursor-pointer shadow-sm appearance-none transition-all group-hover:shadow-md"
             value={selectedClass} onChange={e => setSelectedClass(e.target.value)}
           >
             {classes.map(c => (
@@ -296,7 +296,7 @@ export default function FacultyDashboard() {
                   <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-white/50 dark:bg-[#111111]/50 backdrop-blur-md px-3 py-1.5 rounded-full">{card.trend}</span>
                 </div>
                 <div>
-                  <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
+                  <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
                     {card.isPercent ? card.value : <AnimatedNumber value={card.value} />}
                   </div>
                   <div className="text-gray-600 dark:text-gray-400 text-sm font-bold">{card.label}</div>
@@ -313,7 +313,7 @@ export default function FacultyDashboard() {
         <div className="lg:col-span-2 bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] p-8 shadow-glass relative">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Attendance Trend</h3>
+              <h3 className="text-slate-900 dark:text-slate-100 font-black text-xl">Attendance Trend</h3>
               <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mt-1">Last 7 Days Average</p>
             </div>
             <div className="flex items-center gap-2 bg-pastel-blue/30 px-3 py-1.5 rounded-full border border-pastel-blue">
@@ -339,7 +339,7 @@ export default function FacultyDashboard() {
         {/* Today's Schedule */}
         <div className="bg-pastel-purple/30 rounded-[32px] border border-pastel-purple p-8 shadow-glass">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Today's Schedule</h3>
+            <h3 className="text-slate-900 dark:text-slate-100 font-black text-xl">Today's Schedule</h3>
             <div className="w-10 h-10 rounded-full bg-white dark:bg-[#111111] flex items-center justify-center shadow-sm">
               <Calendar size={18} className="text-brand-purple" />
             </div>
@@ -353,7 +353,7 @@ export default function FacultyDashboard() {
                     {s.subject_code?.slice(0, 2) || '??'}
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
-                    <p className="text-gray-900 dark:text-gray-100 font-bold text-sm truncate">{s.subject_name || s.subject_code}</p>
+                    <p className="text-slate-900 dark:text-slate-100 font-bold text-sm truncate">{s.subject_name || s.subject_code}</p>
                     <p className="text-gray-500 dark:text-gray-400 text-xs font-bold mt-1">{s.time_slot} • Room {s.room_no}</p>
                   </div>
                 </div>
@@ -381,7 +381,7 @@ export default function FacultyDashboard() {
         {/* Zone Distribution Donut */}
         <div className="bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] p-8 shadow-glass relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#10b981] via-[#f59e0b] to-[#ef4444] opacity-30" />
-          <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl mb-6">Attendance Status</h3>
+          <h3 className="text-slate-900 dark:text-slate-100 font-black text-xl mb-6">Attendance Status</h3>
           <div className="relative">
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -392,7 +392,7 @@ export default function FacultyDashboard() {
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-              <span className="block text-4xl font-black text-gray-900 dark:text-gray-100">{summary?.totalStudents || 0}</span>
+              <span className="block text-4xl font-black text-slate-900 dark:text-slate-100">{summary?.totalStudents || 0}</span>
               <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Total</span>
             </div>
           </div>
@@ -401,7 +401,7 @@ export default function FacultyDashboard() {
               <div key={z.name} className="flex flex-col items-center">
                 <div className="flex items-center gap-1.5 mb-1">
                   <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: z.color }} />
-                  <span className="font-black text-gray-900 dark:text-gray-100">{z.value}</span>
+                  <span className="font-black text-slate-900 dark:text-slate-100">{z.value}</span>
                 </div>
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{z.name.split(' ')[0]}</span>
               </div>
@@ -471,12 +471,12 @@ export default function FacultyDashboard() {
       <div className="bg-white dark:bg-[#111111] rounded-[32px] border border-slate-200 dark:border-[#222] shadow-glass overflow-hidden">
         <div className="flex flex-col sm:flex-row items-center justify-between p-6 lg:px-8 border-b border-gray-50">
           <div>
-            <h3 className="text-gray-900 dark:text-gray-100 font-black text-xl">Student List</h3>
+            <h3 className="text-slate-900 dark:text-slate-100 font-black text-xl">Student List</h3>
             <p className="text-gray-400 text-xs font-bold mt-1">Manage and view individual attendance</p>
           </div>
           <div className="mt-4 sm:mt-0 relative w-full sm:w-72">
             <input type="text" placeholder="Search by name or roll no..."
-              className="w-full h-11 pl-4 pr-10 rounded-2xl bg-slate-50 dark:bg-black border border-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all focus:outline-none"
+              className="w-full h-11 pl-4 pr-10 rounded-2xl bg-slate-50 dark:bg-black border border-transparent text-sm text-slate-900 dark:text-slate-100 placeholder-gray-400 focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all focus:outline-none"
               value={search} onChange={e => setSearch(e.target.value)} />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white dark:bg-[#111111] rounded-lg border border-slate-200 dark:border-[#222] flex items-center justify-center text-[10px] font-bold text-gray-400 shadow-sm">/</div>
           </div>
@@ -506,7 +506,7 @@ export default function FacultyDashboard() {
                         </div>
                         <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${s.zone === 'green' ? 'bg-[#10b981]' : s.zone === 'yellow' ? 'bg-[#f59e0b]' : 'bg-[#ef4444]'}`} />
                       </div>
-                      <span className="text-gray-900 dark:text-gray-100 font-bold text-sm group-hover:text-brand-purple transition-colors">{s.student_name}</span>
+                      <span className="text-slate-900 dark:text-slate-100 font-bold text-sm group-hover:text-brand-purple transition-colors">{s.student_name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-400 font-mono font-bold tracking-tight">{s.roll_no}</td>
@@ -534,7 +534,7 @@ export default function FacultyDashboard() {
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 dark:bg-black mb-4">
                       <Users size={24} className="text-gray-300" />
                     </div>
-                    <p className="text-gray-900 dark:text-gray-100 font-bold">No students found</p>
+                    <p className="text-slate-900 dark:text-slate-100 font-bold">No students found</p>
                     <p className="text-gray-400 text-sm mt-1">Try adjusting your search query.</p>
                   </td>
                 </tr>
@@ -552,7 +552,7 @@ export default function FacultyDashboard() {
           <div className="relative bg-white dark:bg-[#111111] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-[fadeIn_0.3s_ease-out]">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div>
-                <h3 className="text-gray-900 dark:text-gray-100 font-black text-2xl">Action Required</h3>
+                <h3 className="text-slate-900 dark:text-slate-100 font-black text-2xl">Action Required</h3>
                 <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">Review all alerts and pending tasks</p>
               </div>
               <button 
@@ -570,7 +570,7 @@ export default function FacultyDashboard() {
                       {a.type === 'critical' ? <AlertTriangle size={20} /> : <FileText size={20} />}
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-gray-900 dark:text-gray-100 font-bold text-lg">{a.title}</h4>
+                      <h4 className="text-slate-900 dark:text-slate-100 font-bold text-lg">{a.title}</h4>
                       <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{a.message}</p>
                     </div>
                   </div>

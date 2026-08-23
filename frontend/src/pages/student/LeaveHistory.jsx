@@ -7,7 +7,7 @@ export default function LeaveHistory() {
 
   return (
     <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
-      <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-8">My Leave Requests</h1>
+      <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-8">My Leave Requests</h1>
       <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
@@ -26,15 +26,15 @@ export default function LeaveHistory() {
             <tbody className="divide-y divide-slate-100 dark:divide-[#222]/50 bg-white/20">
               {leaves.map(l => (
                 <tr key={l.id} className="hover:bg-white/40 dark:bg-[#111111]/40 transition-colors">
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-gray-100">{new Date(l.from_date).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-gray-100">{new Date(l.to_date).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(l.from_date).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(l.to_date).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{l.reason}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${l.zone === 'green' ? 'bg-emerald-100 text-emerald-700' : l.zone === 'yellow' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
                       {l.zone}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-black text-gray-900 dark:text-gray-100">{l.attendance_pct_snapshot}%</td>
+                  <td className="px-6 py-4 text-sm font-black text-slate-900 dark:text-slate-100">{l.attendance_pct_snapshot}%</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${l.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : l.status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
                       {l.status}

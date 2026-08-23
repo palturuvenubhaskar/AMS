@@ -43,7 +43,7 @@ export default function ApplyLeave() {
         <div className="text-6xl mb-6">
           {submitted.status === 'approved' ? '✅' : submitted.status === 'rejected' ? '❌' : '⏳'}
         </div>
-        <h2 className="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight mb-3">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-3">
           {submitted.status === 'approved' ? 'Leave Auto-Approved!' :
            submitted.status === 'rejected' ? 'Leave Auto-Rejected' : 'Leave Pending Review'}
         </h2>
@@ -72,7 +72,7 @@ export default function ApplyLeave() {
 
   return (
     <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
-      <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-2">Apply for Leave</h1>
+      <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-2">Apply for Leave</h1>
       <p className="text-gray-500 dark:text-gray-400 font-medium mb-8">Submit a leave request — your zone determines automatic processing</p>
 
       {/* Zone Preview */}
@@ -94,18 +94,18 @@ export default function ApplyLeave() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">From Date <span className="text-red-500">*</span></label>
-              <input type="date" className="w-full bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={fromDate} onChange={e => setFromDate(e.target.value)} required />
+              <input type="date" className="w-full bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={fromDate} onChange={e => setFromDate(e.target.value)} required />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">To Date <span className="text-red-500">*</span></label>
-              <input type="date" className="w-full bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={toDate} onChange={e => setToDate(e.target.value)} required />
+              <input type="date" className="w-full bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={toDate} onChange={e => setToDate(e.target.value)} required />
             </div>
           </div>
           
           <div>
             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Reason <span className="text-red-500">*</span></label>
             <div className="relative">
-              <select className="w-full appearance-none bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm cursor-pointer" value={reason} onChange={e => setReason(e.target.value)} required>
+              <select className="w-full appearance-none bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm cursor-pointer" value={reason} onChange={e => setReason(e.target.value)} required>
                 <option value="">-- Select Reason --</option>
                 {REASONS.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
@@ -115,7 +115,7 @@ export default function ApplyLeave() {
           
           <div>
             <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Description <span className="text-gray-400 lowercase normal-case">(optional)</span></label>
-            <textarea className="w-full bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm min-h-[120px] resize-y" placeholder="Provide additional details..." value={description} onChange={e => setDescription(e.target.value)} />
+            <textarea className="w-full bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm min-h-[120px] resize-y" placeholder="Provide additional details..." value={description} onChange={e => setDescription(e.target.value)} />
           </div>
           
           <button type="submit" className="w-full bg-brand-purple hover:bg-brand-dark text-white py-4 rounded-2xl text-sm font-black tracking-wide shadow-md shadow-brand-purple/20 hover:shadow-lg transition-all" disabled={submitting}>

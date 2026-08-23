@@ -51,7 +51,7 @@ export default function AdminClasses() {
             <GraduationCap size={24} />
           </div>
           <div>
-            <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight mb-1">Classes</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Classes</h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Manage {classes.length} class sections</p>
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function AdminClasses() {
                         {c.department_code}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-bold text-sm text-gray-900 dark:text-gray-100">{c.name}</td>
+                    <td className="px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{c.name}</td>
                     <td className="px-6 py-4 font-bold text-sm text-gray-500 dark:text-gray-400">{c.section}</td>
                     <td className="px-6 py-4 font-bold text-sm text-gray-500 dark:text-gray-400">Sem {c.semester}</td>
                     <td className="px-6 py-4 font-bold text-sm text-gray-500 dark:text-gray-400">{c.academic_year}</td>
@@ -126,7 +126,7 @@ export default function AdminClasses() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-palette-dark/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white dark:bg-[#111111] rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 className="font-black text-gray-900 dark:text-gray-100">{editing ? 'Edit' : 'Add'} Class</h3>
+              <h3 className="font-black text-slate-900 dark:text-slate-100">{editing ? 'Edit' : 'Add'} Class</h3>
               <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
                 <X size={20} />
               </button>
@@ -136,7 +136,7 @@ export default function AdminClasses() {
                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Department</label>
                 <div className="relative">
                   <select 
-                    className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.departmentId} onChange={e => setForm(p => ({...p,departmentId:e.target.value}))} required
                   >
                     <option value="">-- Select Department --</option>
@@ -149,14 +149,14 @@ export default function AdminClasses() {
                 <div>
                   <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Name</label>
                   <input 
-                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.name} onChange={e => setForm(p => ({...p,name:e.target.value}))} required placeholder="e.g. CSE"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Section</label>
                   <input 
-                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.section} onChange={e => setForm(p => ({...p,section:e.target.value}))} required placeholder="e.g. A"
                   />
                 </div>
@@ -165,14 +165,14 @@ export default function AdminClasses() {
                 <div>
                   <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Semester</label>
                   <input 
-                    type="number" className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    type="number" className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.semester} onChange={e => setForm(p => ({...p,semester:e.target.value}))} required min="1" max="10"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Academic Year</label>
                   <input 
-                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                     value={form.academicYear} onChange={e => setForm(p => ({...p,academicYear:e.target.value}))} required placeholder="e.g. 2026-27"
                   />
                 </div>

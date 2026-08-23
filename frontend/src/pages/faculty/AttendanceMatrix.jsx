@@ -80,7 +80,7 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
     <div className="mt-12 animate-[fadeIn_0.5s_ease-out]">
       <div className="flex justify-between items-end mb-6">
         <div>
-          <h2 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight">Monthly Attendance</h2>
+          <h2 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight">Monthly Attendance</h2>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">Comprehensive daily records and performance tracking</p>
         </div>
         <button 
@@ -103,7 +103,7 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
                   setSelectedClass(e.target.value);
                   if (onExternalClassChange) onExternalClassChange(e.target.value);
                 }}
-                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all appearance-none"
+                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all appearance-none"
               >
                 {classes.map(c => (
                   <option key={c.id} value={c.id}>{c.name} - {c.section} ({c.academic_year})</option>
@@ -121,7 +121,7 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
                 setPickerYear(parseInt(month.split('-')[0]));
                 setShowPicker(!showPicker);
               }}
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all text-left flex justify-between items-center"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all text-left flex justify-between items-center"
             >
               <span>{monthNames[parseInt(month.split('-')[1]) - 1]} {month.split('-')[0]}</span>
               <Calendar size={16} className="text-gray-400" />
@@ -131,7 +131,7 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
               <div className="absolute top-[105%] left-0 w-64 bg-white dark:bg-[#111111] rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-slate-200 dark:border-[#222] p-4 z-50 animate-[fadeIn_0.2s_ease-out]">
                 <div className="flex items-center justify-between mb-4">
                   <button onClick={() => setPickerYear(y => y - 1)} className="p-1.5 hover:bg-slate-100 dark:bg-[#111111] rounded-lg transition-colors"><ChevronLeft size={16} /></button>
-                  <span className="font-bold text-gray-900 dark:text-gray-100">{pickerYear}</span>
+                  <span className="font-bold text-slate-900 dark:text-slate-100">{pickerYear}</span>
                   <button onClick={() => setPickerYear(y => y + 1)} className="p-1.5 hover:bg-slate-100 dark:bg-[#111111] rounded-lg transition-colors"><ChevronRight size={16} /></button>
                 </div>
                 <div className="grid grid-cols-3 gap-2">

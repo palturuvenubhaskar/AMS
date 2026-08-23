@@ -127,14 +127,14 @@ export default function Timetable({ readOnly = false, classId = null }) {
             <Calendar size={24} />
           </div>
           <div>
-            <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight mb-1">Weekly Timetable</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Weekly Timetable</h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">View and manage class schedules</p>
           </div>
         </div>
         {!readOnly && classes.length > 0 && (
           <div className="relative w-full sm:w-64">
             <select 
-              className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
+              className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
               value={selectedClass} 
               onChange={e => setSelectedClass(e.target.value)}
             >
@@ -166,7 +166,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
                 return (
                   <tr key={ts} className="group">
                     <td className="p-3 bg-gray-50/50 rounded-xl border border-slate-200 dark:border-[#222] text-center group-hover:bg-indigo-50/30 transition-colors">
-                      <div className="text-gray-900 dark:text-gray-100 font-bold text-sm tracking-tight">{start}</div>
+                      <div className="text-slate-900 dark:text-slate-100 font-bold text-sm tracking-tight">{start}</div>
                       <div className="text-gray-400 text-[10px] font-bold uppercase mt-0.5">{end}</div>
                     </td>
                     {[1,2,3,4,5,6].map(d => {

@@ -52,7 +52,7 @@ export default function LeaveInbox() {
 
   return (
     <div>
-      <h1 className="text-gray-900 dark:text-gray-100 text-2xl font-black tracking-tight">Leave Inbox</h1>
+      <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight">Leave Inbox</h1>
       <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1 mb-8">Review Yellow Zone leave requests (40-75% attendance)</p>
 
       {leaves.length === 0 ? (
@@ -60,7 +60,7 @@ export default function LeaveInbox() {
           <div className="w-24 h-24 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
             📫
           </div>
-          <h3 className="text-gray-900 dark:text-gray-100 text-xl font-bold mb-2">No pending requests</h3>
+          <h3 className="text-slate-900 dark:text-slate-100 text-xl font-bold mb-2">No pending requests</h3>
           <p className="text-gray-500 dark:text-gray-400 font-medium">All yellow zone leave requests have been processed</p>
         </div>
       ) : (
@@ -112,7 +112,7 @@ export default function LeaveInbox() {
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h3 className="text-gray-900 dark:text-gray-100 text-lg font-bold flex items-center gap-2">
+                    <h3 className="text-slate-900 dark:text-slate-100 text-lg font-bold flex items-center gap-2">
                       {l.student_name} 
                       <span className="font-mono text-xs bg-slate-100 dark:bg-[#111111] text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded">{l.roll_no}</span>
                     </h3>
@@ -124,9 +124,9 @@ export default function LeaveInbox() {
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50/50 rounded-2xl p-6 mb-6 border border-slate-200 dark:border-[#222]/50">
-                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">From</span><p className="font-bold text-gray-900 dark:text-gray-100">{new Date(l.from_date).toLocaleDateString()}</p></div>
-                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">To</span><p className="font-bold text-gray-900 dark:text-gray-100">{new Date(l.to_date).toLocaleDateString()}</p></div>
-                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Reason</span><p className="font-bold text-gray-900 dark:text-gray-100">{l.reason}</p></div>
+                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">From</span><p className="font-bold text-slate-900 dark:text-slate-100">{new Date(l.from_date).toLocaleDateString()}</p></div>
+                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">To</span><p className="font-bold text-slate-900 dark:text-slate-100">{new Date(l.to_date).toLocaleDateString()}</p></div>
+                  <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Reason</span><p className="font-bold text-slate-900 dark:text-slate-100">{l.reason}</p></div>
                   <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Attendance</span><p className="font-black text-yellow-600">{l.attendance_pct_snapshot}%</p></div>
                 </div>
                 
@@ -138,7 +138,7 @@ export default function LeaveInbox() {
                 
                 <div className="mb-6">
                   <input 
-                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-gray-900 dark:text-gray-100 font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all shadow-sm" 
+                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 font-medium placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/30 transition-all shadow-sm" 
                     placeholder="Add remarks (optional)..." 
                     value={remarks[l.id] || ''} 
                     onChange={e => setRemarks(p => ({...p, [l.id]: e.target.value}))} 

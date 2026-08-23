@@ -65,7 +65,7 @@ export default function AdminDashboard() {
     <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-gray-900 dark:text-gray-100 text-3xl font-black tracking-tight mb-1">System Overview</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">System Overview</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Real-time metrics and administration</p>
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
               </div>
               
               <div>
-                <div className="text-gray-900 dark:text-gray-100 text-4xl font-black tracking-tight leading-none mb-1">
+                <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
                   <AnimatedNumber value={card.value} />
                 </div>
                 <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">{card.label}</div>

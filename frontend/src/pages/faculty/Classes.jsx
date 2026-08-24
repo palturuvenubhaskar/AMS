@@ -21,7 +21,7 @@ export default function FacultyClasses() {
         {classes.map(c => (
           <div 
             key={c.id} 
-            className={`cursor-pointer bg-white/60 dark:bg-[#111111]/60 backdrop-blur-md rounded-3xl p-6 shadow-glass hover:bg-white dark:bg-[#111111] hover:scale-[1.02] transition-all border-2 ${selectedClass===c.id ? 'border-brand-purple' : 'border-white/50'}`} 
+            className={`cursor-pointer bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-md rounded-3xl p-6 shadow-glass hover:bg-white dark:bg-[#12141d] hover:scale-[1.02] transition-all border-2 ${selectedClass===c.id ? 'border-brand-purple' : 'border-white/50'}`} 
             onClick={() => viewStudents(c.id)}
           >
             <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg">{c.department_code} {c.name}-{c.section}</h3>
@@ -34,12 +34,12 @@ export default function FacultyClasses() {
       </div>
 
       {selectedClass && (
-        <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-6">
+        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-6">
           <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg mb-4">Enrolled Students</h3>
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-[#222]/50">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-[#222430]/50">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-100/50 bg-white/40 dark:bg-[#111111]/40">
+                <tr className="border-b border-gray-100/50 bg-white/40 dark:bg-[#12141d]/40">
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">#</th>
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Roll No</th>
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Name</th>
@@ -50,9 +50,9 @@ export default function FacultyClasses() {
                   <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Zone</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-[#222]/50 bg-white/20">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#222430]/50 bg-white/20">
                 {students.map((s, i) => (
-                  <tr key={s.id} className="hover:bg-white/40 dark:bg-[#111111]/40 transition-colors">
+                  <tr key={s.id} className="hover:bg-white/40 dark:bg-[#12141d]/40 transition-colors">
                     <td className="px-6 py-4 text-sm font-semibold text-gray-500 dark:text-gray-400">{i+1}</td>
                     <td className="px-6 py-4 text-sm font-mono font-medium text-gray-700 dark:text-gray-300">{s.roll_no}</td>
                     <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-slate-100">{s.full_name}</td>

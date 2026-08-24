@@ -5,12 +5,12 @@ import { Calendar, ChevronDown, Clock, MapPin } from 'lucide-react';
 const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const TIME_SLOTS = ['09:00-10:10','10:25-11:30','11:30-12:30','13:15-14:15','14:15-15:15','15:15-16:00'];
 const SLOT_COLORS = [
-  { bg: 'bg-indigo-50/40', border: 'border-indigo-100/50', highlight: 'bg-indigo-300' },
-  { bg: 'bg-emerald-50/40', border: 'border-emerald-100/50', highlight: 'bg-emerald-300' },
-  { bg: 'bg-palette-light/20/40', border: 'border-amber-100/50', highlight: 'bg-amber-300' },
-  { bg: 'bg-rose-50/40', border: 'border-rose-100/50', highlight: 'bg-rose-300' },
-  { bg: 'bg-cyan-50/40', border: 'border-cyan-100/50', highlight: 'bg-cyan-300' },
-  { bg: 'bg-fuchsia-50/40', border: 'border-fuchsia-100/50', highlight: 'bg-fuchsia-300' },
+  { bg: 'bg-indigo-50/40 dark:bg-indigo-500/10', border: 'border-indigo-100/50 dark:border-indigo-500/20', highlight: 'bg-indigo-300 dark:bg-indigo-500', text: 'text-indigo-800 dark:text-indigo-100', meta: 'text-indigo-500 dark:text-indigo-300/80' },
+  { bg: 'bg-emerald-50/40 dark:bg-emerald-500/10', border: 'border-emerald-100/50 dark:border-emerald-500/20', highlight: 'bg-emerald-300 dark:bg-emerald-500', text: 'text-emerald-800 dark:text-emerald-100', meta: 'text-emerald-500 dark:text-emerald-300/80' },
+  { bg: 'bg-amber-50/40 dark:bg-amber-500/10', border: 'border-amber-100/50 dark:border-amber-500/20', highlight: 'bg-amber-300 dark:bg-amber-500', text: 'text-amber-800 dark:text-amber-100', meta: 'text-amber-500 dark:text-amber-300/80' },
+  { bg: 'bg-rose-50/40 dark:bg-rose-500/10', border: 'border-rose-100/50 dark:border-rose-500/20', highlight: 'bg-rose-300 dark:bg-rose-500', text: 'text-rose-800 dark:text-rose-100', meta: 'text-rose-500 dark:text-rose-300/80' },
+  { bg: 'bg-cyan-50/40 dark:bg-cyan-500/10', border: 'border-cyan-100/50 dark:border-cyan-500/20', highlight: 'bg-cyan-300 dark:bg-cyan-500', text: 'text-cyan-800 dark:text-cyan-100', meta: 'text-cyan-500 dark:text-cyan-300/80' },
+  { bg: 'bg-fuchsia-50/40 dark:bg-fuchsia-500/10', border: 'border-fuchsia-100/50 dark:border-fuchsia-500/20', highlight: 'bg-fuchsia-300 dark:bg-fuchsia-500', text: 'text-fuchsia-800 dark:text-fuchsia-100', meta: 'text-fuchsia-500 dark:text-fuchsia-300/80' },
 ];
 
 const MOCK_TIMETABLE = {
@@ -121,7 +121,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#111111] p-6 rounded-[24px] border border-slate-200 dark:border-[#222] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
             <Calendar size={24} />
@@ -134,7 +134,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
         {!readOnly && classes.length > 0 && (
           <div className="relative w-full sm:w-64">
             <select 
-              className="w-full appearance-none bg-slate-50 dark:bg-black border border-slate-200 dark:border-[#222] text-slate-900 dark:text-slate-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
+              className="w-full appearance-none bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
               value={selectedClass} 
               onChange={e => setSelectedClass(e.target.value)}
             >
@@ -145,16 +145,16 @@ export default function Timetable({ readOnly = false, classId = null }) {
         )}
       </div>
 
-      <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+      <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         <div className="overflow-x-auto p-4">
           <table className="w-full min-w-[800px] border-separate border-spacing-2">
             <thead>
               <tr>
-                <th className="w-24 px-4 py-3 bg-slate-50 dark:bg-black rounded-xl text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center shadow-sm">
+                <th className="w-24 px-4 py-3 bg-slate-50 dark:bg-[#050505] rounded-xl text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center shadow-sm">
                   Time
                 </th>
                 {[1,2,3,4,5,6].map(d => (
-                  <th key={d} className="px-4 py-3 bg-slate-50 dark:bg-black rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 text-center shadow-sm">
+                  <th key={d} className="px-4 py-3 bg-slate-50 dark:bg-[#050505] rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 text-center shadow-sm">
                     {DAYS[d]}
                   </th>
                 ))}
@@ -165,7 +165,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
                 const [start, end] = ts.split('-');
                 return (
                   <tr key={ts} className="group">
-                    <td className="p-3 bg-gray-50/50 rounded-xl border border-slate-200 dark:border-[#222] text-center group-hover:bg-indigo-50/30 transition-colors">
+                    <td className="p-3 bg-gray-50/50 rounded-xl border border-slate-200 dark:border-[#222430] text-center group-hover:bg-indigo-50/30 transition-colors">
                       <div className="text-slate-900 dark:text-slate-100 font-bold text-sm tracking-tight">{start}</div>
                       <div className="text-gray-400 text-[10px] font-bold uppercase mt-0.5">{end}</div>
                     </td>
@@ -179,20 +179,20 @@ export default function Timetable({ readOnly = false, classId = null }) {
                             <div className={`h-full w-full rounded-xl p-3 border ${style.bg} ${style.border} flex flex-col justify-between hover:shadow-md transition-all duration-300 relative overflow-hidden`}>
                               <div className={`absolute top-0 left-0 w-1 h-full ${style.highlight}`} />
                               <div>
-                                <div className={`font-black text-sm tracking-tight leading-tight text-slate-800 mb-1`}>
+                                <div className={`font-black text-sm tracking-tight leading-tight ${style.text} mb-1`}>
                                   {slot.subject_name || slot.subject_code}
                                 </div>
-                                <div className={`text-[10px] font-bold uppercase tracking-wider text-slate-500 opacity-80`}>
+                                <div className={`text-[10px] font-bold uppercase tracking-wider ${style.meta}`}>
                                   {slot.subject_code} • {slot.type || 'Lecture'}
                                 </div>
                               </div>
-                              <div className={`flex items-center gap-1 mt-3 text-slate-500 opacity-90`}>
+                              <div className={`flex items-center gap-1 mt-3 ${style.meta}`}>
                                 <MapPin size={12} />
                                 <span className="text-xs font-bold">{slot.room}</span>
                               </div>
                             </div>
                           ) : (
-                            <div className="h-full w-full rounded-xl border border-slate-200 dark:border-[#222] border-dashed bg-gray-50/30 flex items-center justify-center min-h-[80px]">
+                            <div className="h-full w-full rounded-xl border border-slate-200 dark:border-[#222430] border-dashed bg-gray-50/30 flex items-center justify-center min-h-[80px]">
                               <span className="text-gray-300 text-sm font-medium">—</span>
                             </div>
                           )}

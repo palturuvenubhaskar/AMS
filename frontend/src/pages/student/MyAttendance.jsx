@@ -90,7 +90,7 @@ export default function MyAttendance() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
@@ -105,7 +105,7 @@ export default function MyAttendance() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
@@ -120,7 +120,7 @@ export default function MyAttendance() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-red-400 to-rose-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
@@ -135,7 +135,7 @@ export default function MyAttendance() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
@@ -161,8 +161,8 @@ export default function MyAttendance() {
       </div>
 
       {/* Attendance Records Table */}
-      <div className="bg-white dark:bg-[#111111] rounded-[24px] border border-slate-200 dark:border-[#222] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-100 bg-white/50 dark:bg-[#111111]/50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+        <div className="px-6 py-5 border-b border-gray-100 bg-white/50 dark:bg-[#12141d]/50 backdrop-blur-sm">
           <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg">Attendance History</h3>
           <p className="text-gray-400 text-xs font-medium mt-1">Detailed log of your recent classes</p>
         </div>
@@ -208,7 +208,7 @@ export default function MyAttendance() {
                       {r.status === 'absent' && (
                         <button 
                           onClick={() => setDisputeModal({ open: true, record: r, type: 'justification', reason: '', proofUrl: '' })}
-                          className="text-[10px] bg-slate-100 dark:bg-[#111111] hover:bg-slate-200 dark:bg-[#222] text-gray-600 dark:text-gray-400 px-2 py-1 rounded font-bold transition-colors"
+                          className="text-[10px] bg-slate-100 dark:bg-[#12141d] hover:bg-slate-200 dark:bg-[#1a1c26] text-gray-600 dark:text-gray-400 px-2 py-1 rounded font-bold transition-colors"
                           title="Dispute or Justify"
                         >
                           APPEAL
@@ -221,7 +221,7 @@ export default function MyAttendance() {
               {records.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center py-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 dark:bg-black mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 dark:bg-[#050505] mb-4">
                       <Calendar size={24} className="text-gray-300" />
                     </div>
                     <p className="text-slate-900 dark:text-slate-100 font-bold">No attendance records yet</p>
@@ -244,7 +244,7 @@ export default function MyAttendance() {
       {/* Modal */}
       {disputeModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-[#111111] rounded-3xl w-full max-w-md shadow-2xl p-6 relative">
+          <div className="bg-white dark:bg-[#12141d] rounded-3xl w-full max-w-md shadow-2xl p-6 relative">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Appeal Absence</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               For {new Date(disputeModal.record?.date).toLocaleDateString()} - {disputeModal.record?.subject_name}
@@ -253,7 +253,7 @@ export default function MyAttendance() {
               <div>
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Appeal Type</label>
                 <select 
-                  className="w-full border-slate-200 dark:border-[#222] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
+                  className="w-full border-slate-200 dark:border-[#222430] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
                   value={disputeModal.type}
                   onChange={e => setDisputeModal(prev => ({...prev, type: e.target.value}))}
                 >
@@ -265,7 +265,7 @@ export default function MyAttendance() {
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Reason</label>
                 <textarea 
                   required
-                  className="w-full border-slate-200 dark:border-[#222] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
+                  className="w-full border-slate-200 dark:border-[#222430] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
                   rows="3"
                   value={disputeModal.reason}
                   onChange={e => setDisputeModal(prev => ({...prev, reason: e.target.value}))}
@@ -275,14 +275,14 @@ export default function MyAttendance() {
                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Proof URL (Optional)</label>
                 <input 
                   type="url"
-                  className="w-full border-slate-200 dark:border-[#222] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
+                  className="w-full border-slate-200 dark:border-[#222430] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
                   placeholder="Link to doctor note, etc."
                   value={disputeModal.proofUrl}
                   onChange={e => setDisputeModal(prev => ({...prev, proofUrl: e.target.value}))}
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => setDisputeModal(prev => ({...prev, open: false}))} className="px-4 py-2 font-bold text-gray-600 dark:text-gray-400 hover:bg-slate-100 dark:bg-[#111111] rounded-xl">Cancel</button>
+                <button type="button" onClick={() => setDisputeModal(prev => ({...prev, open: false}))} className="px-4 py-2 font-bold text-gray-600 dark:text-gray-400 hover:bg-slate-100 dark:bg-[#12141d] rounded-xl">Cancel</button>
                 <button type="submit" className="px-4 py-2 font-bold text-white bg-brand-purple hover:bg-brand-purple/90 rounded-xl shadow-md">Submit Appeal</button>
               </div>
             </form>

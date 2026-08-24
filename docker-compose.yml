@@ -68,6 +68,7 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend/src:/app/src
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js
     depends_on:
       - backend
 

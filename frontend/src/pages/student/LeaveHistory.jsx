@@ -8,11 +8,11 @@ export default function LeaveHistory() {
   return (
     <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
       <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-8">My Leave Requests</h1>
-      <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass overflow-hidden">
+      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
-              <tr className="bg-white/40 dark:bg-[#111111]/40 border-b border-gray-100/50">
+              <tr className="bg-white/40 dark:bg-[#12141d]/40 border-b border-gray-100/50">
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">From</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">To</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Reason</th>
@@ -23,9 +23,9 @@ export default function LeaveHistory() {
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Remarks</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-[#222]/50 bg-white/20">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#222430]/50 bg-white/20">
               {leaves.map(l => (
-                <tr key={l.id} className="hover:bg-white/40 dark:bg-[#111111]/40 transition-colors">
+                <tr key={l.id} className="hover:bg-white/40 dark:bg-[#12141d]/40 transition-colors">
                   <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(l.from_date).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(l.to_date).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{l.reason}</td>

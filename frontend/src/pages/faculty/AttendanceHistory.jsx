@@ -28,7 +28,7 @@ export default function AttendanceHistory() {
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">View all past attendance sessions</p>
         </div>
         <select 
-          className="w-[240px] px-4 py-2.5 rounded-xl bg-white/60 dark:bg-[#111111]/60 backdrop-blur-md border border-white/50 text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-glass focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all cursor-pointer appearance-none"
+          className="w-[240px] px-4 py-2.5 rounded-xl bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-md border border-white/50 text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-glass focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all cursor-pointer appearance-none"
           value={classFilter} 
           onChange={e => setClassFilter(e.target.value)}
         >
@@ -37,7 +37,7 @@ export default function AttendanceHistory() {
         </select>
       </div>
 
-      <div className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass overflow-hidden">
+      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -53,9 +53,9 @@ export default function AttendanceHistory() {
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-[#222]/50">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#222430]/50">
               {sessions.map(s => (
-                <tr key={s.id} className="hover:bg-white/40 dark:bg-[#111111]/40 transition-colors">
+                <tr key={s.id} className="hover:bg-white/40 dark:bg-[#12141d]/40 transition-colors">
                   <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(s.date).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{s.class_name}-{s.section}</td>
                   <td className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.subject_name}</td>

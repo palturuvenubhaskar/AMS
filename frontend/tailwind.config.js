@@ -8,9 +8,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        premium: {
+          bg: '#050505',
+          card: '#12141d',
+          hover: '#1a1c26',
+          border: '#222430',
+        },
         brand: {
-          purple: '#6941C6', // Primary Brand Purple
-          light: '#F4EBFF',  // Very light purple for accents
+          purple: 'var(--color-brand-primary)', // Dynamic: Purple in light mode, Blue in dark mode
+          light: 'var(--color-brand-light)',
         },
         surface: {
           base: '#F9FAFB',   // App Background

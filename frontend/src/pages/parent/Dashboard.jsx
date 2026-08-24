@@ -25,13 +25,13 @@ export default function Dashboard() {
       {loading ? (
         <div className="text-center py-12 text-gray-500 dark:text-gray-400 font-bold">Loading data...</div>
       ) : wards.length === 0 ? (
-        <div className="bg-white/60 dark:bg-[#111111]/60 p-12 text-center rounded-3xl border border-white/50 shadow-glass">
+        <div className="bg-white/60 dark:bg-[#12141d]/60 p-12 text-center rounded-3xl border border-white/50 shadow-glass">
           <p className="text-gray-500 dark:text-gray-400 font-bold">No wards linked to your account.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {wards.map((ward, idx) => (
-            <div key={idx} className="bg-white/60 dark:bg-[#111111]/60 backdrop-blur-xl border border-white/50 p-6 rounded-[32px] shadow-glass flex flex-col relative overflow-hidden group">
+            <div key={idx} className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 p-6 rounded-[32px] shadow-glass flex flex-col relative overflow-hidden group">
               <div className={`absolute top-0 left-0 right-0 h-2 ${ward.attendance?.zone === 'red' ? 'bg-red-500' : ward.attendance?.zone === 'yellow' ? 'bg-yellow-500' : 'bg-green-500'}`} />
               
               <div className="flex items-center gap-4 mb-6">
@@ -47,13 +47,13 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-white dark:bg-[#111111] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222]">
+                <div className="bg-white dark:bg-[#12141d] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222430]">
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Attendance</span>
                   <div className="flex items-end gap-2">
                     <span className="text-3xl font-black text-slate-900 dark:text-slate-100">{ward.attendance?.attendance_pct || 0}%</span>
                   </div>
                 </div>
-                <div className="bg-white dark:bg-[#111111] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222]">
+                <div className="bg-white dark:bg-[#12141d] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222430]">
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Zone</span>
                   <div className="flex items-center gap-2 h-full pb-1">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
@@ -66,7 +66,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-50/50 p-4 rounded-2xl border border-slate-200 dark:border-[#222]/50 mt-auto">
+              <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-50/50 p-4 rounded-2xl border border-slate-200 dark:border-[#222430]/50 mt-auto">
                 <div>Classes: <strong className="text-slate-900 dark:text-slate-100">{ward.attendance?.total_classes || 0}</strong></div>
                 <div>Present: <strong className="text-green-600">{ward.attendance?.present_classes || 0}</strong></div>
                 <div>Absent: <strong className="text-red-500">{ward.attendance?.absent_classes || 0}</strong></div>

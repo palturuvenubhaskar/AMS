@@ -2,7 +2,7 @@
   "name": "ams-root",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd frontend && npm install && npx vite build --outDir ../dist"
+    "build": "cd frontend && npm install --include=dev && npx vite build --outDir ../dist"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

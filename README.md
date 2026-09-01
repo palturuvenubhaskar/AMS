@@ -20,24 +20,13 @@ A modern, full-stack Academic Management System designed to streamline universit
 
 - **Frontend**: React 19, Vite, Tailwind CSS, React Router, Lucide Icons.
 - **Backend**: Node.js, Express.js.
-- **Database**: PostgreSQL (relational data), Redis (caching).
 - **Authentication**: JWT-based secure authentication with bcrypt password hashing.
-- **Containerization**: Docker & Docker Compose for streamlined deployment.
 
 ## 📦 Getting Started
 
 ### Prerequisites
 - Node.js (v18+)
 - PostgreSQL (v15+)
-- Redis
-- *Alternatively, use Docker for one-click setup.*
-
-### Quick Start with Docker
-The easiest way to get the database running is via Docker Compose:
-\`\`\`bash
-docker-compose up -d
-\`\`\`
-*This provisions the PostgreSQL and Redis containers, and automatically runs the database schema and seed scripts.*
 
 ### Local Development Setup
 

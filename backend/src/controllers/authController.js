@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
-const redis = require('../config/redis');
 const jwtConfig = require('../config/jwt');
 
 // Generate tokens
@@ -36,10 +35,16 @@ exports.login = async (req, res, next) => {
 
     const tokens = generateTokens(user);
 
-    // Store refresh token in Redis (7 day TTL)
+    // Store refresh token in PostgreSQL (7 day TTL)
     try {
-      await redis.setex(`rt_${user.id}`, 7 * 24 * 60 * 60, tokens.refreshToken);
-    } catch (e) { /* Redis unavailable */ }
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await db.query(
+        'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3) ON CONFLICT (token) DO NOTHING',
+        [user.id, tokens.refreshToken, expiresAt]
+      );
+    } catch (e) {
+      console.error('Error storing refresh token:', e);
+    }
 
     // Get student info if student role
     let studentInfo = null;
@@ -95,6 +100,29 @@ exports.register = async (req, res, next) => {
   }
 };
 
+// POST /auth/register-admin (Open for initial setup)
+exports.registerAdmin = async (req, res, next) => {
+  try {
+    const { email, password, fullName, phone } = req.body;
+    if (!email || !password || !fullName) {
+      return res.status(400).json({ error: 'Email, password, and full name are required.' });
+    }
+    
+    // Explicitly set role to admin
+    const role = 'admin';
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const result = await db.query(
+      'INSERT INTO users (email, password_hash, full_name, role, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id, email, full_name, role, phone',
+      [email, passwordHash, fullName, role, phone]
+    );
+
+    res.status(201).json({ user: result.rows[0], message: 'Admin user created successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // POST /auth/refresh
 exports.refresh = async (req, res, next) => {
   try {
@@ -112,8 +140,14 @@ exports.refresh = async (req, res, next) => {
     const tokens = generateTokens(user.rows[0]);
 
     try {
-      await redis.setex(`rt_${decoded.id}`, 7 * 24 * 60 * 60, tokens.refreshToken);
-    } catch (e) { /* Redis unavailable */ }
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await db.query(
+        'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3) ON CONFLICT (token) DO NOTHING',
+        [decoded.id, tokens.refreshToken, expiresAt]
+      );
+    } catch (e) {
+      console.error('Error storing refresh token:', e);
+    }
 
     res.json({ accessToken: tokens.accessToken, refreshToken: tokens.refreshToken });
   } catch (err) {
@@ -131,8 +165,14 @@ exports.logout = async (req, res, next) => {
     if (authHeader) {
       const token = authHeader.split(' ')[1];
       try {
-        await redis.setex(`bl_${token}`, 15 * 60, 'true'); // Blacklist for 15 min
-      } catch (e) { /* Redis unavailable */ }
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // Blacklist for 15 min
+        await db.query(
+          'INSERT INTO token_blacklist (token, expires_at) VALUES ($1, $2) ON CONFLICT (token) DO NOTHING',
+          [token, expiresAt]
+        );
+      } catch (e) {
+        console.error('Error blacklisting token:', e);
+      }
     }
     res.json({ message: 'Logged out successfully.' });
   } catch (err) {

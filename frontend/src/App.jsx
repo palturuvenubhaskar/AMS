@@ -5,6 +5,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 
 // Pages
 import Login from './pages/Login';
+import AdminRegister from './pages/AdminRegister';
 
 // Admin
 import AdminLayout from './components/layouts/AdminLayout';
@@ -129,6 +130,7 @@ export default function App() {
             <Routes>
               {/* Public */}
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+              <Route path="/admin-register" element={<PublicRoute><AdminRegister /></PublicRoute>} />
 
               {/* Root - redirect based on role */}
               <Route path="/" element={<RoleRedirect />} />

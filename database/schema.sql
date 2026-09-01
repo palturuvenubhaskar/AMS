@@ -17,6 +17,8 @@ DROP TABLE IF EXISTS class_subjects CASCADE;
 DROP TABLE IF EXISTS subjects CASCADE;
 DROP TABLE IF EXISTS classes CASCADE;
 DROP TABLE IF EXISTS departments CASCADE;
+DROP TABLE IF EXISTS refresh_tokens CASCADE;
+DROP TABLE IF EXISTS token_blacklist CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- ============================================================
@@ -243,6 +245,32 @@ CREATE TABLE holidays (
 );
 
 CREATE INDEX idx_holidays_date ON holidays(date);
+
+-- ============================================================
+-- 14. REFRESH_TOKENS
+-- ============================================================
+CREATE TABLE refresh_tokens (
+    id              SERIAL PRIMARY KEY,
+    user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token           TEXT NOT NULL UNIQUE,
+    expires_at      TIMESTAMP NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_refresh_tokens_user ON refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+
+-- ============================================================
+-- 15. TOKEN_BLACKLIST
+-- ============================================================
+CREATE TABLE token_blacklist (
+    id              SERIAL PRIMARY KEY,
+    token           TEXT NOT NULL UNIQUE,
+    blacklisted_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at      TIMESTAMP
+);
+
+CREATE INDEX idx_token_blacklist_token ON token_blacklist(token);
 
 -- ============================================================
 -- VIEWS

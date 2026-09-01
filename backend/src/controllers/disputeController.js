@@ -84,7 +84,6 @@ exports.getPending = async (req, res, next) => {
        JOIN attendance_records ar ON d.record_id = ar.id
        JOIN attendance_sessions sess ON ar.session_id = sess.id
        JOIN classes c ON sess.class_id = c.id
-       JOIN class_subjects cs ON c.id = cs.class_id
        JOIN subjects sub ON sess.subject_id = sub.id
        WHERE sess.faculty_id = $1 AND d.status = 'pending'
        ORDER BY d.created_at DESC`,

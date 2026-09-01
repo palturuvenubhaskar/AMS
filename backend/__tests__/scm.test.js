@@ -10,11 +10,7 @@ jest.mock('../src/config/db', () => ({
   }
 }));
 
-jest.mock('../src/config/redis', () => ({
-  setex: jest.fn(),
-  get: jest.fn(),
-  set: jest.fn(),
-}));
+
 
 describe('Student & Class Management (SCM) Tests', () => {
   let adminToken, facultyToken, studentToken;

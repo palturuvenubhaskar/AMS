@@ -7,11 +7,7 @@ const jwt = require('jsonwebtoken');
 
 // Mock dependencies
 jest.mock('../src/config/db');
-jest.mock('../src/config/redis', () => ({
-  setex: jest.fn(),
-  get: jest.fn(),
-  set: jest.fn(),
-}));
+
 
 describe('Authentication Module Tests', () => {
   let mockUser;

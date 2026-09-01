@@ -13,29 +13,6 @@ const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
 const http = require('http');
-const { Server } = require('socket.io');
-
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: function(origin, callback) {
-      if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  }
-});
-
-app.set('io', io);
-
-io.on('connection', (socket) => {
-  socket.on('join_room', (userId) => {
-    socket.join(`user_${userId}`);
-  });
-});
 
 const PORT = process.env.PORT || 5000;
 
@@ -43,8 +20,8 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow any localhost origin during development
-    if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
+    const allowedOrigin = process.env.CORS_ORIGIN;
+    if (!origin || /^http:\/\/localhost:\d+$/.test(origin) || origin === allowedOrigin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -88,11 +65,11 @@ app.use(errorHandler);
 
 if (require.main === module) {
   // Start server only if run directly (e.g., node app.js)
-  server.listen(PORT, () => {
+  app.listen(PORT, () => {
     console.log(`\n🚀 AMS-FRS Backend running on port ${PORT}`);
     console.log(`📡 API: http://localhost:${PORT}/api`);
     console.log(`❤️  Health: http://localhost:${PORT}/health\n`);
   });
 }
 
-module.exports = { app, server };
+module.exports = app;

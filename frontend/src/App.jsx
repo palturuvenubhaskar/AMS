@@ -105,14 +105,11 @@ function PublicRoute({ children }) {
   return children;
 }
 
-import { SocketProvider } from './contexts/SocketContext';
-
 export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <SocketProvider>
             <Toaster
               position="top-right"
               toastOptions={{
@@ -203,7 +200,6 @@ export default function App() {
               {/* Catch-all - redirect to root */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </SocketProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

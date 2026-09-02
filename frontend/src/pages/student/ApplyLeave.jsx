@@ -61,7 +61,7 @@ export default function ApplyLeave() {
         </div>
         <br />
         <button 
-          className="bg-brand-purple hover:bg-brand-dark text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-md hover:shadow-lg transition-all"
+          className="bg-brand-purple hover:bg-brand-dark text-white px-4 md:px-6 py-3 rounded-2xl text-sm font-bold shadow-md hover:shadow-lg transition-all"
           onClick={() => { setSubmitted(null); setFromDate(''); setToDate(''); setReason(''); setDescription(''); }}
         >
           Submit Another Request
@@ -72,7 +72,7 @@ export default function ApplyLeave() {
 
   return (
     <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
-      <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-2">Apply for Leave</h1>
+      <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-2">Apply for Leave</h1>
       <p className="text-gray-500 dark:text-gray-400 font-medium mb-8">Submit a leave request — your zone determines automatic processing</p>
 
       {/* Zone Preview */}
@@ -89,9 +89,9 @@ export default function ApplyLeave() {
         </div>
       )}
 
-      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl rounded-[32px] p-8 border border-white/50 shadow-glass max-w-2xl">
+      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl rounded-[32px] p-4 md:p-8 border border-white/50 shadow-glass max-w-2xl">
         <form onSubmit={submit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">From Date <span className="text-red-500">*</span></label>
               <input type="date" className="w-full bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={fromDate} onChange={e => setFromDate(e.target.value)} required />

@@ -36,7 +36,7 @@ export default function DisputesInbox() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-brand-purple border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 md:w-12 h-10 md:h-12 border-4 border-brand-purple border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -44,7 +44,7 @@ export default function DisputesInbox() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Disputes Inbox</h1>
+        <h1 className="text-xl md:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Disputes Inbox</h1>
         <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Review student attendance appeals and justifications.</p>
       </div>
 
@@ -53,43 +53,43 @@ export default function DisputesInbox() {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 dark:bg-[#050505]">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date & Time</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subject & Class</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Reason</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subject & Class</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Type</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Reason</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {disputes.map(d => (
                 <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{new Date(d.date).toLocaleDateString()}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{d.time_slot}</div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{d.student_name}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{d.roll_no}</div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{d.subject_name}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">{d.class_name}-{d.section}</div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
                       d.type === 'dispute' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-50 text-blue-600 border border-blue-100'
                     }`}>
                       {d.type}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="text-sm text-gray-700 dark:text-gray-300 max-w-xs truncate" title={d.reason}>{d.reason}</div>
                     {d.proof_url && (
                       <a href={d.proof_url} target="_blank" rel="noreferrer" className="text-xs text-brand-purple hover:underline mt-1 inline-block">View Proof</a>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button 
                         onClick={() => handleResolve(d.id, 'approved')}

@@ -91,8 +91,8 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
         </button>
       </div>
 
-      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-6 mb-8 relative z-20">
-        <div className="flex flex-wrap gap-6 items-end">
+      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-4 md:p-6 mb-8 relative z-20">
+        <div className="flex flex-wrap gap-4 md:gap-6 items-end">
           {!externalClassId && (
             <div className="flex-1 min-w-[200px]">
               <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">

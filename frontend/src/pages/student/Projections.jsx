@@ -18,7 +18,7 @@ export default function Projections() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-brand-purple border-t-transparent rounded-full animate-spin drop-shadow-md" />
+        <div className="w-10 md:w-12 h-10 md:h-12 border-4 border-brand-purple border-t-transparent rounded-full animate-spin drop-shadow-md" />
       </div>
     );
   }
@@ -35,44 +35,44 @@ export default function Projections() {
     <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">Attendance Projections</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">Attendance Projections</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Mathematical projection for the remainder of the semester</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Conducted Classes</div>
-          <div className="text-4xl font-black text-slate-900 dark:text-slate-100">{data.totalConducted}</div>
+          <div className="text-2xl md:text-4xl font-black text-slate-900 dark:text-slate-100">{data.totalConducted}</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Classes held so far</div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Remaining Classes</div>
-          <div className="text-4xl font-black text-slate-900 dark:text-slate-100">{data.remainingClasses}</div>
+          <div className="text-2xl md:text-4xl font-black text-slate-900 dark:text-slate-100">{data.remainingClasses}</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Estimated until end of semester</div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <TrendingUp size={64} />
           </div>
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Max Possible</div>
-          <div className="text-4xl font-black text-emerald-500">{data.maxPossiblePct}%</div>
+          <div className="text-2xl md:text-4xl font-black text-emerald-500">{data.maxPossiblePct}%</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">If you attend every remaining class</div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10">
             <TrendingDown size={64} />
           </div>
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Min Possible</div>
-          <div className="text-4xl font-black text-red-500">{data.minPossiblePct}%</div>
+          <div className="text-2xl md:text-4xl font-black text-red-500">{data.minPossiblePct}%</div>
           <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">If you miss every remaining class</div>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#12141d] rounded-3xl p-8 shadow-glass border border-slate-200 dark:border-[#222430] mt-8">
+      <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-8 shadow-glass border border-slate-200 dark:border-[#222430] mt-8">
         <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 mb-6">Actionable Insights</h2>
         
         <div className="space-y-4">

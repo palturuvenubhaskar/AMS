@@ -40,7 +40,7 @@ export default function FacultyLayout() {
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-pastel-pink/30 blur-[100px] pointer-events-none" />
 
       {/* ====== SIDEBAR ====== */}
-      <aside className="w-[260px] bg-white dark:bg-[#050505] backdrop-blur-xl flex flex-col fixed top-0 left-0 bottom-0 z-50 border-r border-slate-200 dark:border-[#222430] shadow-[4px_0_24px_rgba(0,0,0,0.03)]">
+      <aside className="hidden md:flex w-[260px] bg-white dark:bg-[#050505] backdrop-blur-xl flex flex-col fixed top-0 left-0 bottom-0 z-50 border-r border-slate-200 dark:border-[#222430] shadow-[4px_0_24px_rgba(0,0,0,0.03)]">
         {/* Brand */}
         <div className="px-8 py-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-brand-purple flex items-center justify-center text-white shadow-lg shadow-brand-purple/30">
@@ -102,11 +102,37 @@ export default function FacultyLayout() {
         </div>
       </aside>
 
+      
+      {/* ====== MOBILE BOTTOM NAV ====== */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 dark:bg-[#050505]/95 backdrop-blur-xl border-t border-slate-200 dark:border-[#222430] z-50 flex items-center justify-around px-2 pb-safe">
+        {navItems.slice(0, 5).map(item => {
+          const Icon = item.icon;
+          const isActive = item.end
+            ? location.pathname === item.to
+            : location.pathname.startsWith(item.to);
+          return (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={() =>
+                `flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
+                  isActive ? 'text-brand-purple' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                }`
+              }
+            >
+              <Icon size={20} className={isActive ? 'text-brand-purple' : ''} />
+              <span className="text-[10px] font-bold truncate max-w-full px-1">{item.label}</span>
+            </NavLink>
+          );
+        })}
+      </nav>
+
       {/* ====== MAIN CONTENT ====== */}
-      <main className="flex-1 ml-[260px] min-h-screen relative z-10 flex flex-col">
+      <main className="flex-1 md:ml-[260px] min-h-screen relative z-10 flex flex-col min-w-0 pb-16 md:pb-0 w-full md:w-auto overflow-hidden md:overflow-visible">
         
-        {/* Top Header */}
-        <header className="h-[90px] px-8 flex items-center justify-between sticky top-0 z-40 bg-slate-50/80 dark:bg-[#050505]/80 backdrop-blur-xl">
+        {/* Desktop Top Header */}
+        <header className="hidden md:flex h-[90px] px-8 items-center justify-between sticky top-0 z-40 bg-slate-50/80 dark:bg-[#050505]/80 backdrop-blur-xl">
           <div className="flex flex-col">
             <h2 className="text-gray-500 dark:text-gray-400 text-sm font-medium">
               {getGreeting()}
@@ -143,8 +169,27 @@ export default function FacultyLayout() {
           </div>
         </header>
 
+        
+        {/* Mobile Top Header */}
+        <header className="md:hidden h-16 px-4 flex items-center justify-between sticky top-0 z-40 bg-slate-50/90 dark:bg-[#050505]/90 backdrop-blur-xl border-b border-slate-200 dark:border-[#222430]">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-brand-purple flex items-center justify-center text-white shadow-lg shadow-brand-purple/30">
+              <Hexagon size={18} fill="currentColor" strokeWidth={1} />
+            </div>
+            <h1 className="text-slate-900 dark:text-slate-100 font-black text-lg tracking-tight">AMS</h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white dark:bg-[#12141d] shadow-sm flex items-center justify-center text-gray-500 dark:text-gray-400 border border-slate-200 dark:border-[#222430]">
+              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+            <div className="w-8 h-8 rounded-xl bg-brand-light flex items-center justify-center text-brand-purple font-black text-sm flex-shrink-0 cursor-pointer" onClick={() => navigate('/settings')}>
+              {user?.fullName?.[0]?.toUpperCase() || 'U'}
+            </div>
+          </div>
+        </header>
+
         {/* Page Content */}
-        <div className="flex-1 p-8 overflow-y-auto">
+        <div className="flex-1 p-4 md:p-8 overflow-y-auto min-w-0 w-full">
           <Outlet />
         </div>
       </main>

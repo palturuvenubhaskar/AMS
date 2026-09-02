@@ -62,7 +62,7 @@ export default function MyAttendance() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-12 h-12 border-4 border-palette-medium border-t-transparent rounded-full animate-spin drop-shadow-md" />
+        <div className="w-10 md:w-12 h-10 md:h-12 border-4 border-palette-medium border-t-transparent rounded-full animate-spin drop-shadow-md" />
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function MyAttendance() {
     <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">My Attendance</h1>
+          <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">My Attendance</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
             {user?.studentInfo?.class_name}-{user?.studentInfo?.section} <span className="mx-2 text-gray-300">|</span> Roll No: <span className="font-mono text-gray-600 dark:text-gray-400">{user?.studentInfo?.roll_no}</span>
           </p>
@@ -89,61 +89,61 @@ export default function MyAttendance() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
               <Activity size={26} className="text-white" strokeWidth={2.5} />
             </div>
           </div>
           <div>
-            <div className={`text-4xl font-black tracking-tight leading-none mb-1 ${activeZone.color}`}>
+            <div className={`text-2xl md:text-4xl font-black tracking-tight leading-none mb-1 ${activeZone.color}`}>
               {pct}%
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Attendance Rate</div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
               <CheckCircle2 size={26} className="text-white" strokeWidth={2.5} />
             </div>
           </div>
           <div>
-            <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
+            <div className="text-slate-900 dark:text-slate-100 text-2xl md:text-4xl font-black tracking-tight leading-none mb-1">
               <AnimatedNumber value={summary?.total_present || 0} />
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Classes Present</div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-red-400 to-rose-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-red-400 to-rose-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
               <XCircle size={26} className="text-white" strokeWidth={2.5} />
             </div>
           </div>
           <div>
-            <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
+            <div className="text-slate-900 dark:text-slate-100 text-2xl md:text-4xl font-black tracking-tight leading-none mb-1">
               <AnimatedNumber value={summary?.total_absent || 0} />
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Classes Absent</div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between mb-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
+            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
               <Clock size={26} className="text-white" strokeWidth={2.5} />
             </div>
           </div>
           <div>
-            <div className="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight leading-none mb-1">
+            <div className="text-slate-900 dark:text-slate-100 text-2xl md:text-4xl font-black tracking-tight leading-none mb-1">
               <AnimatedNumber value={summary?.total_on_leave || 0} />
             </div>
             <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Approved Leaves</div>
@@ -162,7 +162,7 @@ export default function MyAttendance() {
 
       {/* Attendance Records Table */}
       <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-100 bg-white/50 dark:bg-[#12141d]/50 backdrop-blur-sm">
+        <div className="px-4 md:px-6 py-5 border-b border-gray-100 bg-white/50 dark:bg-[#12141d]/50 backdrop-blur-sm">
           <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg">Attendance History</h3>
           <p className="text-gray-400 text-xs font-medium mt-1">Detailed log of your recent classes</p>
         </div>
@@ -171,24 +171,24 @@ export default function MyAttendance() {
           <table className="w-full min-w-[800px]">
             <thead>
               <tr className="bg-gray-50/50">
-                <th className="text-left px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Date & Time</th>
-                <th className="text-left px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</th>
-                <th className="text-left px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Faculty</th>
+                <th className="text-left px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Date & Time</th>
+                <th className="text-left px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</th>
+                <th className="text-left px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Faculty</th>
                 <th className="text-center px-4 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Mode</th>
-                <th className="text-center px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                <th className="text-center px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {records.map((r, idx) => (
                 <tr key={r.id} className="hover:bg-gray-50/80 transition-colors" style={{ animation: `fadeIn 0.3s ease-out ${idx * 40}ms both` }}>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="text-slate-900 dark:text-slate-100 font-bold text-sm">{new Date(r.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
                     <div className="text-gray-400 text-xs font-medium mt-0.5 flex items-center gap-1"><Clock size={12} /> {r.time_slot}</div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="text-slate-900 dark:text-slate-100 font-bold text-sm">{r.subject_name}</div>
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{r.faculty_name}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{r.faculty_name}</td>
                   <td className="text-center px-4 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
                       r.mode === 'frs' ? 'bg-purple-50 text-purple-600 border border-purple-100' : 'bg-palette-light/20 text-palette-dark border border-blue-100'
@@ -196,7 +196,7 @@ export default function MyAttendance() {
                       {r.mode}
                     </span>
                   </td>
-                  <td className="text-center px-6 py-4">
+                  <td className="text-center px-4 md:px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider ${
                         r.status === 'present' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
@@ -244,7 +244,7 @@ export default function MyAttendance() {
       {/* Modal */}
       {disputeModal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-[#12141d] rounded-3xl w-full max-w-md shadow-2xl p-6 relative">
+          <div className="bg-white dark:bg-[#12141d] rounded-3xl w-full max-w-md shadow-2xl p-4 md:p-6 relative">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Appeal Absence</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               For {new Date(disputeModal.record?.date).toLocaleDateString()} - {disputeModal.record?.subject_name}

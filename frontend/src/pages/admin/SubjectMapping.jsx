@@ -93,9 +93,9 @@ export default function SubjectMapping() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-4 md:p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-palette-light/20 rounded-2xl flex items-center justify-center text-palette-medium shadow-sm">
+          <div className="w-10 md:w-12 h-10 md:h-12 bg-palette-light/20 rounded-2xl flex items-center justify-center text-palette-medium shadow-sm">
             <BookOpen size={24} />
           </div>
           <div>
@@ -120,10 +120,10 @@ export default function SubjectMapping() {
       </div>
 
       {selectedClass && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           
           {/* Form to Map New Subject */}
-          <div className="lg:col-span-1 bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6">
+          <div className="lg:col-span-1 bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 md:p-6">
             <h3 className="font-black text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-2">
               <Plus size={18} className="text-palette-medium"/> Map Subject to Class
             </h3>
@@ -166,7 +166,7 @@ export default function SubjectMapping() {
 
           {/* List of Mapped Subjects */}
           <div className="lg:col-span-2 bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                <h3 className="font-black text-slate-900 dark:text-slate-100">Current Assignments</h3>
             </div>
             
@@ -177,19 +177,19 @@ export default function SubjectMapping() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50/50">
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Subject</th>
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Faculty</th>
-                      <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-right">Actions</th>
+                      <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Subject</th>
+                      <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Faculty</th>
+                      <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {mappedSubjects.map(m => (
                       <tr key={m.id} className="group hover:bg-palette-light/20/30 transition-colors border-b border-gray-50 last:border-0">
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <div className="font-bold text-sm text-slate-900 dark:text-slate-100">{m.subject_name}</div>
                           <div className="text-xs font-medium text-gray-400 mt-0.5">{m.subject_code} • {m.credits} Credits</div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           {m.faculty_name ? (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs font-bold">
                               <User size={14} /> {m.faculty_name}
@@ -198,7 +198,7 @@ export default function SubjectMapping() {
                             <span className="text-xs font-bold text-gray-400 bg-slate-100 dark:bg-[#12141d] px-3 py-1 rounded-full">Unassigned</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 md:px-6 py-4 text-right">
                           <button 
                             onClick={() => handleUnmap(m.subject_id)}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -211,7 +211,7 @@ export default function SubjectMapping() {
                     ))}
                     {mappedSubjects.length === 0 && (
                       <tr>
-                        <td colSpan="3" className="px-6 py-12 text-center text-gray-400 font-medium">No subjects assigned to this class yet.</td>
+                        <td colSpan="3" className="px-4 md:px-6 py-12 text-center text-gray-400 font-medium">No subjects assigned to this class yet.</td>
                       </tr>
                     )}
                   </tbody>

@@ -169,7 +169,7 @@ export default function TakeAttendance() {
 
       {/* Step 1: Select Class */}
       {step === 1 && (
-        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
+        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-4 md:p-8 max-w-2xl">
           <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg mb-6">Step 1: Select Class</h3>
           <div className="mb-6">
             <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Class</label>
@@ -189,7 +189,7 @@ export default function TakeAttendance() {
 
       {/* Step 2: Subject & Time */}
       {step === 2 && (
-        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-2xl">
+        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-4 md:p-8 max-w-2xl">
           <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg mb-6">Step 2: Subject & Time Slot</h3>
           
           <div className="mb-5">
@@ -258,7 +258,7 @@ export default function TakeAttendance() {
 
       {/* Step 3: Mark Attendance */}
       {step === 3 && (
-        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 max-w-4xl">
+        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-4 md:p-8 max-w-4xl">
           <div className="flex justify-between items-center mb-8">
             <div>
               <h3 className="text-slate-900 dark:text-slate-100 text-xl font-bold">
@@ -275,17 +275,17 @@ export default function TakeAttendance() {
           </div>
 
           {mode === 'frs' && (
-            <div className="bg-brand-purple/5 border-2 border-brand-purple/20 rounded-2xl p-10 text-center mb-8 shadow-inner">
+            <div className="bg-brand-purple/5 border-2 border-brand-purple/20 rounded-2xl p-5 md:p-10 text-center mb-8 shadow-inner">
               {!isScanning ? (
                 <>
                   <div className="text-5xl mb-4">📷</div>
                   <h4 className="text-slate-900 dark:text-slate-100 text-lg font-bold mb-2">Facial Recognition System</h4>
                   <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">Make sure the classroom camera is connected and positioned correctly.</p>
-                  <button className="px-6 py-3 rounded-xl bg-brand-purple text-white font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all" onClick={simulateFRSScan}>Start FRS Scan</button>
+                  <button className="px-4 md:px-6 py-3 rounded-xl bg-brand-purple text-white font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all" onClick={simulateFRSScan}>Start FRS Scan</button>
                 </>
               ) : (
                 <>
-                  <div className="inline-block w-12 h-12 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin mb-4"></div>
+                  <div className="inline-block w-10 md:w-12 h-10 md:h-12 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin mb-4"></div>
                   <h4 className="text-slate-900 dark:text-slate-100 font-bold">Scanning faces... Please wait.</h4>
                 </>
               )}
@@ -328,7 +328,7 @@ export default function TakeAttendance() {
       {/* Step 4: Done */}
       {step === 4 && result && (
         <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-12 max-w-lg mx-auto text-center">
-          <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">
+          <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl md:text-4xl mx-auto mb-6 shadow-inner">
             ✓
           </div>
           <h2 className="text-slate-900 dark:text-slate-100 text-2xl font-black mb-2">
@@ -340,15 +340,15 @@ export default function TakeAttendance() {
           
           <div className="flex justify-center gap-12 mb-10">
             <div>
-              <div className="text-4xl font-black text-green-600 mb-1">{result.present}</div>
+              <div className="text-2xl md:text-4xl font-black text-green-600 mb-1">{result.present}</div>
               <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Present</div>
             </div>
             <div>
-              <div className="text-4xl font-black text-red-600 mb-1">{result.absent}</div>
+              <div className="text-2xl md:text-4xl font-black text-red-600 mb-1">{result.absent}</div>
               <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Absent</div>
             </div>
             <div>
-              <div className="text-4xl font-black text-brand-purple mb-1">{result.total}</div>
+              <div className="text-2xl md:text-4xl font-black text-brand-purple mb-1">{result.total}</div>
               <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Total</div>
             </div>
           </div>

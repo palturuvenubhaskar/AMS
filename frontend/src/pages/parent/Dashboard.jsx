@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out]">
       <div className="mb-8">
-        <h2 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-2">My Wards</h2>
+        <h2 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-2">My Wards</h2>
         <p className="text-gray-500 dark:text-gray-400 font-medium">Overview of your children's academic attendance</p>
       </div>
 
@@ -29,9 +29,9 @@ export default function Dashboard() {
           <p className="text-gray-500 dark:text-gray-400 font-bold">No wards linked to your account.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {wards.map((ward, idx) => (
-            <div key={idx} className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 p-6 rounded-[32px] shadow-glass flex flex-col relative overflow-hidden group">
+            <div key={idx} className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 p-4 md:p-6 rounded-[32px] shadow-glass flex flex-col relative overflow-hidden group">
               <div className={`absolute top-0 left-0 right-0 h-2 ${ward.attendance?.zone === 'red' ? 'bg-red-500' : ward.attendance?.zone === 'yellow' ? 'bg-yellow-500' : 'bg-green-500'}`} />
               
               <div className="flex items-center gap-4 mb-6">
@@ -50,7 +50,7 @@ export default function Dashboard() {
                 <div className="bg-white dark:bg-[#12141d] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222430]">
                   <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Attendance</span>
                   <div className="flex items-end gap-2">
-                    <span className="text-3xl font-black text-slate-900 dark:text-slate-100">{ward.attendance?.attendance_pct || 0}%</span>
+                    <span className="text-xl md:text-3xl font-black text-slate-900 dark:text-slate-100">{ward.attendance?.attendance_pct || 0}%</span>
                   </div>
                 </div>
                 <div className="bg-white dark:bg-[#12141d] p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-[#222430]">

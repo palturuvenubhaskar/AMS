@@ -42,7 +42,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] dark:bg-[#050505] flex flex-col justify-center items-center p-4 sm:p-8 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex flex-col justify-center items-center p-4 md:p-8 relative overflow-hidden font-sans">
       {/* Background Decorative Ambient Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-pastel-purple/60 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-pastel-pink/40 rounded-full blur-[120px] pointer-events-none" />
@@ -53,11 +53,11 @@ export default function Login() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-brand-purple shadow-[0_10px_40px_rgba(105,65,198,0.3)] mb-6 transform hover:scale-105 transition-transform duration-300">
             <Hexagon size={40} className="text-white" strokeWidth={1.5} />
           </div>
-          <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-2">AMS</h1>
+          <h1 className="text-2xl md:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-2">AMS</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-widest">Academic Management System</p>
         </div>
 
-        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl rounded-[32px] p-8 sm:p-10 shadow-glass border border-white/60 dark:border-[#222430]/60 relative overflow-hidden group">
+        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl rounded-[24px] md:rounded-[32px] p-4 md:p-6 md:p-5 md:p-10 shadow-glass border border-white/60 dark:border-[#222430]/60 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 dark:bg-[#12141d]/40 rounded-bl-full blur-2xl -z-10 transition-transform duration-500 group-hover:scale-125" />
           
           <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 mb-8 flex items-center gap-2">
@@ -80,7 +80,7 @@ export default function Login() {
                 </div>
                 <input
                   type="text"
-                  className="w-full h-14 pl-12 pr-4 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
+                  className="w-full h-10 md:h-14 pl-12 pr-4 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
                   placeholder="Enter ID or Email"
                   value={email} onChange={e => setEmail(e.target.value)} required autoFocus
                 />
@@ -95,7 +95,7 @@ export default function Login() {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full h-14 pl-12 pr-12 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
+                  className="w-full h-10 md:h-14 pl-12 pr-12 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
                   placeholder="Enter password"
                   value={password} onChange={e => setPassword(e.target.value)} required
                 />
@@ -112,7 +112,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 mt-4 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl font-bold text-sm shadow-glass hover:shadow-glass-hover transition-all duration-300 flex items-center justify-center gap-2 group/btn disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full h-10 md:h-14 mt-4 bg-gray-900 hover:bg-gray-800 text-white rounded-2xl font-bold text-sm shadow-glass hover:shadow-glass-hover transition-all duration-300 flex items-center justify-center gap-2 group/btn disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

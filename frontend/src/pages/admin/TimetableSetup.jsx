@@ -215,21 +215,21 @@ export default function TimetableSetup() {
       <div className="fixed bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-pastel-pink/30 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl p-4 md:p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass">
         <div className="flex items-center gap-4">
           {view === 'timetable' && (
             <button 
               onClick={() => setView('classes')}
-              className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] text-gray-500 dark:text-gray-400 hover:text-brand-purple shadow-sm transition-all"
+              className="w-10 md:w-12 h-10 md:h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] text-gray-500 dark:text-gray-400 hover:text-brand-purple shadow-sm transition-all"
             >
               <ArrowLeft size={24} />
             </button>
           )}
-          <div className="w-14 h-14 bg-pastel-blue rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
+          <div className="w-10 md:w-14 h-10 md:h-14 bg-pastel-blue rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
             <CalendarIcon size={28} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">
+            <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">
               {view === 'classes' ? 'Timetable Management' : `Timetable: ${selectedClass?.name} - ${selectedClass?.section}`}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">
@@ -241,15 +241,15 @@ export default function TimetableSetup() {
 
       {/* VIEW 1: Class List */}
       {view === 'classes' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {classes.map(cls => (
             <div 
               key={cls.id}
               onClick={() => handleClassClick(cls)}
-              className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-md p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass hover:shadow-glass-hover hover:-translate-y-1 hover:border-white transition-all cursor-pointer group"
+              className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-md p-4 md:p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass hover:shadow-glass-hover hover:-translate-y-1 hover:border-white transition-all cursor-pointer group"
             >
               <div className="flex justify-between items-start mb-6">
-                <div className="w-14 h-14 bg-pastel-purple rounded-2xl flex items-center justify-center text-brand-purple shadow-sm group-hover:scale-105 transition-transform">
+                <div className="w-10 md:w-14 h-10 md:h-14 bg-pastel-purple rounded-2xl flex items-center justify-center text-brand-purple shadow-sm group-hover:scale-105 transition-transform">
                   <Users size={28} />
                 </div>
                 <div className="bg-white dark:bg-[#12141d] text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
@@ -267,7 +267,7 @@ export default function TimetableSetup() {
       {view === 'timetable' && (
         <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass overflow-hidden animate-[fadeIn_0.3s]">
           {/* Toolbar */}
-          <div className="p-8 border-b border-white/40 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40 dark:bg-[#12141d]/40">
+          <div className="p-4 md:p-8 border-b border-white/40 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40 dark:bg-[#12141d]/40">
             <div>
               <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl">Weekly Schedule</h3>
               <p className="text-gray-500 dark:text-gray-400 text-sm font-bold mt-1">Click any cell to edit. Save when done.</p>
@@ -275,21 +275,21 @@ export default function TimetableSetup() {
             <div className="flex gap-3">
               <button 
                 onClick={openSetupModal}
-                className="px-6 py-3 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] text-gray-700 dark:text-gray-300 hover:bg-slate-50 dark:bg-[#050505] shadow-sm border border-white transition-all flex items-center gap-2 hover:shadow-md"
+                className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] text-gray-700 dark:text-gray-300 hover:bg-slate-50 dark:bg-[#050505] shadow-sm border border-white transition-all flex items-center gap-2 hover:shadow-md"
               >
                 <Settings size={18} /> Setup Periods
               </button>
               <button 
                 onClick={saveTimetable}
                 disabled={periods.length === 0}
-                className="px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass hover:shadow-glass-hover transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass hover:shadow-glass-hover transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save size={18} /> Save Timetable
               </button>
             </div>
           </div>
 
-          <div className="p-8 overflow-x-auto">
+          <div className="p-4 md:p-8 overflow-x-auto">
             {periods.length === 0 ? (
               <div className="py-24 text-center flex flex-col items-center">
                 <div className="w-20 h-20 bg-white dark:bg-[#12141d] rounded-[32px] shadow-sm flex items-center justify-center text-gray-300 mb-6 border border-white">
@@ -353,12 +353,12 @@ export default function TimetableSetup() {
       {setupModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/80 dark:bg-[#12141d]/80 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-3xl overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
+            <div className="px-4 md:px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
               <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl flex items-center gap-2"><Clock className="text-brand-purple"/> Setup Time Slots</h3>
               <button onClick={() => setSetupModal(false)} className="w-10 h-10 bg-white dark:bg-[#12141d] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors"><X size={20} /></button>
             </div>
             
-            <div className="p-8 max-h-[70vh] overflow-y-auto">
+            <div className="p-4 md:p-8 max-h-[70vh] overflow-y-auto">
               <div className="mb-8">
                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Number of Periods</label>
                 <input 
@@ -368,7 +368,7 @@ export default function TimetableSetup() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {setupPeriods.map((p, idx) => (
                   <div key={idx} className="bg-white dark:bg-[#12141d] p-5 rounded-3xl shadow-sm border border-white/50 hover:shadow-glass-hover transition-all">
                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Period {idx + 1}</div>
@@ -387,9 +387,9 @@ export default function TimetableSetup() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-white/50 bg-white/40 dark:bg-[#12141d]/40 flex justify-end gap-3">
-              <button onClick={() => setSetupModal(false)} className="px-6 py-3 rounded-2xl text-sm font-bold text-gray-600 dark:text-gray-400 bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] shadow-sm border border-white transition-all">Cancel</button>
-              <button onClick={applySetup} className="px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-all">Apply Periods</button>
+            <div className="p-4 md:p-6 border-t border-white/50 bg-white/40 dark:bg-[#12141d]/40 flex justify-end gap-3">
+              <button onClick={() => setSetupModal(false)} className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold text-gray-600 dark:text-gray-400 bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] shadow-sm border border-white transition-all">Cancel</button>
+              <button onClick={applySetup} className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-all">Apply Periods</button>
             </div>
           </div>
         </div>
@@ -399,11 +399,11 @@ export default function TimetableSetup() {
       {cellModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/90 backdrop-blur-3xl rounded-[32px] shadow-glass border border-white w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
+            <div className="px-4 md:px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
               <h3 className="font-black text-slate-900 dark:text-slate-100 text-lg">{DAY_NAMES[cellModal.day]} <span className="text-gray-400 font-bold">•</span> P{cellModal.periodIdx + 1}</h3>
               <button onClick={() => setCellModal(null)} className="w-10 h-10 bg-white dark:bg-[#12141d] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors"><X size={20} /></button>
             </div>
-            <form onSubmit={saveCellData} className="p-8 space-y-5">
+            <form onSubmit={saveCellData} className="p-4 md:p-8 space-y-5">
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><BookOpen size={12}/> Subject</label>
                 <select 

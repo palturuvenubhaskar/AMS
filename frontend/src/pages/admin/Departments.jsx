@@ -44,9 +44,9 @@ export default function Departments() {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-4 md:p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
+          <div className="w-10 md:w-12 h-10 md:h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
             <Building2 size={24} />
           </div>
           <div>
@@ -71,23 +71,23 @@ export default function Departments() {
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
                 <tr className="bg-gray-50/50">
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 w-20">ID</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Name</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Code</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-right">Actions</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 w-20">ID</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Name</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Code</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {departments.map(d => (
                   <tr key={d.id} className="group hover:bg-indigo-50/30 transition-colors border-b border-gray-50 last:border-0">
-                    <td className="px-6 py-4 font-bold text-sm text-gray-400">#{d.id}</td>
-                    <td className="px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{d.name}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-gray-400">#{d.id}</td>
+                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{d.name}</td>
+                    <td className="px-4 md:px-6 py-4">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-palette-light/20 text-palette-dark border border-blue-200 text-xs font-bold tracking-widest">
                         {d.code}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="flex justify-end gap-2">
                         <button 
                           className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-[#050505] hover:bg-indigo-50 text-gray-400 hover:text-indigo-600 transition-colors"
@@ -106,7 +106,7 @@ export default function Departments() {
                   </tr>
                 ))}
                 {departments.length === 0 && (
-                  <tr><td colSpan="4" className="px-6 py-12 text-center text-gray-400 font-medium">No departments found.</td></tr>
+                  <tr><td colSpan="4" className="px-4 md:px-6 py-12 text-center text-gray-400 font-medium">No departments found.</td></tr>
                 )}
               </tbody>
             </table>
@@ -118,13 +118,13 @@ export default function Departments() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-palette-dark/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white dark:bg-[#12141d] rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h3 className="font-black text-slate-900 dark:text-slate-100">{editing ? 'Edit' : 'Add'} Department</h3>
               <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
                 <X size={20} />
               </button>
             </div>
-            <form onSubmit={save} className="p-6 space-y-4">
+            <form onSubmit={save} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Name</label>
                 <input 

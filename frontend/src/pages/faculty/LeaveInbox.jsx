@@ -57,14 +57,14 @@ export default function LeaveInbox() {
 
       {leaves.length === 0 ? (
         <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-16 text-center max-w-2xl mx-auto mt-12">
-          <div className="w-24 h-24 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
+          <div className="w-24 h-24 bg-brand-purple/10 text-brand-purple rounded-full flex items-center justify-center text-2xl md:text-4xl mx-auto mb-6">
             📫
           </div>
           <h3 className="text-slate-900 dark:text-slate-100 text-xl font-bold mb-2">No pending requests</h3>
           <p className="text-gray-500 dark:text-gray-400 font-medium">All yellow zone leave requests have been processed</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 md:gap-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white/60 dark:bg-[#12141d]/60 p-4 rounded-2xl border border-white/50 shadow-sm gap-4">
             <div className="flex items-center gap-3">
               <input 
@@ -100,7 +100,7 @@ export default function LeaveInbox() {
           </div>
 
           {leaves.map(l => (
-            <div key={l.id} className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-8 transition-all hover:bg-white/80 dark:bg-[#12141d]/80 flex gap-4">
+            <div key={l.id} className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-4 md:p-8 transition-all hover:bg-white/80 dark:bg-[#12141d]/80 flex gap-4">
               <div className="pt-1">
                 <input 
                   type="checkbox" 
@@ -123,7 +123,7 @@ export default function LeaveInbox() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50/50 rounded-2xl p-6 mb-6 border border-slate-200 dark:border-[#222430]/50">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 bg-gray-50/50 rounded-2xl p-4 md:p-6 mb-6 border border-slate-200 dark:border-[#222430]/50">
                   <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">From</span><p className="font-bold text-slate-900 dark:text-slate-100">{new Date(l.from_date).toLocaleDateString()}</p></div>
                   <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">To</span><p className="font-bold text-slate-900 dark:text-slate-100">{new Date(l.to_date).toLocaleDateString()}</p></div>
                   <div><span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Reason</span><p className="font-bold text-slate-900 dark:text-slate-100">{l.reason}</p></div>
@@ -146,8 +146,8 @@ export default function LeaveInbox() {
                 </div>
                 
                 <div className="flex gap-3">
-                  <button className="px-6 py-3 rounded-xl bg-green-100 text-green-700 font-bold hover:bg-green-200 transition-colors shadow-sm" onClick={() => review(l.id, 'approved')}>✓ Approve Request</button>
-                  <button className="px-6 py-3 rounded-xl bg-red-100 text-red-700 font-bold hover:bg-red-200 transition-colors shadow-sm" onClick={() => review(l.id, 'rejected')}>✗ Reject Request</button>
+                  <button className="px-4 md:px-6 py-3 rounded-xl bg-green-100 text-green-700 font-bold hover:bg-green-200 transition-colors shadow-sm" onClick={() => review(l.id, 'approved')}>✓ Approve Request</button>
+                  <button className="px-4 md:px-6 py-3 rounded-xl bg-red-100 text-red-700 font-bold hover:bg-red-200 transition-colors shadow-sm" onClick={() => review(l.id, 'rejected')}>✗ Reject Request</button>
                 </div>
               </div>
             </div>

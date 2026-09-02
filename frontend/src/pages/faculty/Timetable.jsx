@@ -121,9 +121,9 @@ export default function Timetable({ readOnly = false, classId = null }) {
 
   return (
     <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-4 md:p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
+          <div className="w-10 md:w-12 h-10 md:h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
             <Calendar size={24} />
           </div>
           <div>
@@ -207,7 +207,7 @@ export default function Timetable({ readOnly = false, classId = null }) {
         </div>
 
         {/* Legend */}
-        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center gap-4">
+        <div className="px-4 md:px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center gap-4">
           <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2">Legend:</span>
           {Object.entries(subjectColorMap).map(([code, color]) => (
             <div key={code} className="flex items-center gap-2">

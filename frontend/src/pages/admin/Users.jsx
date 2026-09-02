@@ -93,13 +93,13 @@ export default function Users() {
       <div className="fixed bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-pastel-blue/30 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl p-4 md:p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-pastel-purple rounded-2xl flex items-center justify-center text-brand-purple shadow-sm">
+          <div className="w-10 md:w-14 h-10 md:h-14 bg-pastel-purple rounded-2xl flex items-center justify-center text-brand-purple shadow-sm">
             <UsersIcon size={28} strokeWidth={2.5} />
           </div>
           <div>
-            <h1 className="text-slate-900 dark:text-slate-100 text-3xl font-black tracking-tight mb-1">Users Directory</h1>
+            <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">Users Directory</h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">Manage {users.length} registered accounts</p>
           </div>
         </div>
@@ -119,13 +119,13 @@ export default function Users() {
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs font-black">▼</div>
           </div>
           <button 
-            className="bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-[#222430] px-6 py-3 rounded-2xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 flex-shrink-0"
+            className="bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-[#222430] px-4 md:px-6 py-3 rounded-2xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 flex-shrink-0"
             onClick={() => setImportModal(true)}
           >
             Bulk Import CSV
           </button>
           <button 
-            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-2xl text-sm font-bold shadow-glass hover:shadow-glass-hover transition-all flex items-center gap-2 flex-shrink-0"
+            className="bg-gray-900 hover:bg-gray-800 text-white px-4 md:px-6 py-3 rounded-2xl text-sm font-bold shadow-glass hover:shadow-glass-hover transition-all flex items-center gap-2 flex-shrink-0"
             onClick={() => setModal(true)}
           >
             <Plus size={18} /> Add User
@@ -142,32 +142,32 @@ export default function Users() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-white/40 dark:bg-[#12141d]/40 border-b border-white/50">
-                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest w-20">ID</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">User Name</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Contact</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Role</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Joined</th>
+                  <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest w-20">ID</th>
+                  <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">User Name</th>
+                  <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Contact</th>
+                  <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Role</th>
+                  <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                  <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Joined</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/40">
                 {users.map(u => (
                   <tr key={u.id} className="group hover:bg-white/50 dark:bg-[#12141d]/50 transition-colors">
-                    <td className="px-6 py-5 font-black text-sm text-gray-400">#{u.id}</td>
-                    <td className="px-6 py-5">
+                    <td className="px-4 md:px-6 py-5 font-black text-sm text-gray-400">#{u.id}</td>
+                    <td className="px-4 md:px-6 py-5">
                       <div className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-brand-purple transition-colors">{u.full_name}</div>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-4 md:px-6 py-5">
                       <div className="text-sm font-bold text-gray-600 dark:text-gray-400">{u.email}</div>
                       <div className="text-xs font-bold text-gray-400 mt-0.5">{u.phone || 'No phone'}</div>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-4 md:px-6 py-5">
                       <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest ${getRoleColor(u.role)}`}>
                         {getRoleIcon(u.role)}
                         {u.role}
                       </div>
                     </td>
-                    <td className="px-6 py-5">
+                    <td className="px-4 md:px-6 py-5">
                       {u.is_active ? (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pastel-mint text-emerald-700 text-[10px] font-black uppercase tracking-widest">
                           <CheckCircle2 size={12} /> Active
@@ -178,14 +178,14 @@ export default function Users() {
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-5 text-right text-sm font-bold text-gray-400">
+                    <td className="px-4 md:px-6 py-5 text-right text-sm font-bold text-gray-400">
                       {new Date(u.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
                     </td>
                   </tr>
                 ))}
                 {users.length === 0 && (
                   <tr>
-                    <td colSpan="6" className="px-6 py-16 text-center text-gray-400 font-bold">No users found.</td>
+                    <td colSpan="6" className="px-4 md:px-6 py-16 text-center text-gray-400 font-bold">No users found.</td>
                   </tr>
                 )}
               </tbody>
@@ -198,13 +198,13 @@ export default function Users() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
+            <div className="px-4 md:px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
               <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl">Add New User</h3>
               <button onClick={() => setModal(false)} className="w-10 h-10 bg-white dark:bg-[#12141d] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors">
                 <X size={20} />
               </button>
             </div>
-            <form onSubmit={saveUser} className="p-8 space-y-5">
+            <form onSubmit={saveUser} className="p-4 md:p-8 space-y-5">
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Full Name</label>
                 <input 
@@ -271,10 +271,10 @@ export default function Users() {
                 </div>
               )}
               <div className="flex justify-end gap-3 mt-8 pt-4">
-                <button type="button" className="px-6 py-3.5 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] border border-white text-gray-500 dark:text-gray-400 hover:bg-slate-50 dark:bg-[#050505] shadow-sm transition-colors" onClick={() => setModal(false)}>
+                <button type="button" className="px-4 md:px-6 py-3.5 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] border border-white text-gray-500 dark:text-gray-400 hover:bg-slate-50 dark:bg-[#050505] shadow-sm transition-colors" onClick={() => setModal(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="px-6 py-3.5 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-colors">
+                <button type="submit" className="px-4 md:px-6 py-3.5 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-colors">
                   Create User
                 </button>
               </div>
@@ -287,13 +287,13 @@ export default function Users() {
       {importModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
           <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
+            <div className="px-4 md:px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
               <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl">Bulk Import Students</h3>
               <button onClick={() => setImportModal(false)} className="w-10 h-10 bg-white dark:bg-[#12141d] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors">
                 <X size={20} />
               </button>
             </div>
-            <form onSubmit={handleBulkImport} className="p-8 space-y-5">
+            <form onSubmit={handleBulkImport} className="p-4 md:p-8 space-y-5">
               <div>
                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Class</label>
                 <div className="relative">
@@ -318,10 +318,10 @@ export default function Users() {
               </div>
               
               <div className="flex justify-end gap-3 mt-8 pt-4">
-                <button type="button" className="px-6 py-3.5 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] border border-white text-gray-500 dark:text-gray-400 hover:bg-slate-50 dark:bg-[#050505] shadow-sm transition-colors" onClick={() => setImportModal(false)}>
+                <button type="button" className="px-4 md:px-6 py-3.5 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] border border-white text-gray-500 dark:text-gray-400 hover:bg-slate-50 dark:bg-[#050505] shadow-sm transition-colors" onClick={() => setImportModal(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="px-6 py-3.5 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-colors">
+                <button type="submit" className="px-4 md:px-6 py-3.5 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-colors">
                   Import CSV
                 </button>
               </div>

@@ -42,33 +42,33 @@ export default function AttendanceHistory() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-gray-100/50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Class</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subject</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Time Slot</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Mode</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Faculty</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Present</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Absent</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Class</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subject</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Time Slot</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Mode</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Faculty</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Present</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Absent</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-[#222430]/50">
               {sessions.map(s => (
                 <tr key={s.id} className="hover:bg-white/40 dark:bg-[#12141d]/40 transition-colors">
-                  <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(s.date).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{s.class_name}-{s.section}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.subject_name}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.time_slot}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{new Date(s.date).toLocaleDateString()}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{s.class_name}-{s.section}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.subject_name}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-400">{s.time_slot}</td>
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${s.mode === 'frs' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                       {s.mode}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{s.faculty_name}</td>
-                  <td className="px-6 py-4 text-sm font-black text-green-600">{s.present_count}</td>
-                  <td className="px-6 py-4 text-sm font-black text-red-600">{s.absent_count}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{s.faculty_name}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-black text-green-600">{s.present_count}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-black text-red-600">{s.absent_count}</td>
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${s.status === 'closed' ? 'bg-green-100 text-green-700' : s.status === 'active' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
                       {s.status}
                     </span>
@@ -77,7 +77,7 @@ export default function AttendanceHistory() {
               ))}
               {sessions.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400 font-medium">
+                  <td colSpan={9} className="px-4 md:px-6 py-12 text-center text-gray-500 dark:text-gray-400 font-medium">
                     No sessions found
                   </td>
                 </tr>

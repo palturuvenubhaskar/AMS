@@ -2,6 +2,12 @@
 
 A modern, full-stack Academic Management System designed to streamline university operations including attendance tracking, timetable management, leave requests, and dispute resolutions.
 
+## 🌐 Live Deployments
+
+- **Production / Main URL:** [https://ams-academic-management-system.vercel.app](https://ams-academic-management-system.vercel.app/)
+- **Branch (main):** [https://ams-git-main-palturu-venubhaskar-s-projects.vercel.app](https://ams-git-main-palturu-venubhaskar-s-projects.vercel.app/)
+- **Latest Deployment:** [https://ams-4wwr24o01-palturu-venubhaskar-s-projects.vercel.app](https://ams-4wwr24o01-palturu-venubhaskar-s-projects.vercel.app/)
+
 ## 🚀 Features
 
 ### Core Functionality

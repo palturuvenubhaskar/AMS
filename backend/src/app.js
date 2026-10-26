@@ -12,6 +12,7 @@ const authRoutes = require('./routes/authRoutes');
 const apiRoutes = require('./routes/apiRoutes');
 
 const app = express();
+app.set('trust proxy', 1);
 const http = require('http');
 
 const PORT = process.env.PORT || 5000;
@@ -21,7 +22,13 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({
   origin: function(origin, callback) {
     const allowedOrigin = process.env.CORS_ORIGIN;
-    if (!origin || /^http:\/\/localhost:\d+$/.test(origin) || origin === allowedOrigin) {
+    if (
+      !origin || 
+      /^http:\/\/localhost:\d+$/.test(origin) || 
+      origin.endsWith('.vercel.app') || 
+      origin === allowedOrigin ||
+      allowedOrigin === '*'
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -46,7 +53,7 @@ app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check
-app.get('/health', async (req, res) => {
+app.get(['/health', '/api/health'], async (req, res) => {
   try {
     const db = require('./config/db');
     await db.query('SELECT 1');
@@ -57,7 +64,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Routes
-app.use('/api/auth', authLimiter, authRoutes);
+app.use(['/api/auth', '/auth'], authLimiter, authRoutes);
 app.use('/api', apiRoutes);
 
 // Frontend static build serving & SPA fallback

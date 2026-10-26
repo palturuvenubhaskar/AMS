@@ -2,10 +2,15 @@ const path = require('path');
 const fs = require('fs');
 const db = require('../config/db');
 
-// Ensure uploads/faces directory exists
-const facesDir = path.join(__dirname, '../../uploads/faces');
-if (!fs.existsSync(facesDir)) {
-  fs.mkdirSync(facesDir, { recursive: true });
+// Ensure uploads/faces directory exists safely (including serverless read-only filesystems)
+const isVercel = !!process.env.VERCEL;
+const facesDir = isVercel ? '/tmp/uploads/faces' : path.join(__dirname, '../../uploads/faces');
+try {
+  if (!fs.existsSync(facesDir)) {
+    fs.mkdirSync(facesDir, { recursive: true });
+  }
+} catch (e) {
+  // Gracefully handle read-only environments
 }
 
 // POST /api/face/enroll
@@ -42,9 +47,12 @@ exports.enrollFace = async (req, res, next) => {
         const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
         const base64Data = matches[2];
         const fileName = `face_${studentId}_${Date.now()}.${ext}`;
-        const filePath = path.join(facesDir, fileName);
-        await fs.promises.writeFile(filePath, Buffer.from(base64Data, 'base64'));
-        imagePath = `/uploads/faces/${fileName}`;
+        try {
+          await fs.promises.writeFile(filePath, Buffer.from(base64Data, 'base64'));
+          imagePath = `/uploads/faces/${fileName}`;
+        } catch (err) {
+          console.warn('Could not write face image to disk:', err.message);
+        }
       }
     }
 

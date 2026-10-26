@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
 
 const isSslRequired = 
-  process.env.DATABASE_URL?.includes('supabase.co') || 
+  process.env.DATABASE_URL?.includes('supabase') || 
   process.env.DATABASE_URL?.includes('sslmode=require') ||
   process.env.NODE_ENV === 'production';
 
@@ -16,7 +16,6 @@ const pool = new Pool({
 
 pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
-  process.exit(-1);
 });
 
 module.exports = {

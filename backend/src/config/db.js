@@ -1,20 +1,30 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.env') });
 
+let dbUrl = process.env.DATABASE_URL;
+
+// Automatically rewrite direct Supabase host (which is IPv6-only on AWS/Vercel) to IPv4 pooler
+if (dbUrl && dbUrl.includes('db.lghwqnmyyngapycnmlhj.supabase.co')) {
+  dbUrl = dbUrl
+    .replace('db.lghwqnmyyngapycnmlhj.supabase.co:5432', 'aws-0-ap-northeast-2.pooler.supabase.com:6543')
+    .replace('db.lghwqnmyyngapycnmlhj.supabase.co', 'aws-0-ap-northeast-2.pooler.supabase.com:6543')
+    .replace('//postgres:', '//postgres.lghwqnmyyngapycnmlhj:');
+}
+
 const isSslRequired = 
-  process.env.DATABASE_URL?.includes('supabase') || 
-  process.env.DATABASE_URL?.includes('sslmode=require') ||
+  dbUrl?.includes('supabase') || 
+  dbUrl?.includes('sslmode=require') ||
   process.env.NODE_ENV === 'production';
 
 let pool = null;
 
-if (process.env.DATABASE_URL) {
+if (dbUrl) {
   pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: dbUrl,
     ssl: isSslRequired ? { rejectUnauthorized: false } : false,
     max: 10,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
+    connectionTimeoutMillis: 10000,
   });
 
   pool.on('error', (err) => {

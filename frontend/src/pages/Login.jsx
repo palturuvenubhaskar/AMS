@@ -137,8 +137,8 @@ export default function Login() {
             <div className="grid grid-cols-3 gap-3">
               {[
                 { label: 'Admin', email: 'admin@ams.edu', color: 'hover:bg-pastel-purple hover:text-brand-purple border-transparent bg-white/50 dark:bg-[#12141d]/50' },
-                { label: 'Faculty', email: 'faculty1@ams.edu', color: 'hover:bg-pastel-blue hover:text-blue-700 border-transparent bg-white/50 dark:bg-[#12141d]/50' },
-                { label: 'Student', email: '242G1A05Z1@alits.edu.in', color: 'hover:bg-pastel-mint hover:text-emerald-700 border-transparent bg-white/50 dark:bg-[#12141d]/50' }
+                { label: 'Faculty', email: 'sruthi@alits.edu.in', color: 'hover:bg-pastel-blue hover:text-blue-700 border-transparent bg-white/50 dark:bg-[#12141d]/50' },
+                { label: 'Student', email: '242G1A05X2@alits.edu.in', color: 'hover:bg-pastel-mint hover:text-emerald-700 border-transparent bg-white/50 dark:bg-[#12141d]/50' }
               ].map(role => (
                 <button
                   key={role.label}

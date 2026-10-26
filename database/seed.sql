@@ -8,11 +8,17 @@
 -- ============================================================
 -- 0. SCHEMA COMPATIBILITY CHECK
 -- ============================================================
-ALTER TABLE class_subjects ADD COLUMN IF NOT EXISTS faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
-CREATE INDEX IF NOT EXISTS idx_class_subjects_faculty ON class_subjects(faculty_id);
-
-ALTER TABLE timetables ADD COLUMN IF NOT EXISTS faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
-CREATE INDEX IF NOT EXISTS idx_timetable_faculty ON timetables(faculty_id);
+DO $$
+BEGIN
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'class_subjects') THEN
+        ALTER TABLE class_subjects ADD COLUMN IF NOT EXISTS faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+        CREATE INDEX IF NOT EXISTS idx_class_subjects_faculty ON class_subjects(faculty_id);
+    END IF;
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'timetables') THEN
+        ALTER TABLE timetables ADD COLUMN IF NOT EXISTS faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+        CREATE INDEX IF NOT EXISTS idx_timetable_faculty ON timetables(faculty_id);
+    END IF;
+END $$;
 
 -- ============================================================
 -- 1. DEPARTMENT
@@ -29,7 +35,7 @@ INSERT INTO users (email, password_hash, full_name, role, phone) VALUES
 ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, full_name = EXCLUDED.full_name;
 
 -- ============================================================
--- 3. FACULTY (7 Teachers for CSE F)
+-- 3. FACULTY (7 Teachers for CSE F + Demo Faculty)
 -- ============================================================
 INSERT INTO users (email, password_hash, full_name, role, phone) VALUES
 ('sruthi@alits.edu.in', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Ms. R. Sruthi', 'faculty', '9390976647'),
@@ -38,7 +44,8 @@ INSERT INTO users (email, password_hash, full_name, role, phone) VALUES
 ('manohar@alits.edu.in', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Mr. T. Manohar', 'faculty', '8919000890'),
 ('sunil@alits.edu.in', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Ms. B. Sunil', 'faculty', '7075103887'),
 ('venugopal@alits.edu.in', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Mr. Venu Gopal', 'faculty', '7989029473'),
-('sreekanth@alits.edu.in', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Mr. B. Sreekanth', 'faculty', '7075111037')
+('sreekanth@alits.edu.in', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Mr. B. Sreekanth', 'faculty', '7075111037'),
+('faculty1@ams.edu', '$2a$10$ejYcGkp3zworvSLLQibxUuwu5VqJE4qAYkLwXeU4Kel5XOGOxDxOq', 'Demo Faculty', 'faculty', '9876543210')
 ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, full_name = EXCLUDED.full_name, phone = EXCLUDED.phone;
 
 -- ============================================================

@@ -43,7 +43,8 @@ router.delete('/class-subjects/:classId/:subjectId', authorize('admin'), sub.unm
 router.get('/class-subjects/:classId', sub.getMappedSubjects);
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const uploadDir = process.env.VERCEL ? '/tmp' : 'uploads/';
+const upload = multer({ dest: uploadDir });
 
 // Students
 router.post('/students', authorize('admin', 'faculty'), student.register);

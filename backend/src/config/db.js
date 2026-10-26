@@ -3,12 +3,23 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.e
 
 let dbUrl = process.env.DATABASE_URL;
 
-// Automatically rewrite direct Supabase host (which is IPv6-only on AWS/Vercel) to IPv4 pooler
-if (dbUrl && dbUrl.includes('db.lghwqnmyyngapycnmlhj.supabase.co')) {
-  dbUrl = dbUrl
-    .replace('db.lghwqnmyyngapycnmlhj.supabase.co:5432', 'aws-0-ap-northeast-2.pooler.supabase.com:6543')
-    .replace('db.lghwqnmyyngapycnmlhj.supabase.co', 'aws-0-ap-northeast-2.pooler.supabase.com:6543')
-    .replace('//postgres:', '//postgres.lghwqnmyyngapycnmlhj:');
+if (dbUrl) {
+  // If user pasted template password placeholder
+  if (dbUrl.includes('[YOUR-PASSWORD]')) {
+    dbUrl = dbUrl.replace('[YOUR-PASSWORD]', 'venubhaskar9542');
+  }
+
+  // If user used direct host (IPv6 on Vercel), convert to IPv4 pooler
+  if (dbUrl.includes('db.lghwqnmyyngapycnmlhj.supabase.co')) {
+    dbUrl = dbUrl
+      .replace('db.lghwqnmyyngapycnmlhj.supabase.co:5432', 'aws-0-ap-northeast-2.pooler.supabase.com:6543')
+      .replace('db.lghwqnmyyngapycnmlhj.supabase.co', 'aws-0-ap-northeast-2.pooler.supabase.com:6543');
+  }
+
+  // Ensure project ref is attached to username for Supabase pooler
+  if (dbUrl.includes('pooler.supabase.com') && dbUrl.includes('//postgres:')) {
+    dbUrl = dbUrl.replace('//postgres:', '//postgres.lghwqnmyyngapycnmlhj:');
+  }
 }
 
 const isSslRequired = 

@@ -8,7 +8,8 @@
     "dev": "nodemon src/app.js",
     "test": "jest --coverage",
     "seed": "node seed.js",
-    "migrate": "node migrate.js"
+    "migrate": "node migrate.js",
+    "db:supabase": "node setup-supabase.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

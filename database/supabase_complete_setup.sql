@@ -11,7 +11,12 @@
 -- ============================================================
 
 -- Clean slate
+DROP VIEW IF EXISTS v_student_attendance_summary CASCADE;
+DROP VIEW IF EXISTS v_class_daily_attendance CASCADE;
+DROP VIEW IF EXISTS v_faculty_attendance_activity CASCADE;
+
 DROP TABLE IF EXISTS audit_logs CASCADE;
+DROP TABLE IF EXISTS holidays CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS attendance_disputes CASCADE;
 DROP TABLE IF EXISTS student_parents CASCADE;
@@ -20,6 +25,7 @@ DROP TABLE IF EXISTS attendance_sessions CASCADE;
 DROP TABLE IF EXISTS leave_requests CASCADE;
 DROP TABLE IF EXISTS timetables CASCADE;
 DROP TABLE IF EXISTS student_faces CASCADE;
+DROP TABLE IF EXISTS student_faces_audit CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
 DROP TABLE IF EXISTS class_subjects CASCADE;
 DROP TABLE IF EXISTS subjects CASCADE;

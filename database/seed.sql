@@ -6,6 +6,15 @@
 -- ============================================================
 
 -- ============================================================
+-- 0. SCHEMA COMPATIBILITY CHECK
+-- ============================================================
+ALTER TABLE class_subjects ADD COLUMN IF NOT EXISTS faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_class_subjects_faculty ON class_subjects(faculty_id);
+
+ALTER TABLE timetables ADD COLUMN IF NOT EXISTS faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_timetable_faculty ON timetables(faculty_id);
+
+-- ============================================================
 -- 1. DEPARTMENT
 -- ============================================================
 INSERT INTO departments (name, code) VALUES

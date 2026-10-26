@@ -52,9 +52,24 @@ app.use(morgan('dev'));
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Health check
+// Ping & Health check
+app.get(['/ping', '/api/ping'], (req, res) => {
+  res.json({
+    status: 'pong',
+    hasDbUrl: !!process.env.DATABASE_URL,
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get(['/health', '/api/health'], async (req, res) => {
   try {
+    if (!process.env.DATABASE_URL) {
+      return res.status(503).json({
+        status: 'error',
+        db: 'disconnected',
+        error: 'DATABASE_URL environment variable is not configured in Vercel settings.'
+      });
+    }
     const db = require('./config/db');
     await db.query('SELECT 1');
     res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });

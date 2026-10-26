@@ -4,9 +4,9 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '../../../.e
 let dbUrl = process.env.DATABASE_URL;
 
 if (dbUrl) {
-  // If user pasted template password placeholder
-  if (dbUrl.includes('[YOUR-PASSWORD]')) {
-    dbUrl = dbUrl.replace('[YOUR-PASSWORD]', 'venubhaskar9542');
+  // If user pasted template password placeholder (with or without brackets)
+  if (dbUrl.includes('YOUR-PASSWORD')) {
+    dbUrl = dbUrl.replace(/\[?YOUR-PASSWORD\]?/, 'venubhaskar9542');
   }
 
   // If user used direct host (IPv6 on Vercel), convert to IPv4 pooler

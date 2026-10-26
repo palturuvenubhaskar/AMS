@@ -54,18 +54,8 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Ping & Health check
 app.get(['/ping', '/api/ping'], (req, res) => {
-  const rawUrl = process.env.DATABASE_URL || '';
-  const maskedUrl = rawUrl.replace(/:([^@/]+)@/, ':****@');
-  const passMatch = rawUrl.match(/:([^@/]+)@/);
-  const passLength = passMatch ? passMatch[1].length : 0;
-  const isTemplatePass = rawUrl.includes('YOUR-PASSWORD');
-
   res.json({
     status: 'pong',
-    hasDbUrl: !!process.env.DATABASE_URL,
-    maskedUrl,
-    passLength,
-    isTemplatePass,
     timestamp: new Date().toISOString()
   });
 });

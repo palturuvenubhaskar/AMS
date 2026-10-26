@@ -47,6 +47,8 @@ export default function StudentLayout() {
     }
   ];
 
+  const navItems = navSections.flatMap(section => section.items);
+
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-[#050505] font-sans overflow-hidden">
       

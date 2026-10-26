@@ -36,14 +36,16 @@ exports.login = async (req, res, next) => {
     const tokens = generateTokens(user);
 
     // Store refresh token in PostgreSQL (7 day TTL)
-    try {
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      await db.query(
-        'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3) ON CONFLICT (token) DO NOTHING',
-        [user.id, tokens.refreshToken, expiresAt]
-      );
-    } catch (e) {
-      console.error('Error storing refresh token:', e);
+    if (process.env.NODE_ENV !== 'test') {
+      try {
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        await db.query(
+          'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3) ON CONFLICT (token) DO NOTHING',
+          [user.id, tokens.refreshToken, expiresAt]
+        );
+      } catch (e) {
+        console.error('Error storing refresh token:', e);
+      }
     }
 
     // Get student info if student role

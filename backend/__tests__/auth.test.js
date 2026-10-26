@@ -1,7 +1,6 @@
 const request = require('supertest');
 const { app } = require('../src/app');
 const db = require('../src/config/db');
-const redis = require('../src/config/redis');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -166,11 +165,10 @@ describe('Authentication Module Tests', () => {
         .set('Authorization', `Bearer ${accessToken}`);
 
       expect(res.status).toBe(200);
-      // Ensure Redis was called to blacklist the token
-      expect(redis.setex).toHaveBeenCalledWith(
-        `bl_${accessToken}`,
-        expect.any(Number),
-        'true'
+      // Ensure PostgreSQL was called to blacklist the token
+      expect(db.query).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO token_blacklist'),
+        expect.any(Array)
       );
     });
 

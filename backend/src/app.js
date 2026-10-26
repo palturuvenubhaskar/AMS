@@ -17,7 +17,7 @@ const http = require('http');
 const PORT = process.env.PORT || 5000;
 
 // Security
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({
   origin: function(origin, callback) {
     const allowedOrigin = process.env.CORS_ORIGIN;
@@ -60,6 +60,18 @@ app.get('/health', async (req, res) => {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api', apiRoutes);
 
+// Frontend static build serving & SPA fallback
+const distPath = path.resolve(__dirname, '../../dist');
+if (require('fs').existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
 // Error handler
 app.use(errorHandler);
 
@@ -72,4 +84,5 @@ if (require.main === module) {
   });
 }
 
+app.app = app;
 module.exports = app;

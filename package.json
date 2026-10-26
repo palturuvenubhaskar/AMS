@@ -2,7 +2,9 @@
   "name": "ams-root",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd frontend && npm install --include=dev && npx vite build --outDir ../dist"
+    "build": "cd frontend && npm install --include=dev && npx vite build --outDir ../dist",
+    "db:start": "\"C:\\Program Files\\PostgreSQL\\16\\bin\\pg_ctl.exe\" -D \"./local-db/pgdata\" -o \"-p 5433\" -l \"./local-db/pg.log\" start",
+    "db:stop": "\"C:\\Program Files\\PostgreSQL\\16\\bin\\pg_ctl.exe\" -D \"./local-db/pgdata\" stop"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

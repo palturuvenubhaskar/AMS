@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { set, get, del, keys } from 'idb-keyval';
+import FRSScanner from '../../components/FRSScanner';
+import FaceEnrollmentModal from '../../components/FaceEnrollmentModal';
+import { Camera, UserCheck, AlertCircle } from 'lucide-react';
 
 export default function TakeAttendance() {
   const [step, setStep] = useState(1);
@@ -13,12 +16,26 @@ export default function TakeAttendance() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [timeSlot, setTimeSlot] = useState('');
   const [mode, setMode] = useState('manual');
-  const [isScanning, setIsScanning] = useState(false);
   const [records, setRecords] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
+  const [enrollStudentModal, setEnrollStudentModal] = useState(null);
+  const [faceStatuses, setFaceStatuses] = useState({});
 
   useEffect(() => { api.get('/classes').then(r => setClasses(r.data)); }, []);
+
+  const loadFaceStatus = useCallback(() => {
+    if (!selectedClass) return;
+    api.get(`/classes/${selectedClass}/face-status`)
+      .then(r => {
+        const map = {};
+        (r.data.students || []).forEach(s => {
+          map[s.studentId] = s;
+        });
+        setFaceStatuses(map);
+      })
+      .catch(console.error);
+  }, [selectedClass]);
 
   useEffect(() => {
     if (selectedClass) {
@@ -29,8 +46,9 @@ export default function TakeAttendance() {
         r.data.forEach(s => { init[s.id] = 'present'; });
         setRecords(init);
       });
+      loadFaceStatus();
     }
-  }, [selectedClass]);
+  }, [selectedClass, loadFaceStatus]);
 
   useEffect(() => {
     const syncOfflineData = async () => {
@@ -71,19 +89,6 @@ export default function TakeAttendance() {
     const updated = {};
     students.forEach(s => { updated[s.id] = status; });
     setRecords(updated);
-  };
-
-  const simulateFRSScan = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      const updated = {};
-      students.forEach(s => {
-        updated[s.id] = Math.random() > 0.15 ? 'present' : 'absent';
-      });
-      setRecords(updated);
-      setIsScanning(false);
-      toast.success('FRS scan complete. Please review the results.');
-    }, 2500);
   };
 
   const submit = async () => {
@@ -275,30 +280,33 @@ export default function TakeAttendance() {
           </div>
 
           {mode === 'frs' && (
-            <div className="bg-brand-purple/5 border-2 border-brand-purple/20 rounded-2xl p-5 md:p-10 text-center mb-8 shadow-inner">
-              {!isScanning ? (
-                <>
-                  <div className="text-5xl mb-4">📷</div>
-                  <h4 className="text-slate-900 dark:text-slate-100 text-lg font-bold mb-2">Facial Recognition System</h4>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-6">Make sure the classroom camera is connected and positioned correctly.</p>
-                  <button className="px-4 md:px-6 py-3 rounded-xl bg-brand-purple text-white font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all" onClick={simulateFRSScan}>Start FRS Scan</button>
-                </>
-              ) : (
-                <>
-                  <div className="inline-block w-10 md:w-12 h-10 md:h-12 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin mb-4"></div>
-                  <h4 className="text-slate-900 dark:text-slate-100 font-bold">Scanning faces... Please wait.</h4>
-                </>
-              )}
-            </div>
+            <FRSScanner
+              classId={selectedClass}
+              students={students}
+              records={records}
+              onUpdateRecord={(id, status) => setRecords(prev => ({ ...prev, [id]: status }))}
+            />
           )}
 
           <div className="space-y-3">
             {students.map((s, i) => (
               <div key={s.id} className="flex items-center justify-between bg-white dark:bg-[#12141d] rounded-2xl p-4 border border-slate-200 dark:border-[#222430] shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 md:gap-4 flex-wrap">
                   <span className="w-6 text-gray-400 font-bold text-xs">{i+1}</span>
                   <span className="font-mono text-gray-500 dark:text-gray-400 text-sm bg-slate-50 dark:bg-[#050505] px-2 py-1 rounded">{s.roll_no}</span>
                   <span className="font-bold text-slate-900 dark:text-slate-100">{s.full_name}</span>
+                  {faceStatuses[s.id]?.isEnrolled ? (
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      <UserCheck className="w-3 h-3" /> Face Enrolled
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setEnrollStudentModal(s)}
+                      className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-brand-purple hover:bg-brand-purple/10 px-2.5 py-0.5 rounded-full border border-brand-purple/30 transition-colors"
+                    >
+                      <Camera className="w-3 h-3" /> Enroll Face
+                    </button>
+                  )}
                 </div>
                 <div className="flex bg-slate-50 dark:bg-[#050505] p-1 rounded-xl border border-slate-200 dark:border-[#222430]">
                   <button 
@@ -360,6 +368,17 @@ export default function TakeAttendance() {
           </button>
         </div>
       )}
+
+      {/* Face Enrollment Modal */}
+      <FaceEnrollmentModal
+        isOpen={!!enrollStudentModal}
+        onClose={() => setEnrollStudentModal(null)}
+        preselectedStudentId={enrollStudentModal?.id}
+        classStudents={students}
+        onEnrolled={() => {
+          loadFaceStatus();
+        }}
+      />
     </div>
   );
 }

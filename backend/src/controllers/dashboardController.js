@@ -239,9 +239,8 @@ exports.getPredictions = async (req, res, next) => {
     );
     if (!summary.rows.length) return res.json(null);
 
-    const data = summary.rows[0];
-    const totalConducted = parseInt(data.total_classes);
-    const present = parseInt(data.present_classes);
+    const totalConducted = parseInt(data.total_sessions || data.total_classes || 0);
+    const present = parseInt(data.total_present || data.present_classes || 0);
     
     // Assume semester has ~400 total classes
     const TOTAL_SEMESTER_CLASSES = 400;

@@ -13,6 +13,7 @@ const notif = require('../controllers/notificationController');
 const dashboard = require('../controllers/dashboardController');
 const parent = require('../controllers/parentController');
 const dispute = require('../controllers/disputeController');
+const face = require('../controllers/faceController');
 
 // All routes require authentication
 router.use(authenticate);
@@ -98,5 +99,12 @@ router.get('/parents/ward-summary', authorize('parent'), parent.getWardSummary);
 router.post('/attendance-records/:id/disputes', authorize('student'), dispute.createDispute);
 router.get('/attendance-disputes/pending', authorize('faculty'), dispute.getPending);
 router.put('/attendance-disputes/:id/resolve', authorize('faculty'), dispute.resolveDispute);
+
+// Facial Recognition System (FRS)
+router.post('/face/enroll', authorize('admin', 'faculty', 'student'), face.enrollFace);
+router.get('/classes/:classId/faces', authorize('admin', 'faculty'), face.getClassFaces);
+router.get('/classes/:classId/face-status', authorize('admin', 'faculty'), face.getClassFaceStatus);
+router.get('/students/:id/face', authorize('admin', 'faculty', 'student'), face.getStudentFace);
+router.delete('/students/:id/face', authorize('admin', 'faculty', 'student'), face.deleteStudentFace);
 
 module.exports = router;

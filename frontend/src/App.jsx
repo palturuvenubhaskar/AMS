@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages
 import Login from './pages/Login';
@@ -52,14 +53,14 @@ function ProtectedRoute({ children, allowedRoles }) {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // Redirect to the user's own dashboard
+  if (allowedRoles && (!user.role || !allowedRoles.includes(user.role))) {
     const roleRoutes = { admin: '/admin', faculty: '/faculty', student: '/student', parent: '/parent' };
-    return <Navigate to={roleRoutes[user.role] || '/login'} replace />;
+    const target = roleRoutes[user.role];
+    return <Navigate to={target || '/login'} replace />;
   }
 
   return children;
@@ -77,12 +78,13 @@ function RoleRedirect() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user?.role) {
     return <Navigate to="/login" replace />;
   }
 
   const roleRoutes = { admin: '/admin', faculty: '/faculty', student: '/student', parent: '/parent' };
-  return <Navigate to={roleRoutes[user.role] || '/login'} replace />;
+  const target = roleRoutes[user.role];
+  return <Navigate to={target || '/login'} replace />;
 }
 
 // Redirect already-authenticated users away from /login
@@ -97,9 +99,12 @@ function PublicRoute({ children }) {
     );
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user?.role) {
     const roleRoutes = { admin: '/admin', faculty: '/faculty', student: '/student', parent: '/parent' };
-    return <Navigate to={roleRoutes[user.role] || '/'} replace />;
+    const target = roleRoutes[user.role];
+    if (target) {
+      return <Navigate to={target} replace />;
+    }
   }
 
   return children;
@@ -107,9 +112,10 @@ function PublicRoute({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ThemeProvider>
+          <AuthProvider>
             <Toaster
               position="top-right"
               toastOptions={{
@@ -203,5 +209,6 @@ export default function App() {
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
-  );
+  </ErrorBoundary>
+);
 }

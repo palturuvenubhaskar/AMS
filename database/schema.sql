@@ -7,6 +7,8 @@
 -- Clean slate
 DROP TABLE IF EXISTS audit_logs CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS attendance_disputes CASCADE;
+DROP TABLE IF EXISTS student_parents CASCADE;
 DROP TABLE IF EXISTS attendance_records CASCADE;
 DROP TABLE IF EXISTS attendance_sessions CASCADE;
 DROP TABLE IF EXISTS leave_requests CASCADE;
@@ -29,7 +31,7 @@ CREATE TABLE users (
     email           VARCHAR(255) NOT NULL UNIQUE,
     password_hash   VARCHAR(255) NOT NULL,
     full_name       VARCHAR(100) NOT NULL,
-    role            VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'faculty', 'student')),
+    role            VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'faculty', 'student', 'parent')),
     phone           VARCHAR(20),
     is_active       BOOLEAN DEFAULT TRUE,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -85,9 +87,12 @@ CREATE TABLE class_subjects (
     id          SERIAL PRIMARY KEY,
     class_id    INTEGER NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
     subject_id  INTEGER NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
+    faculty_id  INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(class_id, subject_id)
 );
+
+CREATE INDEX idx_class_subjects_faculty ON class_subjects(faculty_id);
 
 -- ============================================================
 -- 6. STUDENTS (Extended profile for student role)
@@ -125,6 +130,7 @@ CREATE TABLE timetables (
     id              SERIAL PRIMARY KEY,
     class_id        INTEGER NOT NULL REFERENCES classes(id) ON DELETE CASCADE,
     subject_id      INTEGER NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
+    faculty_id      INTEGER REFERENCES users(id) ON DELETE SET NULL,
     day_of_week     INTEGER NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),
     start_time      TIME NOT NULL,
     end_time        TIME NOT NULL,
@@ -135,6 +141,7 @@ CREATE TABLE timetables (
 
 CREATE INDEX idx_timetable_class ON timetables(class_id);
 CREATE INDEX idx_timetable_day ON timetables(day_of_week);
+CREATE INDEX idx_timetable_faculty ON timetables(faculty_id);
 
 -- ============================================================
 -- 9. ATTENDANCE_SESSIONS (Header for each attendance event)
@@ -271,6 +278,37 @@ CREATE TABLE token_blacklist (
 );
 
 CREATE INDEX idx_token_blacklist_token ON token_blacklist(token);
+
+-- ============================================================
+-- 16. ATTENDANCE_DISPUTES
+-- ============================================================
+CREATE TABLE attendance_disputes (
+    id SERIAL PRIMARY KEY,
+    record_id INTEGER NOT NULL REFERENCES attendance_records(id) ON DELETE CASCADE,
+    student_id INTEGER NOT NULL REFERENCES students(user_id) ON DELETE CASCADE,
+    type VARCHAR(20) NOT NULL CHECK (type IN ('justification', 'dispute')),
+    reason TEXT NOT NULL,
+    proof_url VARCHAR(500),
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+    faculty_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP
+);
+
+CREATE INDEX idx_disputes_record ON attendance_disputes(record_id);
+CREATE INDEX idx_disputes_student ON attendance_disputes(student_id);
+CREATE INDEX idx_disputes_status ON attendance_disputes(status);
+
+-- ============================================================
+-- 17. STUDENT_PARENTS
+-- ============================================================
+CREATE TABLE student_parents (
+    parent_id INTEGER REFERENCES users(id) ON DELETE CASCADE, 
+    student_id INTEGER REFERENCES users(id) ON DELETE CASCADE, 
+    relation VARCHAR(50), 
+    PRIMARY KEY (parent_id, student_id)
+);
 
 -- ============================================================
 -- VIEWS
@@ -430,40 +468,6 @@ CREATE TRIGGER trigger_audit_attendance
     FOR EACH ROW EXECUTE FUNCTION audit_attendance_changes();
 
 -- ============================================================
--- SEED DATA
--- ============================================================
-
-INSERT INTO departments (name, code) VALUES
-('Computer Science and Engineering', 'CSE'),
-('Electronics and Communication', 'ECE'),
-('Mechanical Engineering', 'MECH'),
-('Civil Engineering', 'CIVIL');
-
-INSERT INTO users (email, password_hash, full_name, role, phone) VALUES
-('admin@aams.edu', '$2b$12$dummyhashforadmin', 'System Administrator', 'admin', '9999999999'),
-('faculty1@aams.edu', '$2b$12$dummyhashforfaculty1', 'Dr. Rajesh Kumar', 'faculty', '8888888888'),
-('faculty2@aams.edu', '$2b$12$dummyhashforfaculty2', 'Prof. Sunita Devi', 'faculty', '7777777777'),
-('faculty3@aams.edu', '$2b$12$dummyhashforfaculty3', 'Dr. Amit Sharma', 'faculty', '6666666666');
-
-INSERT INTO classes (department_id, name, section, semester, academic_year) VALUES
-(1, 'CSE', 'A', 5, '2026-27'),
-(1, 'CSE', 'B', 5, '2026-27'),
-(2, 'ECE', 'A', 3, '2026-27');
-
-INSERT INTO subjects (department_id, name, code, credits) VALUES
-(1, 'Database Management Systems', 'CS301', 4),
-(1, 'Operating Systems', 'CS302', 4),
-(1, 'Computer Networks', 'CS303', 3),
-(2, 'Digital Signal Processing', 'EC301', 4),
-(2, 'Microprocessors', 'EC302', 3);
-
-INSERT INTO class_subjects (class_id, subject_id) VALUES
-(1, 1), (1, 2), (1, 3),
-(2, 1), (2, 2),
-(3, 4), (3, 5);
-
-COMMIT;
-
--- ============================================================
 -- END OF SCHEMA
 -- ============================================================
+

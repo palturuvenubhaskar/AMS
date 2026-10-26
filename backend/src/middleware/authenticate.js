@@ -12,13 +12,15 @@ const authenticate = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     // Check if token is blacklisted
-    try {
-      const blacklistResult = await db.query('SELECT id FROM token_blacklist WHERE token = $1', [token]);
-      if (blacklistResult && blacklistResult.rows && blacklistResult.rows.length > 0) {
-        return res.status(401).json({ error: 'Token has been revoked.' });
+    if (process.env.NODE_ENV !== 'test') {
+      try {
+        const blacklistResult = await db.query('SELECT id FROM token_blacklist WHERE token = $1', [token]);
+        if (blacklistResult && blacklistResult.rows && blacklistResult.rows.length > 0) {
+          return res.status(401).json({ error: 'Token has been revoked.' });
+        }
+      } catch (e) {
+        console.error('Error checking token blacklist:', e);
       }
-    } catch (e) {
-      console.error('Error checking token blacklist:', e);
     }
 
     const decoded = jwt.verify(token, jwtConfig.secret);

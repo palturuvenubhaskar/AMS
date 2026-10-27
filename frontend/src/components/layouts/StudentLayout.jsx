@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import NotificationBell from '../NotificationBell';
@@ -6,6 +7,7 @@ import { LogOut, ChevronRight, Search, Clock, Hexagon, Sun, Moon } from 'lucide-
 import { useTheme } from '../../contexts/ThemeContext';
 
 export default function StudentLayout() {
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -199,12 +201,74 @@ export default function StudentLayout() {
             </div>
             <h1 className="text-slate-900 dark:text-slate-100 font-black text-lg tracking-tight">AMS</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={toggleTheme} className="w-8 h-8 rounded-full bg-white dark:bg-[#12141d] shadow-sm flex items-center justify-center text-gray-500 dark:text-gray-400 border border-slate-200 dark:border-[#222430]">
-              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              title="Toggle theme"
+              aria-label="Toggle theme"
+              className="w-8 h-8 rounded-xl bg-white dark:bg-[#12141d] shadow-sm flex items-center justify-center text-gray-500 dark:text-gray-400 border border-slate-200 dark:border-[#222430] hover:text-brand-purple transition-colors"
+            >
+              {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
             </button>
-            <div className="w-8 h-8 rounded-xl bg-brand-light flex items-center justify-center text-brand-purple font-black text-sm flex-shrink-0 cursor-pointer" onClick={() => navigate('/settings')}>
-              {user?.fullName?.[0]?.toUpperCase() || 'U'}
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Sign Out"
+              aria-label="Sign Out"
+              className="flex items-center gap-1.5 px-2.5 h-8 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/60 text-red-600 dark:text-red-400 border border-red-200/60 dark:border-red-900/40 text-xs font-bold transition-all shadow-sm active:scale-95"
+            >
+              <LogOut size={14} />
+              <span>Sign Out</span>
+            </button>
+            <div className="relative">
+              <div
+                className="w-8 h-8 rounded-xl bg-brand-light flex items-center justify-center text-brand-purple font-black text-sm flex-shrink-0 cursor-pointer shadow-sm border border-brand-purple/20 active:scale-95 transition-transform"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                title={user?.fullName || 'User Profile'}
+              >
+                {user?.fullName?.[0]?.toUpperCase() || 'S'}
+              </div>
+              {showUserMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowUserMenu(false)}
+                  />
+                  <div className="absolute right-0 top-10 z-50 w-56 bg-white dark:bg-[#12141d] rounded-2xl shadow-xl border border-slate-200 dark:border-[#222430] p-3 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="pb-2.5 border-b border-slate-100 dark:border-[#222430]">
+                      <h4 className="text-slate-900 dark:text-slate-100 text-sm font-bold truncate">{user?.fullName || 'Student'}</h4>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs truncate">{user?.email}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-brand-purple/10 text-brand-purple">
+                          {user?.role || 'Student'}
+                        </span>
+                        {user?.studentInfo?.roll_no && (
+                          <span className="text-[10px] font-bold text-gray-400">
+                            #{user.studentInfo.roll_no}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="py-2 border-b border-slate-100 dark:border-[#222430]">
+                      <button
+                        type="button"
+                        onClick={() => { setShowUserMenu(false); navigate('/student/profile'); }}
+                        className="w-full text-left px-2 py-1.5 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      >
+                        View Profile
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setShowUserMenu(false); handleLogout(); }}
+                      className="mt-2.5 w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/60 text-red-600 dark:text-red-400 text-xs font-bold transition-colors border border-red-200/60 dark:border-red-900/40"
+                    >
+                      <LogOut size={14} /> Sign Out
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </header>

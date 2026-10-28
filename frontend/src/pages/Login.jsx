@@ -217,9 +217,8 @@ export default function Login() {
             </p>
           ) : null}
 
-          {/* demo accounts — local development only, never in a deployed build */}
-          {import.meta.env.DEV ? (
-            <div className="mt-9 border-t border-line pt-5">
+          {/* quick-access review logins — always visible for demo/review */}
+          <div className="mt-9 border-t border-line pt-5">
               <p className="mb-3 text-2xs font-bold uppercase tracking-[0.12em] text-faint">
                 Demo accounts
               </p>
@@ -241,8 +240,7 @@ export default function Login() {
                 ))}
               </div>
             </div>
-          ) : null}
-        </div>
+          </div>
       </main>
     </div>
   );

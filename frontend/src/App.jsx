@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
+import { PageLoader } from './components/ui';
 
 // Pages
 import Login from './pages/Login';
@@ -46,11 +47,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-spinner">
-        <div className="spinner" />
-      </div>
-    );
+    return <PageLoader label="Checking your session" />;
   }
 
   if (!isAuthenticated || !user) {
@@ -71,11 +68,7 @@ function RoleRedirect() {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-spinner">
-        <div className="spinner" />
-      </div>
-    );
+    return <PageLoader label="Checking your session" />;
   }
 
   if (!isAuthenticated || !user?.role) {
@@ -92,11 +85,7 @@ function PublicRoute({ children }) {
   const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-spinner">
-        <div className="spinner" />
-      </div>
-    );
+    return <PageLoader label="Checking your session" />;
   }
 
   if (isAuthenticated && user?.role) {
@@ -118,15 +107,22 @@ export default function App() {
           <AuthProvider>
             <Toaster
               position="top-right"
+              gutter={8}
               toastOptions={{
-                duration: 3000,
+                duration: 3200,
                 style: {
-                  background: 'var(--bg-card)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid var(--border-primary)',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.85rem',
+                  background: 'rgb(var(--surface))',
+                  color: 'rgb(var(--ink))',
+                  border: '1px solid rgb(var(--line))',
+                  borderRadius: '10px',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  padding: '10px 14px',
+                  boxShadow:
+                    '0 16px 40px -12px rgb(16 24 40 / 0.22), 0 0 0 1px rgb(16 24 40 / 0.05)',
                 },
+                success: { iconTheme: { primary: 'rgb(var(--positive))', secondary: 'rgb(var(--surface))' } },
+                error: { iconTheme: { primary: 'rgb(var(--negative))', secondary: 'rgb(var(--surface))' } },
               }}
             />
 

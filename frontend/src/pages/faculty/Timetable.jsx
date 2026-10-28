@@ -1,64 +1,26 @@
 import { useState, useEffect } from 'react';
+import { CalendarDays, FlaskConical, MapPin, Presentation } from 'lucide-react';
 import api from '../../services/api';
-import { Calendar, ChevronDown, Clock, MapPin } from 'lucide-react';
+import {
+  Badge,
+  Card,
+  EmptyState,
+  PageHeader,
+  PageLoader,
+  Select,
+} from '../../components/ui';
+import { cn } from '../../components/ui/cn';
 
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const TIME_SLOTS = ['09:00-10:10','10:25-11:30','11:30-12:30','13:15-14:15','14:15-15:15','15:15-16:00'];
-const SLOT_COLORS = [
-  { bg: 'bg-indigo-50/40 dark:bg-indigo-500/10', border: 'border-indigo-100/50 dark:border-indigo-500/20', highlight: 'bg-indigo-300 dark:bg-indigo-500', text: 'text-indigo-800 dark:text-indigo-100', meta: 'text-indigo-500 dark:text-indigo-300/80' },
-  { bg: 'bg-emerald-50/40 dark:bg-emerald-500/10', border: 'border-emerald-100/50 dark:border-emerald-500/20', highlight: 'bg-emerald-300 dark:bg-emerald-500', text: 'text-emerald-800 dark:text-emerald-100', meta: 'text-emerald-500 dark:text-emerald-300/80' },
-  { bg: 'bg-amber-50/40 dark:bg-amber-500/10', border: 'border-amber-100/50 dark:border-amber-500/20', highlight: 'bg-amber-300 dark:bg-amber-500', text: 'text-amber-800 dark:text-amber-100', meta: 'text-amber-500 dark:text-amber-300/80' },
-  { bg: 'bg-rose-50/40 dark:bg-rose-500/10', border: 'border-rose-100/50 dark:border-rose-500/20', highlight: 'bg-rose-300 dark:bg-rose-500', text: 'text-rose-800 dark:text-rose-100', meta: 'text-rose-500 dark:text-rose-300/80' },
-  { bg: 'bg-cyan-50/40 dark:bg-cyan-500/10', border: 'border-cyan-100/50 dark:border-cyan-500/20', highlight: 'bg-cyan-300 dark:bg-cyan-500', text: 'text-cyan-800 dark:text-cyan-100', meta: 'text-cyan-500 dark:text-cyan-300/80' },
-  { bg: 'bg-fuchsia-50/40 dark:bg-fuchsia-500/10', border: 'border-fuchsia-100/50 dark:border-fuchsia-500/20', highlight: 'bg-fuchsia-300 dark:bg-fuchsia-500', text: 'text-fuchsia-800 dark:text-fuchsia-100', meta: 'text-fuchsia-500 dark:text-fuchsia-300/80' },
+const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY_NUMBERS = [1, 2, 3, 4, 5, 6];
+const TIME_SLOTS = [
+  '09:00-10:10',
+  '10:25-11:30',
+  '11:30-12:30',
+  '13:15-14:15',
+  '14:15-15:15',
+  '15:15-16:00',
 ];
-
-const MOCK_TIMETABLE = {
-  1: { slots: [ 
-    { start_time: '09:00:00', subject_code: '24ALBTCS508T', subject_name: 'Green Building', room: '310', type: 'Lecture' }, 
-    { start_time: '10:25:00', subject_code: '24ALBTCS501T', subject_name: 'Computer Networks', room: '310', type: 'Lecture' }, 
-    { start_time: '11:30:00', subject_code: '24ALBTCS504Ta', subject_name: 'OOAD', room: '310', type: 'Lecture' }, 
-    { start_time: '13:15:00', subject_code: '24ALBTCS504Ta', subject_name: 'OOAD', room: '310', type: 'Lecture' }, 
-    { start_time: '14:15:00', subject_code: '24ALBTCS501T', subject_name: 'Computer Networks', room: '310', type: 'Lecture' }, 
-    { start_time: '15:15:00', subject_code: '24ALBTCS502T', subject_name: 'Automata Theory', room: '310', type: 'Lecture' } 
-  ] },
-  2: { slots: [ 
-    { start_time: '09:00:00', subject_code: '24ALBTCS502T', subject_name: 'Automata Theory', room: '104', type: 'Lecture' }, 
-    { start_time: '10:25:00', subject_code: '24ALBTCS301T', subject_name: 'AI', room: '104', type: 'Lecture' }, 
-    { start_time: '13:15:00', subject_code: '24ALBTAM301P', subject_name: 'AI Lab', room: 'LAB 1', type: 'Lab' }, 
-    { start_time: '14:15:00', subject_code: '24ALBTAM301P', subject_name: 'AI Lab', room: 'LAB 1', type: 'Lab' }, 
-    { start_time: '15:15:00', subject_code: '24ALBTAM301P', subject_name: 'AI Lab', room: 'LAB 1', type: 'Lab' } 
-  ] },
-  3: { slots: [ 
-    { start_time: '09:00:00', subject_code: '24ALBTCS503T', subject_name: 'Quantum Tech', room: '310', type: 'Lecture' }, 
-    { start_time: '10:25:00', subject_code: '24ALBTCS503T', subject_name: 'Quantum Tech', room: '310', type: 'Lecture' }, 
-    { start_time: '11:30:00', subject_code: '24ALBTCS502T', subject_name: 'Automata Theory', room: '310', type: 'Lecture' }, 
-    { start_time: '13:15:00', subject_code: '24ALBTCS508T', subject_name: 'Green Building', room: '310', type: 'Lecture' }, 
-    { start_time: '14:15:00', subject_code: '24ALBTCS301T', subject_name: 'AI', room: '310', type: 'Lecture' } 
-  ] },
-  4: { slots: [ 
-    { start_time: '09:00:00', subject_code: '24ALBTCS501P', subject_name: 'Computer Networks Lab', room: 'LAB 5', type: 'Lab' }, 
-    { start_time: '10:25:00', subject_code: '24ALBTCS501P', subject_name: 'Computer Networks Lab', room: 'LAB 5', type: 'Lab' }, 
-    { start_time: '11:30:00', subject_code: '24ALBTCS504Ta', subject_name: 'OOAD', room: '104', type: 'Lecture' }, 
-    { start_time: '13:15:00', subject_code: '24ALBTCS301T', subject_name: 'AI', room: '104', type: 'Lecture' } 
-  ] },
-  5: { slots: [ 
-    { start_time: '09:00:00', subject_code: '24ALBTCS508T', subject_name: 'Green Building', room: 'LAB 4', type: 'Lecture' }, 
-    { start_time: '10:25:00', subject_code: '24ALBTCS501T', subject_name: 'Computer Networks', room: 'LAB 4', type: 'Lecture' }, 
-    { start_time: '11:30:00', subject_code: '24ALBTCS301T', subject_name: 'AI', room: 'LAB 4', type: 'Lecture' }, 
-    { start_time: '13:15:00', subject_code: '24ALBTCS502T', subject_name: 'Automata Theory', room: 'LAB 4', type: 'Lecture' }, 
-    { start_time: '14:15:00', subject_code: '24ALBTCS501T', subject_name: 'Computer Networks', room: 'LAB 4', type: 'Lecture' }, 
-    { start_time: '15:15:00', subject_code: '24ALBTCS504Ta', subject_name: 'OOAD', room: 'LAB 4', type: 'Lecture' } 
-  ] },
-  6: { slots: [ 
-    { start_time: '09:00:00', subject_code: '24ALBTCS508T', subject_name: 'Green Building', room: '310', type: 'Lecture' }, 
-    { start_time: '10:25:00', subject_code: '24ALBTCS301T', subject_name: 'AI', room: '310', type: 'Lecture' }, 
-    { start_time: '11:30:00', subject_code: '24ALBTCS508T', subject_name: 'Green Building', room: '310', type: 'Lecture' }, 
-    { start_time: '13:15:00', subject_code: '24ALBTCS504Ta', subject_name: 'OOAD', room: '310', type: 'Lecture' }, 
-    { start_time: '14:15:00', subject_code: '24ALBTCS502T', subject_name: 'Automata Theory', room: '310', type: 'Lecture' }, 
-    { start_time: '15:15:00', subject_code: '24ALBTCS501T', subject_name: 'Computer Networks', room: '310', type: 'Lecture' } 
-  ] }
-};
 
 export default function Timetable({ readOnly = false, classId = null }) {
   const [classes, setClasses] = useState([]);
@@ -66,164 +28,173 @@ export default function Timetable({ readOnly = false, classId = null }) {
   const [timetable, setTimetable] = useState({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { 
-    if (!classId) {
-      api.get('/classes').then(r => { 
-        setClasses(r.data); 
-        if(r.data.length && !selectedClass) setSelectedClass(r.data[0].id); 
-      }).catch(console.error);
-    }
+  useEffect(() => {
+    if (classId) return;
+    api
+      .get('/classes')
+      .then((r) => {
+        setClasses(r.data);
+        if (r.data.length && !selectedClass) setSelectedClass(r.data[0].id);
+      })
+      .catch(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId]);
-  
-  useEffect(() => { 
-    if (selectedClass) fetchTimetable(); 
+
+  useEffect(() => {
+    if (!selectedClass) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    api
+      .get(`/timetables/weekly/${selectedClass}`)
+      .then(({ data }) => setTimetable(data || {}))
+      .catch(() => setTimetable({}))
+      .finally(() => setLoading(false));
   }, [selectedClass]);
 
-  const fetchTimetable = async () => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`/timetables/weekly/${selectedClass}`);
-      // INJECT MOCK DATA if database is empty for this class
-      const hasAnySlots = data && Object.values(data).some(day => day.slots && day.slots.length > 0);
-      
-      if (!hasAnySlots) {
-        setTimetable(MOCK_TIMETABLE);
-      } else {
-        setTimetable(data);
-      }
-    } catch(e) { 
-      console.error(e);
-      setTimetable(MOCK_TIMETABLE); // fallback on error
-    }
-    setLoading(false);
-  };
-
-  const getSlotForDayTime = (dayNum, timeSlot) => {
-    const dayData = timetable[dayNum];
-    if (!dayData) return null;
+  const slotAt = (day, timeSlot) => {
+    const dayData = timetable[day];
+    if (!dayData?.slots) return null;
     const [start] = timeSlot.split('-');
-    return dayData.slots?.find(s => {
-      const slotStart = s.start_time?.substring(0,5);
-      return slotStart === start;
-    });
+    return dayData.slots.find((s) => s.start_time?.substring(0, 5) === start) || null;
   };
 
-  const subjectColorMap = {};
-  let colorIdx = 0;
-  Object.values(timetable).forEach(day => {
-    day.slots?.forEach(s => {
-      if (!subjectColorMap[s.subject_code]) {
-        subjectColorMap[s.subject_code] = SLOT_COLORS[colorIdx % SLOT_COLORS.length];
-        colorIdx++;
-      }
-    });
-  });
+  const hasAnySlot = Object.values(timetable).some((day) => day?.slots?.length);
+  const today = new Date().getDay();
+  const selected = classes.find((c) => String(c.id) === String(selectedClass));
 
   return (
-    <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-4 md:p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-        <div className="flex items-center gap-4">
-          <div className="w-10 md:w-12 h-10 md:h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
-            <Calendar size={24} />
-          </div>
-          <div>
-            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Weekly Timetable</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">View and manage class schedules</p>
-          </div>
-        </div>
-        {!readOnly && classes.length > 0 && (
-          <div className="relative w-full sm:w-64">
-            <select 
-              className="w-full appearance-none bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-bold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all cursor-pointer shadow-sm"
-              value={selectedClass} 
-              onChange={e => setSelectedClass(e.target.value)}
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow={readOnly ? 'Academics' : 'Teaching'}
+        title="Weekly schedule"
+        description={
+          readOnly
+            ? 'Your class timetable for the current term.'
+            : 'Published timetable for the selected class.'
+        }
+        actions={
+          !readOnly && classes.length > 0 ? (
+            <Select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              className="w-[240px]"
+              aria-label="Selected class"
             >
-              {classes.map(c => <option key={c.id} value={c.id}>{c.name}-{c.section} (Sem {c.semester})</option>)}
-            </select>
-            <ChevronDown size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          </div>
-        )}
-      </div>
+              {classes.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}-{c.section} (Sem {c.semester})
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <Badge tone="outline">{selected ? `${selected.name}-${selected.section}` : 'Timetable'}</Badge>
+          )
+        }
+      />
 
-      <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        <div className="overflow-x-auto p-4">
-          <table className="w-full min-w-[800px] border-separate border-spacing-2">
-            <thead>
-              <tr>
-                <th className="w-24 px-4 py-3 bg-slate-50 dark:bg-[#050505] rounded-xl text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center shadow-sm">
+      <Card className="overflow-hidden">
+        {loading ? (
+          <PageLoader label="Loading timetable" />
+        ) : !hasAnySlot ? (
+          <EmptyState
+            icon={CalendarDays}
+            title="No timetable published"
+            description={
+              readOnly
+                ? 'Your class timetable has not been published yet. Check back soon.'
+                : 'An administrator can build the weekly grid from the timetable setup page.'
+            }
+          />
+        ) : (
+          <div className="overflow-x-auto p-4">
+            <div className="min-w-[860px]">
+              {/* Header row */}
+              <div className="grid grid-cols-[76px_repeat(6,1fr)] border-b border-line">
+                <div className="sticky left-0 z-10 bg-surface px-2 py-2.5 text-2xs font-bold uppercase tracking-[0.08em] text-faint">
                   Time
-                </th>
-                {[1,2,3,4,5,6].map(d => (
-                  <th key={d} className="px-4 py-3 bg-slate-50 dark:bg-[#050505] rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 text-center shadow-sm">
-                    {DAYS[d]}
-                  </th>
+                </div>
+                {DAY_NUMBERS.map((d, i) => (
+                  <div
+                    key={d}
+                    className={cn(
+                      'px-3 py-2.5 text-center text-2xs font-bold uppercase tracking-[0.08em]',
+                      d === today ? 'text-accent' : 'text-muted'
+                    )}
+                  >
+                    {DAY_LABELS[i]}
+                    {d === today ? (
+                      <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-accent align-middle" />
+                    ) : null}
+                  </div>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
-              {TIME_SLOTS.map((ts, idx) => {
+              </div>
+
+              {TIME_SLOTS.map((ts) => {
                 const [start, end] = ts.split('-');
                 return (
-                  <tr key={ts} className="group">
-                    <td className="p-3 bg-gray-50/50 rounded-xl border border-slate-200 dark:border-[#222430] text-center group-hover:bg-indigo-50/30 transition-colors">
-                      <div className="text-slate-900 dark:text-slate-100 font-bold text-sm tracking-tight">{start}</div>
-                      <div className="text-gray-400 text-[10px] font-bold uppercase mt-0.5">{end}</div>
-                    </td>
-                    {[1,2,3,4,5,6].map(d => {
-                      const slot = getSlotForDayTime(d, ts);
-                      const style = slot ? subjectColorMap[slot.subject_code] : null;
-                      
+                  <div
+                    key={ts}
+                    className="grid grid-cols-[76px_repeat(6,1fr)] border-b border-line last:border-b-0"
+                  >
+                    <div className="sticky left-0 z-10 border-r border-line bg-surface px-2 py-3">
+                      <p className="tnum text-2xs font-bold text-ink">{start}</p>
+                      <p className="tnum text-2xs text-faint">{end}</p>
+                    </div>
+
+                    {DAY_NUMBERS.map((d) => {
+                      const slot = slotAt(d, ts);
+                      const isLab = slot?.type?.toLowerCase() === 'lab';
                       return (
-                        <td key={`${d}-${ts}`} className="p-1 h-full">
+                        <div
+                          key={`${d}-${ts}`}
+                          className={cn(
+                            'border-r border-line p-1.5 last:border-r-0',
+                            d === today && 'bg-accent/[0.03]'
+                          )}
+                        >
                           {slot ? (
-                            <div className={`h-full w-full rounded-xl p-3 border ${style.bg} ${style.border} flex flex-col justify-between hover:shadow-md transition-all duration-300 relative overflow-hidden`}>
-                              <div className={`absolute top-0 left-0 w-1 h-full ${style.highlight}`} />
+                            <div
+                              className={cn(
+                                'flex h-full min-h-[76px] flex-col justify-between rounded-md border border-line ' +
+                                  'bg-surface p-2.5 shadow-xs transition-colors hover:border-line-strong'
+                              )}
+                            >
                               <div>
-                                <div className={`font-black text-sm tracking-tight leading-tight ${style.text} mb-1`}>
+                                <p className="line-clamp-2 text-xs font-semibold leading-tight text-ink">
                                   {slot.subject_name || slot.subject_code}
-                                </div>
-                                <div className={`text-[10px] font-bold uppercase tracking-wider ${style.meta}`}>
-                                  {slot.subject_code} • {slot.type || 'Lecture'}
-                                </div>
+                                </p>
+                                <p className="mt-1 truncate font-mono text-2xs text-faint">
+                                  {slot.subject_code}
+                                </p>
                               </div>
-                              <div className={`flex items-center gap-1 mt-3 ${style.meta}`}>
-                                <MapPin size={12} />
-                                <span className="text-xs font-bold">{slot.room}</span>
+                              <div className="mt-2 flex items-center justify-between gap-1 text-2xs text-muted">
+                                <span className="inline-flex items-center gap-1">
+                                  {isLab ? <FlaskConical size={10} /> : <Presentation size={10} />}
+                                  {slot.type || 'Lecture'}
+                                </span>
+                                {slot.room ? (
+                                  <span className="inline-flex items-center gap-1">
+                                    <MapPin size={10} />
+                                    {slot.room}
+                                  </span>
+                                ) : null}
                               </div>
                             </div>
                           ) : (
-                            <div className="h-full w-full rounded-xl border border-slate-200 dark:border-[#222430] border-dashed bg-gray-50/30 flex items-center justify-center min-h-[80px]">
-                              <span className="text-gray-300 text-sm font-medium">—</span>
-                            </div>
+                            <div className="min-h-[76px] rounded-md bg-sunken/40" />
                           )}
-                        </td>
+                        </div>
                       );
                     })}
-                  </tr>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Legend */}
-        <div className="px-4 md:px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center gap-4">
-          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2">Legend:</span>
-          {Object.entries(subjectColorMap).map(([code, color]) => (
-            <div key={code} className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-md ${color.highlight} shadow-sm`} />
-              <span className="text-xs font-bold text-gray-600 dark:text-gray-400">{code}</span>
             </div>
-          ))}
-        </div>
-      </div>
-      
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

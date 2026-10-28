@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../services/api';
-import { ArrowRight, Lock, Mail, ShieldCheck, Hexagon, Eye, EyeOff, User, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, Phone, ShieldCheck, User } from 'lucide-react';
+import api from '../services/api';
+import Button from '../components/ui/Button';
+import { Field, Input } from '../components/ui/Field';
+import { BrandMark } from '../components/layouts/AppLayout';
 
 export default function AdminRegister() {
   const [fullName, setFullName] = useState('');
@@ -19,13 +22,8 @@ export default function AdminRegister() {
     setError('');
     setLoading(true);
     try {
-      await api.post('/auth/register-admin', {
-        fullName,
-        email,
-        phone,
-        password
-      });
-      toast.success('Admin registered successfully! You can now log in.');
+      await api.post('/auth/register-admin', { fullName, email, phone, password });
+      toast.success('Admin registered. You can sign in now.');
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
@@ -35,126 +33,152 @@ export default function AdminRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex flex-col justify-center items-center p-4 sm:p-4 md:p-8 relative overflow-hidden font-sans">
-      {/* Background Decorative Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-pastel-purple/60 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-pastel-pink/40 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-[20%] right-[10%] w-[30vw] h-[30vw] bg-pastel-blue/50 rounded-full blur-[100px] pointer-events-none" />
-
-      <div className="w-full max-w-md animate-[fadeIn_0.5s_ease-out] relative z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-brand-purple shadow-[0_10px_40px_rgba(105,65,198,0.3)] mb-6 transform hover:scale-105 transition-transform duration-300">
-            <Hexagon size={40} className="text-white" strokeWidth={1.5} />
-          </div>
-          <h1 className="text-2xl md:text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-2">System Setup</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-widest">Register Initial Admin</p>
+    <div className="flex min-h-screen flex-col bg-canvas">
+      <header className="flex h-16 items-center justify-between border-b border-line px-5 sm:px-8">
+        <div className="flex items-center gap-2.5">
+          <BrandMark size={28} />
+          <p className="text-[15px] font-extrabold tracking-tight text-ink">AMS</p>
         </div>
+        <Link
+          to="/login"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted transition-colors hover:text-ink"
+        >
+          <ArrowLeft size={14} /> Back to sign in
+        </Link>
+      </header>
 
-        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl rounded-[32px] p-4 md:p-8 sm:p-5 md:p-10 shadow-glass border border-white/60 dark:border-[#222430]/60 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 dark:bg-[#12141d]/40 rounded-bl-full blur-2xl -z-10 transition-transform duration-500 group-hover:scale-125" />
-          
-          <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 mb-8 flex items-center gap-2">
-            <ShieldCheck size={20} className="text-brand-purple" /> Admin Registration
-          </h2>
+      <main className="flex flex-1 justify-center px-5 py-10 sm:px-8 sm:py-14">
+        <div className="w-full max-w-[430px] animate-fade-up">
+          <div className="mb-7">
+            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 py-1 text-2xs font-semibold uppercase tracking-[0.1em] text-muted">
+              <ShieldCheck size={12} /> System setup
+            </span>
+            <h1 className="text-[24px] font-bold tracking-tight text-ink">Register an admin</h1>
+            <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
+              This creates the first administrator account for your institution. Later accounts are
+              managed from the user directory.
+            </p>
+          </div>
 
-          {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm font-bold mb-6 border border-red-100 flex items-start gap-3 animate-[fadeIn_0.3s_ease]">
-              <div className="w-5 h-5 mt-0.5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 text-red-500">!</div>
+          {error ? (
+            <div
+              role="alert"
+              className="mb-5 flex items-start gap-2.5 rounded-md border border-negative/25 bg-negative-soft px-3 py-2.5 text-[13px] font-medium text-negative"
+            >
+              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-negative text-2xs font-bold text-white">
+                !
+              </span>
               {error}
             </div>
-          )}
+          ) : null}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
-              <div className="relative group/input">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User size={18} className="text-gray-400 group-focus-within/input:text-brand-purple transition-colors" />
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-lg border border-line bg-surface p-5 shadow-xs sm:p-6"
+          >
+            <div className="space-y-4">
+              <Field label="Full name" htmlFor="reg-name" required>
+                <div className="relative">
+                  <User
+                    size={15}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
+                  />
+                  <Input
+                    id="reg-name"
+                    className="h-10 pl-9"
+                    placeholder="Jane Doe"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    autoFocus
+                    required
+                  />
                 </div>
-                <input
-                  type="text"
-                  className="w-full h-10 md:h-14 pl-12 pr-4 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
-                  placeholder="John Doe"
-                  value={fullName} onChange={e => setFullName(e.target.value)} required autoFocus
-                />
-              </div>
+              </Field>
+
+              <Field label="Email address" htmlFor="reg-email" required>
+                <div className="relative">
+                  <Mail
+                    size={15}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
+                  />
+                  <Input
+                    id="reg-email"
+                    type="email"
+                    className="h-10 pl-9"
+                    placeholder="admin@institution.edu"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </Field>
+
+              <Field label="Phone number" htmlFor="reg-phone" hint="Optional, used for account recovery.">
+                <div className="relative">
+                  <Phone
+                    size={15}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
+                  />
+                  <Input
+                    id="reg-phone"
+                    className="h-10 pl-9"
+                    placeholder="+91 98765 43210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </Field>
+
+              <Field label="Password" htmlFor="reg-password" required>
+                <div className="relative">
+                  <Lock
+                    size={15}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
+                  />
+                  <Input
+                    id="reg-password"
+                    type={showPassword ? 'text' : 'password'}
+                    className="h-10 pl-9 pr-10"
+                    placeholder="At least 8 characters"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="new-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-faint transition-colors hover:text-ink"
+                  >
+                    {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                </div>
+              </Field>
             </div>
 
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
-              <div className="relative group/input">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail size={18} className="text-gray-400 group-focus-within/input:text-brand-purple transition-colors" />
-                </div>
-                <input
-                  type="email"
-                  className="w-full h-10 md:h-14 pl-12 pr-4 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
-                  placeholder="admin@example.com"
-                  value={email} onChange={e => setEmail(e.target.value)} required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
-              <div className="relative group/input">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Phone size={18} className="text-gray-400 group-focus-within/input:text-brand-purple transition-colors" />
-                </div>
-                <input
-                  type="text"
-                  className="w-full h-10 md:h-14 pl-12 pr-4 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
-                  placeholder="+1 (555) 000-0000"
-                  value={phone} onChange={e => setPhone(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Password</label>
-              <div className="relative group/input">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock size={18} className="text-gray-400 group-focus-within/input:text-brand-purple transition-colors" />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="w-full h-10 md:h-14 pl-12 pr-12 rounded-2xl bg-white/80 dark:bg-[#12141d]/80 border-2 border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all shadow-sm placeholder-gray-400"
-                  placeholder="Enter password"
-                  value={password} onChange={e => setPassword(e.target.value)} required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-purple focus:outline-none transition-colors"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            <button
+            <Button
               type="submit"
+              variant="primary"
+              size="lg"
               disabled={loading}
-              className="w-full h-10 md:h-14 mt-6 bg-brand-purple hover:bg-brand-purple/90 text-white rounded-2xl font-bold text-sm shadow-[0_4px_14px_rgba(105,65,198,0.39)] transition-all duration-300 flex items-center justify-center gap-2 group/btn disabled:opacity-70 disabled:cursor-not-allowed"
+              className="mt-5 w-full"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <>
+                  <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-canvas/30 border-t-canvas" />
+                  Creating account
+                </>
               ) : (
                 <>
-                  Register Admin
-                  <ArrowRight size={18} className="text-white group-hover/btn:translate-x-1 transition-transform" />
+                  Create admin account
+                  <ArrowRight size={15} />
                 </>
               )}
-            </button>
+            </Button>
           </form>
-
-          <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#222430]/50 text-center">
-            <Link to="/login" className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-brand-purple transition-colors">
-              Already have an account? Log in
-            </Link>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

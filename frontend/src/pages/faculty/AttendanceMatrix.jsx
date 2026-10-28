@@ -1,31 +1,34 @@
 import { useState, useEffect, useRef } from 'react';
 import api from '../../services/api';
-import { Calendar, Users, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Calendar, ChevronLeft, ChevronRight, Download, TableProperties } from 'lucide-react';
+import Button from '../../components/ui/Button';
+import EmptyState from '../../components/ui/EmptyState';
+import { Select } from '../../components/ui/Field';
+import { cn } from '../../components/ui/cn';
+
+const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export default function AttendanceMatrix({ externalClassId, onExternalClassChange }) {
   const [classes, setClasses] = useState([]);
-  const [selectedClass, setSelectedClass] = useState(externalClassId ? externalClassId.toString() : '');
+  const [selectedClass, setSelectedClass] = useState(
+    externalClassId ? externalClassId.toString() : ''
+  );
   const [month, setMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
-  
+
   const [matrixData, setMatrixData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Month Picker State
   const [showPicker, setShowPicker] = useState(false);
   const [pickerYear, setPickerYear] = useState(() => new Date().getFullYear());
   const pickerRef = useRef(null);
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  // Handle click outside to close picker
   useEffect(() => {
     function handleClickOutside(event) {
-      if (pickerRef.current && !pickerRef.current.contains(event.target)) {
-        setShowPicker(false);
-      }
+      if (pickerRef.current && !pickerRef.current.contains(event.target)) setShowPicker(false);
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -38,21 +41,25 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
   }, [externalClassId]);
 
   useEffect(() => {
-    api.get('/classes').then(res => {
-      setClasses(res.data);
-      if (res.data.length > 0 && !selectedClass && !externalClassId) {
-        setSelectedClass(res.data[0].id.toString());
-        if (onExternalClassChange) onExternalClassChange(res.data[0].id.toString());
-      }
-    });
+    api
+      .get('/classes')
+      .then((res) => {
+        setClasses(res.data);
+        if (res.data.length > 0 && !selectedClass && !externalClassId) {
+          setSelectedClass(res.data[0].id.toString());
+          if (onExternalClassChange) onExternalClassChange(res.data[0].id.toString());
+        }
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     if (!selectedClass) return;
     setLoading(true);
-    api.get(`/dashboard/classes/${selectedClass}/matrix`, { params: { month } })
-      .then(res => setMatrixData(res.data))
-      .catch(console.error)
+    api
+      .get(`/dashboard/classes/${selectedClass}/matrix`, { params: { month } })
+      .then((res) => setMatrixData(res.data))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [selectedClass, month]);
 
@@ -63,7 +70,6 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
         params: { month },
         responseType: 'blob',
       });
-      
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -71,149 +77,206 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (error) {
+    } catch {
       toast.error('Failed to export matrix');
     }
   };
 
+  const hasRows = matrixData?.students?.length > 0;
+  const selectedLabel = `${monthNames[parseInt(month.split('-')[1], 10) - 1]} ${month.split('-')[0]}`;
+
   return (
-    <div className="mt-12 animate-[fadeIn_0.5s_ease-out]">
-      <div className="flex justify-between items-end mb-6">
+    <section className="rounded-lg border border-line bg-surface shadow-xs">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
         <div>
-          <h2 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight">Monthly Attendance</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">Comprehensive daily records and performance tracking</p>
+          <h2 className="text-[15px] font-bold text-ink">Monthly attendance</h2>
+          <p className="mt-0.5 text-xs text-muted">
+            Day-by-day register for the selected class.
+          </p>
         </div>
-        <button 
-          onClick={handleExport}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md transition-colors"
-        >
-          <Download size={16} /> Export to Excel
-        </button>
+        <Button variant="secondary" size="sm" onClick={handleExport}>
+          <Download size={14} /> Export
+        </Button>
+      </header>
+
+      <div className="flex flex-wrap items-end gap-3 border-b border-line bg-sunken/50 px-5 py-3.5">
+        {!externalClassId ? (
+          <div className="min-w-[220px] flex-1">
+            <label
+              htmlFor="matrix-class"
+              className="mb-1.5 block text-2xs font-bold uppercase tracking-[0.1em] text-faint"
+            >
+              Class
+            </label>
+            <Select
+              id="matrix-class"
+              value={selectedClass}
+              onChange={(e) => {
+                setSelectedClass(e.target.value);
+                if (onExternalClassChange) onExternalClassChange(e.target.value);
+              }}
+            >
+              {classes.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} — {c.section} ({c.academic_year})
+                </option>
+              ))}
+            </Select>
+          </div>
+        ) : null}
+
+        <div className="relative min-w-[180px]" ref={pickerRef}>
+          <span className="mb-1.5 block text-2xs font-bold uppercase tracking-[0.1em] text-faint">
+            Month
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              setPickerYear(parseInt(month.split('-')[0], 10));
+              setShowPicker((v) => !v);
+            }}
+            className="flex h-9 w-full items-center justify-between gap-2 rounded-md border border-line bg-surface px-3 text-[13px] font-medium text-ink shadow-xs transition-colors hover:border-line-strong"
+          >
+            {selectedLabel}
+            <Calendar size={14} className="text-faint" />
+          </button>
+
+          {showPicker ? (
+            <div className="absolute left-0 top-[calc(100%+6px)] z-50 w-60 animate-scale-in rounded-lg border border-line bg-surface p-3 shadow-pop">
+              <div className="mb-3 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setPickerYear((y) => y - 1)}
+                  className="flex h-7 w-7 items-center justify-center rounded-md text-muted hover:bg-sunken hover:text-ink"
+                  aria-label="Previous year"
+                >
+                  <ChevronLeft size={15} />
+                </button>
+                <span className="tnum text-[13px] font-bold text-ink">{pickerYear}</span>
+                <button
+                  type="button"
+                  onClick={() => setPickerYear((y) => y + 1)}
+                  className="flex h-7 w-7 items-center justify-center rounded-md text-muted hover:bg-sunken hover:text-ink"
+                  aria-label="Next year"
+                >
+                  <ChevronRight size={15} />
+                </button>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {monthNames.map((m, i) => {
+                  const value = `${pickerYear}-${String(i + 1).padStart(2, '0')}`;
+                  const isSelected = month === value;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => {
+                        setMonth(value);
+                        setShowPicker(false);
+                      }}
+                      className={cn(
+                        'rounded-md py-1.5 text-xs font-semibold transition-colors',
+                        isSelected
+                          ? 'bg-accent text-accent-ink'
+                          : 'text-muted hover:bg-sunken hover:text-ink'
+                      )}
+                    >
+                      {m}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        {hasRows ? (
+          <p className="ml-auto hidden text-2xs text-faint sm:block">
+            {matrixData.students.length} students · {matrixData.dates.length} sessions
+          </p>
+        ) : null}
       </div>
 
-      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass p-4 md:p-6 mb-8 relative z-20">
-        <div className="flex flex-wrap gap-4 md:gap-6 items-end">
-          {!externalClassId && (
-            <div className="flex-1 min-w-[200px]">
-              <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
-                <Users size={14} /> Select Class
-              </label>
-              <select
-                value={selectedClass} onChange={e => {
-                  setSelectedClass(e.target.value);
-                  if (onExternalClassChange) onExternalClassChange(e.target.value);
-                }}
-                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all appearance-none"
-              >
-                {classes.map(c => (
-                  <option key={c.id} value={c.id}>{c.name} - {c.section} ({c.academic_year})</option>
+      {loading ? (
+        <p className="px-5 py-12 text-center text-xs font-medium text-muted">Loading register…</p>
+      ) : !hasRows ? (
+        <EmptyState
+          icon={TableProperties}
+          title="Nothing recorded for this period"
+          description="Attendance appears here as soon as this class has its first marked session."
+        />
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-max border-collapse text-left">
+            <thead>
+              <tr className="bg-sunken">
+                <th className="sticky left-0 z-10 border-b border-r border-line bg-sunken px-3 py-2.5 text-2xs font-bold uppercase tracking-[0.08em] text-muted">
+                  #
+                </th>
+                <th className="border-b border-r border-line px-3 py-2.5 text-2xs font-bold uppercase tracking-[0.08em] text-muted">
+                  Roll no
+                </th>
+                <th className="border-b border-r border-line px-3 py-2.5 text-2xs font-bold uppercase tracking-[0.08em] text-muted">
+                  Name
+                </th>
+                {matrixData.dates.map((dateStr) => (
+                  <th
+                    key={dateStr}
+                    className="border-b border-r border-line px-2.5 py-2.5 text-center text-2xs font-bold text-muted"
+                  >
+                    {parseInt(dateStr.split('-')[2], 10)}
+                  </th>
                 ))}
-              </select>
-            </div>
-          )}
-          
-          <div className="flex-1 min-w-[200px] relative" ref={pickerRef}>
-            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-2">
-              <Calendar size={14} /> Select Month
-            </label>
-            <button
-              onClick={() => {
-                setPickerYear(parseInt(month.split('-')[0]));
-                setShowPicker(!showPicker);
-              }}
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all text-left flex justify-between items-center"
-            >
-              <span>{monthNames[parseInt(month.split('-')[1]) - 1]} {month.split('-')[0]}</span>
-              <Calendar size={16} className="text-gray-400" />
-            </button>
-            
-            {showPicker && (
-              <div className="absolute top-[105%] left-0 w-64 bg-white dark:bg-[#12141d] rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-slate-200 dark:border-[#222430] p-4 z-50 animate-[fadeIn_0.2s_ease-out]">
-                <div className="flex items-center justify-between mb-4">
-                  <button onClick={() => setPickerYear(y => y - 1)} className="p-1.5 hover:bg-slate-100 dark:bg-[#12141d] rounded-lg transition-colors"><ChevronLeft size={16} /></button>
-                  <span className="font-bold text-slate-900 dark:text-slate-100">{pickerYear}</span>
-                  <button onClick={() => setPickerYear(y => y + 1)} className="p-1.5 hover:bg-slate-100 dark:bg-[#12141d] rounded-lg transition-colors"><ChevronRight size={16} /></button>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {monthNames.map((m, i) => {
-                    const isSelected = month === `${pickerYear}-${String(i + 1).padStart(2, '0')}`;
+                <th className="border-b border-line bg-sunken px-3 py-2.5 text-center text-2xs font-bold uppercase tracking-[0.08em] text-muted">
+                  %
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {matrixData.students.map((s) => (
+                <tr key={s.rollNo} className="transition-colors hover:bg-sunken/60">
+                  <td className="sticky left-0 z-10 border-r border-line bg-surface px-3 py-2 text-2xs text-faint">
+                    {s.slNo}
+                  </td>
+                  <td className="whitespace-nowrap border-r border-line px-3 py-2 font-mono text-2xs text-muted">
+                    {s.rollNo}
+                  </td>
+                  <td className="whitespace-nowrap border-r border-line px-3 py-2 text-xs font-semibold text-ink">
+                    {s.name}
+                  </td>
+                  {matrixData.dates.map((dateStr) => {
+                    const status = s.attendance[dateStr];
                     return (
-                      <button
-                        key={m}
-                        onClick={() => {
-                          setMonth(`${pickerYear}-${String(i + 1).padStart(2, '0')}`);
-                          setShowPicker(false);
-                        }}
-                        className={`py-2 rounded-lg text-sm font-bold transition-all ${
-                          isSelected ? 'bg-brand-purple text-white shadow-md' : 'text-gray-600 dark:text-gray-400 hover:bg-slate-100 dark:bg-[#12141d]'
-                        }`}
+                      <td
+                        key={dateStr}
+                        className={cn(
+                          'border-r border-line px-2.5 py-2 text-center text-2xs font-bold',
+                          status === 'P' && 'bg-positive-soft text-positive',
+                          status === 'A' && 'bg-negative-soft text-negative',
+                          !status && 'text-faint'
+                        )}
                       >
-                        {m}
-                      </button>
+                        {status || '·'}
+                      </td>
                     );
                   })}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl border border-white/50 rounded-3xl shadow-glass overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center text-gray-400 font-medium">Loading matrix...</div>
-        ) : !matrixData || !matrixData.students || matrixData.students.length === 0 ? (
-          <div className="p-12 text-center text-gray-400 font-medium">No attendance data found for this period.</div>
-        ) : (
-          <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left border-collapse min-w-max">
-              <thead>
-                <tr className="bg-gradient-to-b from-gray-50 to-white/50 border-b border-slate-200 dark:border-[#222430]">
-                  <th className="px-4 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-slate-200 dark:border-[#222430]">Sl No</th>
-                  <th className="px-4 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-slate-200 dark:border-[#222430]">Roll No</th>
-                  <th className="px-4 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase border-r border-slate-200 dark:border-[#222430] shadow-[2px_0_10px_rgba(0,0,0,0.02)]">Name</th>
-                  
-                  {matrixData.dates.map(dateStr => (
-                    <th key={dateStr} className="px-3 py-4 text-xs font-bold text-gray-600 dark:text-gray-400 text-center border-r border-slate-200 dark:border-[#222430] bg-yellow-50/30">
-                      {parseInt(dateStr.split('-')[2])}
-                    </th>
-                  ))}
-                  
-                  <th className="px-4 py-4 text-xs font-black text-gray-700 dark:text-gray-300 uppercase bg-yellow-100/50 border-l border-slate-200 dark:border-[#222430] shadow-[-2px_0_10px_rgba(0,0,0,0.02)]">(%)</th>
+                  <td
+                    className={cn(
+                      'tnum px-3 py-2 text-center text-xs font-bold',
+                      matrixData.dates.length === 0 && 'text-faint',
+                      matrixData.dates.length > 0 && s.percentage >= 75 && 'bg-positive-soft text-positive',
+                      matrixData.dates.length > 0 && s.percentage >= 40 && s.percentage < 75 && 'bg-caution-soft text-caution',
+                      matrixData.dates.length > 0 && s.percentage < 40 && 'bg-negative-soft text-negative'
+                    )}
+                  >
+                    {matrixData.dates.length === 0 ? '—' : s.percentage.toFixed(1)}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-[#222430]">
-                {matrixData.students.map(s => (
-                  <tr key={s.rollNo} className="hover:bg-white/50 dark:bg-[#12141d]/50 transition-colors">
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-500 dark:text-gray-400 border-r border-slate-200 dark:border-[#222430]">{s.slNo}</td>
-                    <td className="px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-400 border-r border-slate-200 dark:border-[#222430]">{s.rollNo}</td>
-                    <td className="px-4 py-3 text-sm font-bold text-gray-800 dark:text-gray-200 border-r border-slate-200 dark:border-[#222430] shadow-[2px_0_10px_rgba(0,0,0,0.02)] whitespace-nowrap">{s.name}</td>
-                    
-                    {matrixData.dates.map(dateStr => {
-                      const status = s.attendance[dateStr];
-                      let cellClass = "px-3 py-3 text-sm font-bold text-center border-r border-slate-200 dark:border-[#222430] ";
-                      if (status === 'P') cellClass += "bg-[#C6E0B4] text-[#375623]"; // Excel green
-                      else if (status === 'A') cellClass += "bg-[#F8CBAD] text-[#C00000]"; // Excel red
-                      else cellClass += "bg-white dark:bg-[#12141d] text-gray-300";
-                      
-                      return (
-                        <td key={dateStr} className={cellClass}>
-                          {status || '-'}
-                        </td>
-                      );
-                    })}
-                    
-                    <td className={`px-4 py-3 text-sm font-black text-center border-l border-slate-200 dark:border-[#222430]
-                      ${s.percentage >= 75 ? 'bg-[#E2EFDA] text-[#375623]' : s.percentage >= 40 ? 'bg-[#FFF2CC] text-[#B08A22]' : 'bg-[#FCE4D6] text-[#C00000]'}`}>
-                      {s.percentage.toFixed(1)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   );
 }

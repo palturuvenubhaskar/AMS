@@ -1,30 +1,48 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Calendar as CalendarIcon, Save, Clock, ChevronRight, BookOpen, MapPin, User, X, Plus, Users, ArrowLeft, Settings } from 'lucide-react';
 import toast from 'react-hot-toast';
+import {
+  ArrowLeft,
+  BookOpen,
+  CalendarDays,
+  Clock,
+  MapPin,
+  Plus,
+  Save,
+  Settings,
+  UserRound,
+  Users,
+} from 'lucide-react';
+import {
+  Badge,
+  Button,
+  EmptyState,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  Select,
+} from '../../components/ui';
+import { cn } from '../../components/ui/cn';
 
-const DAYS = [1, 2, 3, 4, 5, 6]; // Monday to Saturday
+const DAYS = [1, 2, 3, 4, 5, 6];
 const DAY_NAMES = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default function TimetableSetup() {
-  const [view, setView] = useState('classes'); // 'classes' | 'timetable'
-  
+  const [view, setView] = useState('classes');
+
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
-  
-  // Data
+
   const [mappedSubjects, setMappedSubjects] = useState([]);
   const [faculties, setFaculties] = useState([]);
-  
-  // Timetable State
-  const [periods, setPeriods] = useState([]); // [{ startTime, endTime }]
-  const [grid, setGrid] = useState({}); // grid[day][periodIdx] = { subjectId, facultyId, room }
-  
-  // Modals
-  const [setupModal, setSetupModal] = useState(false);
-  const [cellModal, setCellModal] = useState(null); // { day, periodIdx, data }
 
-  // Setup Form State
+  const [periods, setPeriods] = useState([]);
+  const [grid, setGrid] = useState({});
+
+  const [setupModal, setSetupModal] = useState(false);
+  const [cellModal, setCellModal] = useState(null);
+
   const [setupCount, setSetupCount] = useState(6);
   const [setupPeriods, setSetupPeriods] = useState([]);
 
@@ -36,11 +54,11 @@ export default function TimetableSetup() {
     try {
       const [clsRes, facRes] = await Promise.all([
         api.get('/classes'),
-        api.get('/users?role=faculty')
+        api.get('/users?role=faculty'),
       ]);
       setClasses(clsRes.data);
       setFaculties(facRes.data);
-    } catch (err) {
+    } catch {
       toast.error('Failed to load initial data');
     }
   };
@@ -48,58 +66,52 @@ export default function TimetableSetup() {
   const handleClassClick = async (cls) => {
     setSelectedClass(cls);
     setView('timetable');
-    
+
     try {
-      // Fetch mapped subjects
       const subRes = await api.get(`/class-subjects/${cls.id}`);
       setMappedSubjects(subRes.data);
 
-      // Fetch existing timetable
       const ttRes = await api.get(`/timetables?classId=${cls.id}`);
       const entries = ttRes.data;
 
       if (entries.length === 0) {
-        // No timetable exists
         setPeriods([]);
         setGrid({});
       } else {
-        // Extract unique periods from entries
         const uniquePeriods = [];
-        entries.forEach(e => {
+        entries.forEach((e) => {
           const st = e.start_time.substring(0, 5);
           const et = e.end_time.substring(0, 5);
-          if (!uniquePeriods.find(p => p.startTime === st && p.endTime === et)) {
+          if (!uniquePeriods.find((p) => p.startTime === st && p.endTime === et)) {
             uniquePeriods.push({ startTime: st, endTime: et });
           }
         });
-        // Sort periods by start time
         uniquePeriods.sort((a, b) => a.startTime.localeCompare(b.startTime));
         setPeriods(uniquePeriods);
 
-        // Reconstruct Grid
         const initialGrid = {};
-        DAYS.forEach(day => {
+        DAYS.forEach((day) => {
           initialGrid[day] = {};
           uniquePeriods.forEach((_, idx) => {
             initialGrid[day][idx] = { subjectId: '', facultyId: '', room: '' };
           });
         });
 
-        entries.forEach(e => {
+        entries.forEach((e) => {
           const st = e.start_time.substring(0, 5);
-          const pIdx = uniquePeriods.findIndex(p => p.startTime === st);
+          const pIdx = uniquePeriods.findIndex((p) => p.startTime === st);
           if (pIdx !== -1 && DAYS.includes(e.day_of_week)) {
             initialGrid[e.day_of_week][pIdx] = {
               subjectId: e.subject_id,
               facultyId: e.faculty_id || '',
-              room: e.room || ''
+              room: e.room || '',
             };
           }
         });
 
         setGrid(initialGrid);
       }
-    } catch (err) {
+    } catch {
       toast.error('Failed to load class timetable');
     }
   };
@@ -109,39 +121,43 @@ export default function TimetableSetup() {
     if (periods.length > 0) {
       setSetupPeriods([...periods]);
     } else {
-      setSetupPeriods(Array(6).fill().map((_, i) => ({ startTime: '09:00', endTime: '10:00' })));
+      setSetupPeriods(Array(6).fill({ startTime: '09:00', endTime: '10:00' }));
     }
     setSetupModal(true);
   };
 
   const handleSetupCountChange = (count) => {
-    const val = parseInt(count) || 1;
+    const val = parseInt(count, 10) || 1;
     setSetupCount(val);
-    setSetupPeriods(Array(val).fill().map((_, i) => ({ 
-      startTime: setupPeriods[i]?.startTime || '09:00', 
-      endTime: setupPeriods[i]?.endTime || '10:00' 
-    })));
+    setSetupPeriods(
+      Array(val)
+        .fill()
+        .map((_, i) => ({
+          startTime: setupPeriods[i]?.startTime || '09:00',
+          endTime: setupPeriods[i]?.endTime || '10:00',
+        }))
+    );
   };
 
   const updateSetupPeriod = (idx, field, val) => {
     const newP = [...setupPeriods];
-    newP[idx][field] = val;
+    newP[idx] = { ...newP[idx], [field]: val };
     setSetupPeriods(newP);
   };
 
   const applySetup = () => {
-    // Validate
     for (const p of setupPeriods) {
-      if (!p.startTime || !p.endTime) return toast.error('All periods must have times set.');
+      if (!p.startTime || !p.endTime) {
+        toast.error('Every period needs a start and end time.');
+        return;
+      }
     }
-    
-    // Sort
+
     const sorted = [...setupPeriods].sort((a, b) => a.startTime.localeCompare(b.startTime));
     setPeriods(sorted);
 
-    // Re-init grid but try to preserve data if times overlap (simple reset for now to avoid bugs)
     const newGrid = {};
-    DAYS.forEach(day => {
+    DAYS.forEach((day) => {
       newGrid[day] = {};
       sorted.forEach((_, idx) => {
         newGrid[day][idx] = { subjectId: '', facultyId: '', room: '' };
@@ -149,41 +165,35 @@ export default function TimetableSetup() {
     });
     setGrid(newGrid);
     setSetupModal(false);
-    toast.success('Periods configured. You can now build the grid.');
+    toast.success('Periods configured. You can build the grid now.');
   };
 
   const openCellModal = (day, periodIdx) => {
-    setCellModal({ day, periodIdx, data: { ...(grid[day]?.[periodIdx] || { subjectId: '', facultyId: '', room: '' }) } });
+    setCellModal({
+      day,
+      periodIdx,
+      data: { ...(grid[day]?.[periodIdx] || { subjectId: '', facultyId: '', room: '' }) },
+    });
   };
 
   const handleSubjectSelectInModal = (subjectId) => {
-    const defaultMapping = mappedSubjects.find(s => s.subject_id === parseInt(subjectId));
-    setCellModal(prev => ({
+    const defaultMapping = mappedSubjects.find((s) => s.subject_id === parseInt(subjectId, 10));
+    setCellModal((prev) => ({
       ...prev,
-      data: {
-        ...prev.data,
-        subjectId,
-        facultyId: defaultMapping?.faculty_id || ''
-      }
+      data: { ...prev.data, subjectId, facultyId: defaultMapping?.faculty_id || '' },
     }));
   };
 
   const saveCellData = (e) => {
     e.preventDefault();
     const { day, periodIdx, data } = cellModal;
-    setGrid(prev => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [periodIdx]: data
-      }
-    }));
+    setGrid((prev) => ({ ...prev, [day]: { ...prev[day], [periodIdx]: data } }));
     setCellModal(null);
   };
 
   const saveTimetable = async () => {
     const slots = [];
-    DAYS.forEach(day => {
+    DAYS.forEach((day) => {
       periods.forEach((p, idx) => {
         const cellData = grid[day]?.[idx];
         if (cellData && cellData.subjectId) {
@@ -193,150 +203,165 @@ export default function TimetableSetup() {
             room: cellData.room || null,
             dayOfWeek: day,
             startTime: p.startTime,
-            endTime: p.endTime
+            endTime: p.endTime,
           });
         }
       });
     });
 
     try {
-      const toastId = toast.loading('Saving timetable...');
+      const toastId = toast.loading('Saving timetable…');
       await api.post('/timetables', { classId: selectedClass.id, slots });
-      toast.success('Timetable saved successfully!', { id: toastId });
+      toast.success('Timetable saved', { id: toastId });
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to save timetable');
     }
   };
 
   return (
-    <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans pb-12">
-      {/* Background Decorative Ambient Glows */}
-      <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-pastel-purple/40 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="fixed bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-pastel-pink/30 rounded-full blur-[120px] pointer-events-none -z-10" />
+    <div className="space-y-5">
+      <PageHeader
+        eyebrow={view === 'classes' ? 'Academics' : 'Timetable'}
+        title={view === 'classes' ? 'Timetable' : `${selectedClass?.name} — ${selectedClass?.section}`}
+        description={
+          view === 'classes'
+            ? 'Pick a class to build or adjust its weekly schedule.'
+            : `Semester ${selectedClass?.semester} · ${periods.length} periods configured`
+        }
+        actions={
+          view === 'classes' ? null : (
+            <>
+              <Button variant="ghost" onClick={() => setView('classes')}>
+                <ArrowLeft size={14} /> All classes
+              </Button>
+              <Button variant="secondary" onClick={openSetupModal}>
+                <Settings size={14} /> Periods
+              </Button>
+              <Button variant="primary" onClick={saveTimetable} disabled={periods.length === 0}>
+                <Save size={14} /> Save
+              </Button>
+            </>
+          )
+        }
+      />
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl p-4 md:p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass">
-        <div className="flex items-center gap-4">
-          {view === 'timetable' && (
-            <button 
-              onClick={() => setView('classes')}
-              className="w-10 md:w-12 h-10 md:h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] text-gray-500 dark:text-gray-400 hover:text-brand-purple shadow-sm transition-all"
-            >
-              <ArrowLeft size={24} />
-            </button>
-          )}
-          <div className="w-10 md:w-14 h-10 md:h-14 bg-pastel-blue rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
-            <CalendarIcon size={28} strokeWidth={2.5} />
+      {view === 'classes' ? (
+        classes.length === 0 ? (
+          <div className="rounded-lg border border-line bg-surface shadow-xs">
+            <EmptyState
+              icon={CalendarDays}
+              title="No classes to schedule"
+              description="Create a class first, then return here to build its timetable."
+            />
           </div>
-          <div>
-            <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">
-              {view === 'classes' ? 'Timetable Management' : `Timetable: ${selectedClass?.name} - ${selectedClass?.section}`}
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm font-bold">
-              {view === 'classes' ? 'Select a class to view or edit its schedule' : `Semester ${selectedClass?.semester}`}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* VIEW 1: Class List */}
-      {view === 'classes' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-          {classes.map(cls => (
-            <div 
-              key={cls.id}
-              onClick={() => handleClassClick(cls)}
-              className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-md p-4 md:p-8 rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass hover:shadow-glass-hover hover:-translate-y-1 hover:border-white transition-all cursor-pointer group"
-            >
-              <div className="flex justify-between items-start mb-6">
-                <div className="w-10 md:w-14 h-10 md:h-14 bg-pastel-purple rounded-2xl flex items-center justify-center text-brand-purple shadow-sm group-hover:scale-105 transition-transform">
-                  <Users size={28} />
-                </div>
-                <div className="bg-white dark:bg-[#12141d] text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
-                  Sem {cls.semester}
-                </div>
-              </div>
-              <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-1">{cls.name}</h3>
-              <p className="text-gray-500 dark:text-gray-400 font-bold">Section {cls.section}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* VIEW 2: Timetable Grid */}
-      {view === 'timetable' && (
-        <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-2xl rounded-[32px] border border-white/60 dark:border-[#222430]/60 shadow-glass overflow-hidden animate-[fadeIn_0.3s]">
-          {/* Toolbar */}
-          <div className="p-4 md:p-8 border-b border-white/40 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white/40 dark:bg-[#12141d]/40">
-            <div>
-              <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl">Weekly Schedule</h3>
-              <p className="text-gray-500 dark:text-gray-400 text-sm font-bold mt-1">Click any cell to edit. Save when done.</p>
-            </div>
-            <div className="flex gap-3">
-              <button 
-                onClick={openSetupModal}
-                className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold bg-white dark:bg-[#12141d] text-gray-700 dark:text-gray-300 hover:bg-slate-50 dark:bg-[#050505] shadow-sm border border-white transition-all flex items-center gap-2 hover:shadow-md"
+        ) : (
+          <div className="stagger grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {classes.map((cls) => (
+              <button
+                key={cls.id}
+                type="button"
+                onClick={() => handleClassClick(cls)}
+                className="group rounded-lg border border-line bg-surface p-4 text-left shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-md"
               >
-                <Settings size={18} /> Setup Periods
-              </button>
-              <button 
-                onClick={saveTimetable}
-                disabled={periods.length === 0}
-                className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass hover:shadow-glass-hover transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Save size={18} /> Save Timetable
-              </button>
-            </div>
-          </div>
-
-          <div className="p-4 md:p-8 overflow-x-auto">
-            {periods.length === 0 ? (
-              <div className="py-24 text-center flex flex-col items-center">
-                <div className="w-20 h-20 bg-white dark:bg-[#12141d] rounded-[32px] shadow-sm flex items-center justify-center text-gray-300 mb-6 border border-white">
-                  <CalendarIcon size={40} />
+                <div className="mb-4 flex items-start justify-between">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-md bg-sunken text-muted transition-colors group-hover:bg-accent-soft group-hover:text-accent">
+                    <Users size={16} />
+                  </span>
+                  <Badge tone="outline">Sem {cls.semester}</Badge>
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100 mb-2">No Schedule Configured</h3>
-                <p className="text-gray-500 dark:text-gray-400 font-bold max-w-md">This class does not have a timetable yet. Click "Setup Periods" above to define the time slots and start building.</p>
-              </div>
-            ) : (
-              <table className="w-full border-separate border-spacing-2 min-w-[800px]">
+                <p className="text-[15px] font-bold text-ink">{cls.name}</p>
+                <p className="mt-0.5 text-xs text-muted">
+                  Section {cls.section} · {cls.department_code}
+                </p>
+              </button>
+            ))}
+          </div>
+        )
+      ) : (
+        <section className="overflow-hidden rounded-lg border border-line bg-surface shadow-xs">
+          {periods.length === 0 ? (
+            <EmptyState
+              icon={Clock}
+              title="No periods configured"
+              description="Define how many periods the day has and their times, then start filling in the grid."
+              action={
+                <Button variant="primary" size="sm" onClick={openSetupModal}>
+                  <Settings size={14} /> Setup periods
+                </Button>
+              }
+            />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    <th className="w-24"></th>
+                    <th className="sticky left-0 z-10 w-[92px] border-b border-r border-line bg-sunken px-3 py-2.5 text-left text-2xs font-bold uppercase tracking-[0.08em] text-muted">
+                      Day
+                    </th>
                     {periods.map((p, idx) => (
-                      <th key={idx} className="p-4 bg-white dark:bg-[#12141d] rounded-2xl shadow-sm text-center border border-white/60 dark:border-[#222430]/60">
-                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Period {idx + 1}</div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-slate-100 mt-1 bg-slate-50 dark:bg-[#050505] px-2 py-1 rounded-lg inline-block">{p.startTime} - {p.endTime}</div>
+                      <th
+                        key={idx}
+                        className="border-b border-r border-line bg-sunken px-3 py-2 text-center last:border-r-0"
+                      >
+                        <span className="block text-2xs font-bold uppercase tracking-[0.08em] text-faint">
+                          P{idx + 1}
+                        </span>
+                        <span className="tnum block text-2xs font-medium text-muted">
+                          {p.startTime}–{p.endTime}
+                        </span>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {DAYS.map(day => (
+                  {DAYS.map((day) => (
                     <tr key={day}>
-                      <td className="p-4 bg-white dark:bg-[#12141d] rounded-2xl shadow-sm text-center border border-white/60 dark:border-[#222430]/60 font-black text-gray-500 dark:text-gray-400 text-sm">{DAY_NAMES[day].slice(0, 3)}</td>
+                      <td className="sticky left-0 z-10 border-b border-r border-line bg-surface px-3 py-2 text-xs font-semibold text-ink">
+                        {DAY_NAMES[day].slice(0, 3)}
+                      </td>
                       {periods.map((_, idx) => {
                         const cell = grid[day]?.[idx] || {};
-                        const subject = mappedSubjects.find(s => s.subject_id === parseInt(cell.subjectId));
-                        const faculty = faculties.find(f => f.id === parseInt(cell.facultyId));
-                        
+                        const subject = mappedSubjects.find(
+                          (s) => s.subject_id === parseInt(cell.subjectId, 10)
+                        );
+                        const faculty = faculties.find(
+                          (f) => f.id === parseInt(cell.facultyId, 10)
+                        );
+
                         return (
-                          <td 
-                            key={idx} 
-                            className="p-0 h-28 align-top group"
-                            onClick={() => openCellModal(day, idx)}
+                          <td
+                            key={idx}
+                            className="h-[74px] border-b border-r border-line p-1.5 align-top last:border-r-0"
                           >
-                            {cell.subjectId ? (
-                              <div className="w-full h-full bg-pastel-blue/30 border border-pastel-blue rounded-2xl p-3 flex flex-col gap-1.5 cursor-pointer hover:bg-pastel-blue/50 transition-colors relative shadow-sm">
-                                <div className="font-black text-sm text-blue-900 leading-tight pr-4 truncate">{subject?.subject_code || 'Unknown'}</div>
-                                <div className="text-[10px] font-bold text-blue-700 flex items-center gap-1 truncate"><User size={10}/> {faculty?.full_name || 'Unassigned'}</div>
-                                {cell.room && <div className="text-[10px] font-bold text-blue-600 flex items-center gap-1"><MapPin size={10}/> Room {cell.room}</div>}
-                              </div>
-                            ) : (
-                              <div className="w-full h-full border-2 border-dashed border-white/60 dark:border-[#222430]/60 bg-white/30 rounded-2xl flex items-center justify-center text-gray-400 cursor-pointer hover:border-brand-purple/40 hover:bg-brand-purple/5 hover:text-brand-purple transition-all shadow-sm">
-                                <Plus size={24} />
-                              </div>
-                            )}
+                            <button
+                              type="button"
+                              onClick={() => openCellModal(day, idx)}
+                              className={cn(
+                                'flex h-full w-full flex-col justify-center gap-0.5 rounded-md px-2 py-1.5 text-left transition-colors',
+                                cell.subjectId
+                                  ? 'bg-accent-soft hover:bg-accent-soft/70'
+                                  : 'border border-dashed border-line text-faint hover:border-accent/40 hover:bg-accent-soft/40 hover:text-accent'
+                              )}
+                            >
+                              {cell.subjectId ? (
+                                <>
+                                  <span className="truncate text-2xs font-bold text-accent">
+                                    {subject?.subject_code || 'Subject'}
+                                  </span>
+                                  <span className="flex items-center gap-1 truncate text-2xs text-muted">
+                                    <UserRound size={9} />
+                                    {faculty?.full_name?.split(' ')[0] || 'Unassigned'}
+                                  </span>
+                                  {cell.room ? (
+                                    <span className="flex items-center gap-1 truncate text-2xs text-faint">
+                                      <MapPin size={9} /> {cell.room}
+                                    </span>
+                                  ) : null}
+                                </>
+                              ) : (
+                                <Plus size={14} className="mx-auto" />
+                              )}
+                            </button>
                           </td>
                         );
                       })}
@@ -344,112 +369,149 @@ export default function TimetableSetup() {
                   ))}
                 </tbody>
               </table>
-            )}
-          </div>
-        </div>
+            </div>
+          )}
+        </section>
       )}
 
-      {/* Setup Periods Modal */}
-      {setupModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
-          <div className="bg-white/80 dark:bg-[#12141d]/80 backdrop-blur-2xl rounded-[32px] shadow-glass border border-white w-full max-w-3xl overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-4 md:px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
-              <h3 className="font-black text-slate-900 dark:text-slate-100 text-xl flex items-center gap-2"><Clock className="text-brand-purple"/> Setup Time Slots</h3>
-              <button onClick={() => setSetupModal(false)} className="w-10 h-10 bg-white dark:bg-[#12141d] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors"><X size={20} /></button>
-            </div>
-            
-            <div className="p-4 md:p-8 max-h-[70vh] overflow-y-auto">
-              <div className="mb-8">
-                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Number of Periods</label>
-                <input 
-                  type="number" min="1" max="10"
-                  className="w-32 bg-white dark:bg-[#12141d] border border-transparent text-slate-900 dark:text-slate-100 text-xl font-black rounded-2xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/30 transition-all text-center shadow-sm"
-                  value={setupCount} onChange={e => handleSetupCountChange(e.target.value)}
-                />
-              </div>
+      {/* ── period setup ── */}
+      <Modal
+        open={setupModal}
+        onClose={() => setSetupModal(false)}
+        title="Setup periods"
+        description="Changing the number of periods resets the grid for this class."
+        size="lg"
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setSetupModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={applySetup}>
+              Apply periods
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <Field label="Number of periods per day" htmlFor="period-count" className="max-w-[140px]">
+            <Input
+              id="period-count"
+              type="number"
+              min="1"
+              max="10"
+              value={setupCount}
+              onChange={(e) => handleSetupCountChange(e.target.value)}
+              className="text-center font-semibold"
+            />
+          </Field>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-                {setupPeriods.map((p, idx) => (
-                  <div key={idx} className="bg-white dark:bg-[#12141d] p-5 rounded-3xl shadow-sm border border-white/50 hover:shadow-glass-hover transition-all">
-                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Period {idx + 1}</div>
-                    <div className="flex gap-2">
-                      <div className="w-full">
-                        <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Start</label>
-                        <input type="time" value={p.startTime || ''} onChange={e => updateSetupPeriod(idx, 'startTime', e.target.value)} className="w-full bg-slate-50 dark:bg-[#050505] border border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:bg-white dark:bg-[#12141d]" />
-                      </div>
-                      <div className="w-full">
-                        <label className="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">End</label>
-                        <input type="time" value={p.endTime || ''} onChange={e => updateSetupPeriod(idx, 'endTime', e.target.value)} className="w-full bg-slate-50 dark:bg-[#050505] border border-transparent text-slate-900 dark:text-slate-100 text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:bg-white dark:bg-[#12141d]" />
-                      </div>
-                    </div>
-                  </div>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3">
+            {setupPeriods.map((p, idx) => (
+              <div key={idx} className="rounded-md border border-line bg-sunken/60 p-3">
+                <p className="mb-2 text-2xs font-bold uppercase tracking-[0.1em] text-faint">
+                  Period {idx + 1}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="time"
+                    aria-label={`Period ${idx + 1} start`}
+                    value={p.startTime || ''}
+                    onChange={(e) => updateSetupPeriod(idx, 'startTime', e.target.value)}
+                    className="h-8 px-2 text-xs"
+                  />
+                  <span className="text-faint">–</span>
+                  <Input
+                    type="time"
+                    aria-label={`Period ${idx + 1} end`}
+                    value={p.endTime || ''}
+                    onChange={(e) => updateSetupPeriod(idx, 'endTime', e.target.value)}
+                    className="h-8 px-2 text-xs"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── cell editor ── */}
+      <Modal
+        open={Boolean(cellModal)}
+        onClose={() => setCellModal(null)}
+        title={
+          cellModal ? `${DAY_NAMES[cellModal.day]} · Period ${cellModal.periodIdx + 1}` : 'Slot'
+        }
+        size="sm"
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setCellModal(null)}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form="cell-form"
+              variant={cellModal?.data.subjectId ? 'primary' : 'danger'}
+            >
+              {cellModal?.data.subjectId ? 'Save slot' : 'Clear slot'}
+            </Button>
+          </>
+        }
+      >
+        {cellModal ? (
+          <form id="cell-form" onSubmit={saveCellData} className="space-y-4">
+            <Field label="Subject" htmlFor="cell-subject" required>
+              <Select
+                id="cell-subject"
+                value={cellModal.data.subjectId}
+                onChange={(e) => handleSubjectSelectInModal(e.target.value)}
+              >
+                <option value="">Free period</option>
+                {mappedSubjects.map((s) => (
+                  <option key={s.subject_id} value={s.subject_id}>
+                    {s.subject_code} — {s.subject_name}
+                  </option>
                 ))}
+              </Select>
+            </Field>
+
+            {cellModal.data.subjectId ? (
+              <div className="animate-fade-in space-y-4">
+                <Field label="Faculty" htmlFor="cell-faculty">
+                  <Select
+                    id="cell-faculty"
+                    value={cellModal.data.facultyId}
+                    onChange={(e) =>
+                      setCellModal((p) => ({ ...p, data: { ...p.data, facultyId: e.target.value } }))
+                    }
+                  >
+                    <option value="">Select faculty…</option>
+                    {faculties.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.full_name}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+
+                <Field label="Room" htmlFor="cell-room">
+                  <Input
+                    id="cell-room"
+                    value={cellModal.data.room}
+                    onChange={(e) =>
+                      setCellModal((p) => ({ ...p, data: { ...p.data, room: e.target.value } }))
+                    }
+                    placeholder="101A"
+                  />
+                </Field>
               </div>
-            </div>
-
-            <div className="p-4 md:p-6 border-t border-white/50 bg-white/40 dark:bg-[#12141d]/40 flex justify-end gap-3">
-              <button onClick={() => setSetupModal(false)} className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold text-gray-600 dark:text-gray-400 bg-white dark:bg-[#12141d] hover:bg-slate-50 dark:bg-[#050505] shadow-sm border border-white transition-all">Cancel</button>
-              <button onClick={applySetup} className="px-4 md:px-6 py-3 rounded-2xl text-sm font-bold bg-gray-900 hover:bg-gray-800 text-white shadow-glass transition-all">Apply Periods</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cell Editor Modal */}
-      {cellModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
-          <div className="bg-white/90 backdrop-blur-3xl rounded-[32px] shadow-glass border border-white w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-4 md:px-8 py-6 border-b border-white/50 flex justify-between items-center bg-white/40 dark:bg-[#12141d]/40">
-              <h3 className="font-black text-slate-900 dark:text-slate-100 text-lg">{DAY_NAMES[cellModal.day]} <span className="text-gray-400 font-bold">•</span> P{cellModal.periodIdx + 1}</h3>
-              <button onClick={() => setCellModal(null)} className="w-10 h-10 bg-white dark:bg-[#12141d] rounded-xl shadow-sm flex items-center justify-center text-gray-400 hover:text-slate-900 dark:text-slate-100 transition-colors"><X size={20} /></button>
-            </div>
-            <form onSubmit={saveCellData} className="p-4 md:p-8 space-y-5">
-              <div>
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><BookOpen size={12}/> Subject</label>
-                <select 
-                  className="w-full bg-white dark:bg-[#12141d] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all appearance-none"
-                  value={cellModal.data.subjectId} onChange={e => handleSubjectSelectInModal(e.target.value)}
-                >
-                  <option value="">-- Free Period --</option>
-                  {mappedSubjects.map(s => <option key={s.subject_id} value={s.subject_id}>{s.subject_code} - {s.subject_name}</option>)}
-                </select>
-              </div>
-
-              {cellModal.data.subjectId && (
-                <>
-                  <div className="animate-[fadeIn_0.2s_ease-out]">
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><User size={12}/> Assigned Faculty</label>
-                    <select 
-                      className="w-full bg-white dark:bg-[#12141d] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all appearance-none"
-                      value={cellModal.data.facultyId} onChange={e => setCellModal(p => ({...p, data: {...p.data, facultyId: e.target.value}}))}
-                    >
-                      <option value="">-- Select Faculty --</option>
-                      {faculties.map(f => <option key={f.id} value={f.id}>{f.full_name}</option>)}
-                    </select>
-                  </div>
-                  
-                  <div className="animate-[fadeIn_0.2s_ease-out]">
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5"><MapPin size={12}/> Room Number</label>
-                    <input 
-                      type="text"
-                      className="w-full bg-white dark:bg-[#12141d] border border-transparent shadow-sm text-slate-900 dark:text-slate-100 text-sm font-bold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/10 focus:border-brand-purple/20 transition-all"
-                      value={cellModal.data.room} onChange={e => setCellModal(p => ({...p, data: {...p.data, room: e.target.value}}))} placeholder="e.g. 101A"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="flex justify-end gap-3 mt-8 pt-4">
-                <button type="submit" className={`w-full py-4 rounded-2xl text-sm font-black shadow-glass transition-all ${
-                  cellModal.data.subjectId ? 'bg-gray-900 hover:bg-gray-800 text-white' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-100 shadow-none'
-                }`}>
-                  {cellModal.data.subjectId ? 'Save Assignment' : 'Clear Slot'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            ) : (
+              <p className="flex items-center gap-2 rounded-md bg-sunken px-3 py-2.5 text-xs text-muted">
+                <BookOpen size={13} /> Leaving this empty marks the slot as a free period.
+              </p>
+            )}
+          </form>
+        ) : null}
+      </Modal>
     </div>
   );
 }

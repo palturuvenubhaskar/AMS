@@ -1,19 +1,38 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { GraduationCap, Plus, Pencil, Trash2, X } from 'lucide-react';
+import { GraduationCap, Pencil, Plus, Trash2, Users } from 'lucide-react';
+import {
+  Badge,
+  Button,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  Select,
+  Table,
+  TableEmpty,
+  TableShell,
+  TBody,
+  Td,
+  Th,
+  THead,
+  TR,
+} from '../../components/ui';
+
+const emptyForm = { departmentId: '', name: '', section: '', semester: '', academicYear: '' };
 
 export default function AdminClasses() {
   const [classes, setClasses] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ departmentId:'', name:'', section:'', semester:'', academicYear:'' });
+  const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { 
-    api.get('/departments').then(r => setDepartments(r.data)); 
-    fetch(); 
+  useEffect(() => {
+    api.get('/departments').then((r) => setDepartments(r.data)).catch(() => {});
+    fetch();
   }, []);
 
   const fetch = async () => {
@@ -21,7 +40,7 @@ export default function AdminClasses() {
     try {
       const r = await api.get('/classes');
       setClasses(r.data);
-    } catch (err) {
+    } catch {
       toast.error('Failed to load classes');
     }
     setLoading(false);
@@ -32,163 +51,222 @@ export default function AdminClasses() {
     try {
       if (editing) await api.put(`/classes/${editing.id}`, form);
       else await api.post('/classes', form);
-      toast.success(editing ? 'Class Updated' : 'Class Created');
-      fetch(); setModal(false); setEditing(null);
-    } catch (err) { toast.error(err.response?.data?.error || 'Failed'); }
+      toast.success(editing ? 'Class updated' : 'Class created');
+      fetch();
+      setModal(false);
+      setEditing(null);
+      setForm(emptyForm);
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Could not save class');
+    }
   };
 
   const del = async (id) => {
-    if (!confirm('Delete this class?')) return;
-    try { await api.delete(`/classes/${id}`); toast.success('Deleted'); fetch(); }
-    catch (err) { toast.error(err.response?.data?.error || 'Failed'); }
+    if (!confirm('Delete this class? Students in it will lose their section.')) return;
+    try {
+      await api.delete(`/classes/${id}`);
+      toast.success('Class deleted');
+      fetch();
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Could not delete class');
+    }
+  };
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm(emptyForm);
+    setModal(true);
+  };
+
+  const openEdit = (c) => {
+    setEditing(c);
+    setForm({
+      departmentId: c.department_id,
+      name: c.name,
+      section: c.section,
+      semester: c.semester,
+      academicYear: c.academic_year,
+    });
+    setModal(true);
   };
 
   return (
-    <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-4 md:p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-        <div className="flex items-center gap-4">
-          <div className="w-10 md:w-12 h-10 md:h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
-            <GraduationCap size={24} />
-          </div>
-          <div>
-            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Classes</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Manage {classes.length} class sections</p>
-          </div>
-        </div>
-        
-        <button 
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-indigo-600/20 transition-all flex items-center gap-2"
-          onClick={() => { setEditing(null); setForm({departmentId:'',name:'',section:'',semester:'',academicYear:''}); setModal(true); }}
-        >
-          <Plus size={18} /> Add Class
-        </button>
-      </div>
+    <div className="space-y-5">
+      <PageHeader
+        eyebrow="Academics"
+        title="Classes"
+        description="Every section that attendance is taken for."
+        actions={
+          <Button variant="primary" onClick={openCreate}>
+            <Plus size={15} /> New class
+          </Button>
+        }
+      />
 
-      <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center text-gray-400 font-medium">Loading classes...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[800px]">
-              <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Dept</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Name</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Section</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Semester</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Year</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-center">Students</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {classes.map(c => (
-                  <tr key={c.id} className="group hover:bg-indigo-50/30 transition-colors border-b border-gray-50 last:border-0">
-                    <td className="px-4 md:px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-palette-light/20 text-palette-dark border border-blue-200 text-xs font-bold tracking-widest">
-                        {c.department_code}
-                      </span>
-                    </td>
-                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{c.name}</td>
-                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-gray-500 dark:text-gray-400">{c.section}</td>
-                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-gray-500 dark:text-gray-400">Sem {c.semester}</td>
-                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-gray-500 dark:text-gray-400">{c.academic_year}</td>
-                    <td className="px-4 md:px-6 py-4 text-center font-black text-sm text-indigo-600">{c.student_count}</td>
-                    <td className="px-4 md:px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-[#050505] hover:bg-indigo-50 text-gray-400 hover:text-indigo-600 transition-colors"
-                          onClick={() => { setEditing(c); setForm({departmentId:c.department_id,name:c.name,section:c.section,semester:c.semester,academicYear:c.academic_year}); setModal(true); }}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-[#050505] hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
-                          onClick={() => del(c.id)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {classes.length === 0 && (
-                  <tr><td colSpan="7" className="px-4 md:px-6 py-12 text-center text-gray-400 font-medium">No classes found.</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      <TableShell>
+        <Table className="min-w-[860px]">
+          <THead>
+            <tr>
+              <Th className="w-24">Dept</Th>
+              <Th>Name</Th>
+              <Th className="w-24">Section</Th>
+              <Th className="w-24">Semester</Th>
+              <Th className="w-32">Year</Th>
+              <Th align="center" className="w-24">
+                Students
+              </Th>
+              <Th align="right" className="w-28">
+                Actions
+              </Th>
+            </tr>
+          </THead>
+          <TBody>
+            {loading ? (
+              <tr>
+                <Td colSpan={7} className="py-12 text-center text-xs font-medium text-muted">
+                  Loading classes…
+                </Td>
+              </tr>
+            ) : classes.length === 0 ? (
+              <TableEmpty
+                colSpan={7}
+                icon={GraduationCap}
+                title="No classes yet"
+                description="A class ties a department, semester and section together."
+                action={
+                  <Button size="sm" onClick={openCreate}>
+                    <Plus size={14} /> Add class
+                  </Button>
+                }
+              />
+            ) : (
+              classes.map((c) => (
+                <TR key={c.id} className="group">
+                  <Td>
+                    <Badge tone="neutral" className="font-mono tracking-wide">
+                      {c.department_code}
+                    </Badge>
+                  </Td>
+                  <Td className="font-semibold text-ink">{c.name}</Td>
+                  <Td className="text-muted">Section {c.section}</Td>
+                  <Td className="text-muted">Sem {c.semester}</Td>
+                  <Td className="tnum text-muted">{c.academic_year}</Td>
+                  <Td align="center">
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-sunken px-2 py-0.5 text-xs font-semibold text-body">
+                      <Users size={12} className="text-faint" />
+                      {c.student_count ?? 0}
+                    </span>
+                  </Td>
+                  <Td align="right">
+                    <div className="flex justify-end gap-1 opacity-60 transition-opacity group-hover:opacity-100">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => openEdit(c)}
+                        title="Edit class"
+                        aria-label={`Edit ${c.name}`}
+                      >
+                        <Pencil size={14} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => del(c.id)}
+                        title="Delete class"
+                        aria-label={`Delete ${c.name}`}
+                        className="hover:bg-negative-soft hover:text-negative"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </Td>
+                </TR>
+              ))
+            )}
+          </TBody>
+        </Table>
+      </TableShell>
 
-      {/* Modal */}
-      {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-palette-dark/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
-          <div className="bg-white dark:bg-[#12141d] rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 className="font-black text-slate-900 dark:text-slate-100">{editing ? 'Edit' : 'Add'} Class</h3>
-              <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={save} className="p-4 md:p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Department</label>
-                <div className="relative">
-                  <select 
-                    className="w-full appearance-none bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                    value={form.departmentId} onChange={e => setForm(p => ({...p,departmentId:e.target.value}))} required
-                  >
-                    <option value="">-- Select Department --</option>
-                    {departments.map(d => <option key={d.id} value={d.id}>{d.name} ({d.code})</option>)}
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs">▼</div>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Name</label>
-                  <input 
-                    className="w-full bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                    value={form.name} onChange={e => setForm(p => ({...p,name:e.target.value}))} required placeholder="e.g. CSE"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Section</label>
-                  <input 
-                    className="w-full bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                    value={form.section} onChange={e => setForm(p => ({...p,section:e.target.value}))} required placeholder="e.g. A"
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Semester</label>
-                  <input 
-                    type="number" className="w-full bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                    value={form.semester} onChange={e => setForm(p => ({...p,semester:e.target.value}))} required min="1" max="10"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Academic Year</label>
-                  <input 
-                    className="w-full bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                    value={form.academicYear} onChange={e => setForm(p => ({...p,academicYear:e.target.value}))} required placeholder="e.g. 2026-27"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end gap-3 mt-8">
-                <button type="button" className="px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-50 dark:bg-[#050505] text-gray-500 dark:text-gray-400 hover:bg-slate-100 dark:bg-[#12141d] transition-colors" onClick={() => setModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="px-5 py-2.5 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 transition-colors">
-                  Save Class
-                </button>
-              </div>
-            </form>
+      <Modal
+        open={modal}
+        onClose={() => setModal(false)}
+        title={editing ? 'Edit class' : 'New class'}
+        description="Sections are created per department and semester."
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" form="class-form">
+              {editing ? 'Save changes' : 'Create class'}
+            </Button>
+          </>
+        }
+      >
+        <form id="class-form" onSubmit={save} className="space-y-4">
+          <Field label="Department" htmlFor="class-dept" required>
+            <Select
+              id="class-dept"
+              value={form.departmentId}
+              onChange={(e) => setForm((p) => ({ ...p, departmentId: e.target.value }))}
+              required
+            >
+              <option value="">Select a department…</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name} ({d.code})
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Class name" htmlFor="class-name" required>
+              <Input
+                id="class-name"
+                value={form.name}
+                onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                placeholder="CSE"
+                required
+              />
+            </Field>
+            <Field label="Section" htmlFor="class-section" required>
+              <Input
+                id="class-section"
+                value={form.section}
+                onChange={(e) => setForm((p) => ({ ...p, section: e.target.value.toUpperCase() }))}
+                placeholder="A"
+                required
+              />
+            </Field>
           </div>
-        </div>
-      )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Semester" htmlFor="class-semester" required>
+              <Input
+                id="class-semester"
+                type="number"
+                min="1"
+                max="10"
+                value={form.semester}
+                onChange={(e) => setForm((p) => ({ ...p, semester: e.target.value }))}
+                placeholder="5"
+                required
+              />
+            </Field>
+            <Field label="Academic year" htmlFor="class-year" required>
+              <Input
+                id="class-year"
+                value={form.academicYear}
+                onChange={(e) => setForm((p) => ({ ...p, academicYear: e.target.value }))}
+                placeholder="2026-27"
+                className="font-mono"
+                required
+              />
+            </Field>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

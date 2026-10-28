@@ -1,294 +1,341 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import {
+  AlertTriangle,
+  CalendarDays,
+  CheckCircle2,
+  Clock,
+  FileWarning,
+  TrendingUp,
+  XCircle,
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
-import { Activity, CheckCircle2, XCircle, Clock, AlertTriangle, Info, Calendar, ShieldAlert } from 'lucide-react';
+import {
+  AnimatedNumber,
+  Badge,
+  Button,
+  Card,
+  CardHeader,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  PageLoader,
+  Progress,
+  Select,
+  StatCard,
+  Table,
+  TableEmpty,
+  TBody,
+  Td,
+  Textarea,
+  Th,
+  THead,
+  TR,
+} from '../../components/ui';
 
-/* ────── Animated Counter ────── */
-function AnimatedNumber({ value, duration = 1200 }) {
-  const [display, setDisplay] = useState(0);
-  useEffect(() => {
-    const num = Number(value) || 0;
-    let start = 0;
-    const step = num / (duration / 16);
-    const id = setInterval(() => {
-      start += step;
-      if (start >= num) { setDisplay(num); clearInterval(id); }
-      else setDisplay(Math.floor(start));
-    }, 16);
-    return () => clearInterval(id);
-  }, [value, duration]);
-  return <>{display}</>;
-}
+const ZONES = {
+  green: {
+    tone: 'positive',
+    icon: CheckCircle2,
+    title: 'Safe zone',
+    text: 'At or above 75% — leave requests are auto-approved.',
+  },
+  yellow: {
+    tone: 'caution',
+    icon: AlertTriangle,
+    title: 'Warning zone',
+    text: 'Between 40% and 74% — leave requests need faculty review.',
+  },
+  red: {
+    tone: 'negative',
+    icon: XCircle,
+    title: 'Critical zone',
+    text: 'Below 40% — leave is auto-rejected. Attendance needs immediate attention.',
+  },
+};
+
+const statusTone = { present: 'positive', absent: 'negative', on_leave: 'caution' };
+
+const emptyForm = { open: false, record: null, type: 'justification', reason: '', proofUrl: '' };
 
 export default function MyAttendance() {
   const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [disputeModal, setDisputeModal] = useState({ open: false, record: null, type: 'justification', reason: '', proofUrl: '' });
+  const [form, setForm] = useState(emptyForm);
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
     try {
       const [sumRes, recRes] = await Promise.all([
-        api.get(`/students/me/attendance/summary`).catch(() => ({ data: {} })),
-        api.get(`/students/me/attendance`).catch(() => ({ data: [] })),
+        api.get('/students/me/attendance/summary').catch(() => ({ data: {} })),
+        api.get('/students/me/attendance').catch(() => ({ data: [] })),
       ]);
       setSummary(sumRes.data);
       setRecords(recRes.data);
-    } catch (e) { 
-      console.error(e); 
+    } catch {
+      /* empty states cover this */
     }
     setLoading(false);
   };
 
   const handleDisputeSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
-      await api.post(`/attendance-records/${disputeModal.record.id}/disputes`, {
-        type: disputeModal.type,
-        reason: disputeModal.reason,
-        proofUrl: disputeModal.proofUrl || ''
+      await api.post(`/attendance-records/${form.record.id}/disputes`, {
+        type: form.type,
+        reason: form.reason,
+        proofUrl: form.proofUrl || '',
       });
-      alert('Request submitted successfully.');
-      setDisputeModal({ open: false, record: null, type: 'justification', reason: '', proofUrl: '' });
+      toast.success('Appeal submitted');
+      setForm(emptyForm);
       fetchData();
     } catch (err) {
-      alert(err.response?.data?.error || 'Error submitting request');
+      toast.error(err.response?.data?.error || 'Could not submit the appeal');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-10 md:w-12 h-10 md:h-12 border-4 border-palette-medium border-t-transparent rounded-full animate-spin drop-shadow-md" />
-      </div>
-    );
-  }
+  if (loading) return <PageLoader label="Loading your attendance" />;
 
   const pct = Number(summary?.attendance_pct) || 0;
-  const zone = summary?.zone || (pct >= 75 ? 'green' : pct >= 40 ? 'yellow' : 'red');
-
-  const zoneConfig = {
-    green: { color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200', icon: <CheckCircle2 size={20} className="text-emerald-500" />, text: 'Safe Zone — You are eligible for auto-approved leaves.' },
-    yellow: { color: 'text-palette-dark', bg: 'bg-palette-light/20', border: 'border-palette-medium/50', icon: <AlertTriangle size={20} className="text-palette-medium" />, text: 'Warning Zone — Leave requests will require manual faculty review.' },
-    red: { color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200', icon: <XCircle size={20} className="text-red-500" />, text: 'Critical Zone — Leaves auto-rejected. Immediate improvement required.' }
-  };
-  const activeZone = zoneConfig[zone];
+  const sessionCount =
+    (Number(summary?.total_present) || 0) +
+    (Number(summary?.total_absent) || 0) +
+    (Number(summary?.total_on_leave) || 0);
+  const hasSessions = sessionCount > 0;
+  const zoneKey = summary?.zone || (pct >= 75 ? 'green' : pct >= 40 ? 'yellow' : 'red');
+  const zone = hasSessions
+    ? ZONES[zoneKey] ?? ZONES.red
+    : { tone: 'neutral', icon: Clock, title: 'No sessions yet', text: 'Your zone appears once your first class is marked.' };
+  const ZoneIcon = zone.icon;
 
   return (
-    <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">My Attendance</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-            {user?.studentInfo?.class_name}-{user?.studentInfo?.section} <span className="mx-2 text-gray-300">|</span> Roll No: <span className="font-mono text-gray-600 dark:text-gray-400">{user?.studentInfo?.roll_no}</span>
-          </p>
-        </div>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
-              <Activity size={26} className="text-white" strokeWidth={2.5} />
-            </div>
-          </div>
-          <div>
-            <div className={`text-2xl md:text-4xl font-black tracking-tight leading-none mb-1 ${activeZone.color}`}>
-              {pct}%
-            </div>
-            <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Attendance Rate</div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
-              <CheckCircle2 size={26} className="text-white" strokeWidth={2.5} />
-            </div>
-          </div>
-          <div>
-            <div className="text-slate-900 dark:text-slate-100 text-2xl md:text-4xl font-black tracking-tight leading-none mb-1">
-              <AnimatedNumber value={summary?.total_present || 0} />
-            </div>
-            <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Classes Present</div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-red-400 to-rose-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
-              <XCircle size={26} className="text-white" strokeWidth={2.5} />
-            </div>
-          </div>
-          <div>
-            <div className="text-slate-900 dark:text-slate-100 text-2xl md:text-4xl font-black tracking-tight leading-none mb-1">
-              <AnimatedNumber value={summary?.total_absent || 0} />
-            </div>
-            <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Classes Absent</div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] p-4 md:p-6 flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="flex items-start justify-between mb-4">
-            <div className="w-10 md:w-14 h-10 md:h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br from-amber-400 to-orange-500 shadow-sm transform group-hover:scale-105 transition-transform duration-300">
-              <Clock size={26} className="text-white" strokeWidth={2.5} />
-            </div>
-          </div>
-          <div>
-            <div className="text-slate-900 dark:text-slate-100 text-2xl md:text-4xl font-black tracking-tight leading-none mb-1">
-              <AnimatedNumber value={summary?.total_on_leave || 0} />
-            </div>
-            <div className="text-gray-500 dark:text-gray-400 text-sm font-medium">Approved Leaves</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Zone Status Banner */}
-      <div className={`flex items-start gap-4 p-5 rounded-2xl border ${activeZone.bg} ${activeZone.border}`}>
-        <div className="mt-0.5">{activeZone.icon}</div>
-        <div>
-          <h4 className={`text-sm font-bold ${activeZone.color}`}>Attendance Status</h4>
-          <p className={`text-sm mt-0.5 font-medium ${activeZone.color.replace('600', '700')}`}>{activeZone.text}</p>
-        </div>
-      </div>
-
-      {/* Attendance Records Table */}
-      <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        <div className="px-4 md:px-6 py-5 border-b border-gray-100 bg-white/50 dark:bg-[#12141d]/50 backdrop-blur-sm">
-          <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg">Attendance History</h3>
-          <p className="text-gray-400 text-xs font-medium mt-1">Detailed log of your recent classes</p>
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px]">
-            <thead>
-              <tr className="bg-gray-50/50">
-                <th className="text-left px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Date & Time</th>
-                <th className="text-left px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Subject</th>
-                <th className="text-left px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Faculty</th>
-                <th className="text-center px-4 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Mode</th>
-                <th className="text-center px-4 md:px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {records.map((r, idx) => (
-                <tr key={r.id} className="hover:bg-gray-50/80 transition-colors" style={{ animation: `fadeIn 0.3s ease-out ${idx * 40}ms both` }}>
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="text-slate-900 dark:text-slate-100 font-bold text-sm">{new Date(r.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-                    <div className="text-gray-400 text-xs font-medium mt-0.5 flex items-center gap-1"><Clock size={12} /> {r.time_slot}</div>
-                  </td>
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="text-slate-900 dark:text-slate-100 font-bold text-sm">{r.subject_name}</div>
-                  </td>
-                  <td className="px-4 md:px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400">{r.faculty_name}</td>
-                  <td className="text-center px-4 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-                      r.mode === 'frs' ? 'bg-purple-50 text-purple-600 border border-purple-100' : 'bg-palette-light/20 text-palette-dark border border-blue-100'
-                    }`}>
-                      {r.mode}
-                    </span>
-                  </td>
-                  <td className="text-center px-4 md:px-6 py-4">
-                    <div className="flex items-center justify-center gap-2">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider ${
-                        r.status === 'present' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 
-                        r.status === 'on_leave' ? 'bg-palette-light/20 text-palette-dark border border-amber-100' : 
-                        'bg-red-50 text-red-600 border border-red-100'
-                      }`}>
-                        {r.status}
-                      </span>
-                      {r.status === 'absent' && (
-                        <button 
-                          onClick={() => setDisputeModal({ open: true, record: r, type: 'justification', reason: '', proofUrl: '' })}
-                          className="text-[10px] bg-slate-100 dark:bg-[#12141d] hover:bg-slate-200 dark:bg-[#1a1c26] text-gray-600 dark:text-gray-400 px-2 py-1 rounded font-bold transition-colors"
-                          title="Dispute or Justify"
-                        >
-                          APPEAL
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {records.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-center py-16">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 dark:bg-[#050505] mb-4">
-                      <Calendar size={24} className="text-gray-300" />
-                    </div>
-                    <p className="text-slate-900 dark:text-slate-100 font-bold">No attendance records yet</p>
-                    <p className="text-gray-400 text-sm mt-1">Check back after your first class.</p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Academics"
+        title="My attendance"
+        description={
+          <>
+            {user?.studentInfo?.class_name}-{user?.studentInfo?.section}
+            <span className="mx-2 text-faint">·</span>
+            Roll no{' '}
+            <span className="font-mono text-body">{user?.studentInfo?.roll_no}</span>
+          </>
         }
-      `}</style>
+      />
 
-      {/* Modal */}
-      {disputeModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-[#12141d] rounded-3xl w-full max-w-md shadow-2xl p-4 md:p-6 relative">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Appeal Absence</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              For {new Date(disputeModal.record?.date).toLocaleDateString()} - {disputeModal.record?.subject_name}
-            </p>
-            <form onSubmit={handleDisputeSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Appeal Type</label>
-                <select 
-                  className="w-full border-slate-200 dark:border-[#222430] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
-                  value={disputeModal.type}
-                  onChange={e => setDisputeModal(prev => ({...prev, type: e.target.value}))}
-                >
-                  <option value="justification">Justify (Convert to Leave)</option>
-                  <option value="dispute">Dispute (Mark as Present)</option>
-                </select>
+      <div className="stagger grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <StatCard
+          label="Attendance rate"
+          value={`${pct}%`}
+          icon={TrendingUp}
+          tone={zone.tone}
+          hint="Target: 75%"
+        />
+        <StatCard
+          label="Classes present"
+          value={<AnimatedNumber value={summary?.total_present || 0} />}
+          icon={CheckCircle2}
+          tone="positive"
+          hint="Sessions attended"
+        />
+        <StatCard
+          label="Classes absent"
+          value={<AnimatedNumber value={summary?.total_absent || 0} />}
+          icon={XCircle}
+          tone="negative"
+          hint="Sessions missed"
+        />
+        <StatCard
+          label="Approved leaves"
+          value={<AnimatedNumber value={summary?.total_on_leave || 0} />}
+          icon={Clock}
+          tone="caution"
+          hint="Excused sessions"
+        />
+      </div>
+
+      <Card>
+        <div className="flex flex-wrap items-start gap-3 p-5">
+          <span
+            className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${
+              zone.tone === 'positive'
+                ? 'bg-positive-soft text-positive'
+                : zone.tone === 'caution'
+                  ? 'bg-caution-soft text-caution'
+                  : zone.tone === 'negative'
+                    ? 'bg-negative-soft text-negative'
+                    : 'bg-sunken text-muted'
+            }`}
+          >
+            <ZoneIcon size={16} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-[13px] font-bold text-ink">{zone.title}</h2>
+              {hasSessions ? <Badge tone={zone.tone}>{pct}%</Badge> : null}
+            </div>
+            <p className="mt-0.5 text-xs text-muted">{zone.text}</p>
+            {hasSessions ? (
+              <div className="mt-3">
+                <Progress value={pct} tone={zone.tone} />
               </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Reason</label>
-                <textarea 
-                  required
-                  className="w-full border-slate-200 dark:border-[#222430] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
-                  rows="3"
-                  value={disputeModal.reason}
-                  onChange={e => setDisputeModal(prev => ({...prev, reason: e.target.value}))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Proof URL (Optional)</label>
-                <input 
-                  type="url"
-                  className="w-full border-slate-200 dark:border-[#222430] rounded-xl focus:ring-brand-purple focus:border-brand-purple"
-                  placeholder="Link to doctor note, etc."
-                  value={disputeModal.proofUrl}
-                  onChange={e => setDisputeModal(prev => ({...prev, proofUrl: e.target.value}))}
-                />
-              </div>
-              <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => setDisputeModal(prev => ({...prev, open: false}))} className="px-4 py-2 font-bold text-gray-600 dark:text-gray-400 hover:bg-slate-100 dark:bg-[#12141d] rounded-xl">Cancel</button>
-                <button type="submit" className="px-4 py-2 font-bold text-white bg-brand-purple hover:bg-brand-purple/90 rounded-xl shadow-md">Submit Appeal</button>
-              </div>
-            </form>
+            ) : null}
           </div>
         </div>
-      )}
+      </Card>
+
+      <Card className="overflow-hidden">
+        <CardHeader
+          actions={records.length > 0 ? <Badge tone="outline">{records.length} records</Badge> : null}
+        >
+          <h2 className="text-[15px] font-bold text-ink">Attendance history</h2>
+          <p className="mt-0.5 text-xs text-muted">
+            Every session recorded for your class. Appeal an absence within the review window.
+          </p>
+        </CardHeader>
+
+        <div className="overflow-x-auto">
+          <Table className="min-w-[760px]">
+            <THead>
+              <tr>
+                <Th>Date &amp; time</Th>
+                <Th>Subject</Th>
+                <Th>Faculty</Th>
+                <Th align="center">Mode</Th>
+                <Th align="right">Status</Th>
+              </tr>
+            </THead>
+            <TBody>
+              {records.map((r) => (
+                <TR key={r.id}>
+                  <Td className="whitespace-nowrap">
+                    <p className="font-semibold text-ink">
+                      {new Date(r.date).toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </p>
+                    <p className="tnum mt-0.5 inline-flex items-center gap-1 text-xs text-faint">
+                      <Clock size={11} /> {r.time_slot}
+                    </p>
+                  </Td>
+                  <Td className="font-medium text-ink">{r.subject_name}</Td>
+                  <Td>{r.faculty_name}</Td>
+                  <Td align="center">
+                    <Badge tone={r.mode === 'frs' ? 'accent' : 'info'}>
+                      {r.mode === 'frs' ? 'Face scan' : 'Manual'}
+                    </Badge>
+                  </Td>
+                  <Td align="right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Badge tone={statusTone[r.status] ?? 'neutral'}>
+                        {r.status === 'on_leave' ? 'On leave' : r.status}
+                      </Badge>
+                      {r.status === 'absent' ? (
+                        <Button
+                          size="xs"
+                          variant="secondary"
+                          onClick={() =>
+                            setForm({
+                              open: true,
+                              record: r,
+                              type: 'justification',
+                              reason: '',
+                              proofUrl: '',
+                            })
+                          }
+                        >
+                          Appeal
+                        </Button>
+                      ) : null}
+                    </div>
+                  </Td>
+                </TR>
+              ))}
+              {records.length === 0 ? (
+                <TableEmpty
+                  colSpan={5}
+                  icon={CalendarDays}
+                  title="No attendance yet"
+                  description="Records show up here after your first marked session."
+                />
+              ) : null}
+            </TBody>
+          </Table>
+        </div>
+      </Card>
+
+      <Modal
+        open={form.open}
+        onClose={() => setForm(emptyForm)}
+        title="Appeal an absence"
+        description={
+          form.record
+            ? `${new Date(form.record.date).toLocaleDateString()} · ${form.record.subject_name}`
+            : undefined
+        }
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setForm(emptyForm)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleDisputeSubmit} disabled={submitting}>
+              {submitting ? 'Submitting…' : 'Submit appeal'}
+            </Button>
+          </>
+        }
+      >
+        <form onSubmit={handleDisputeSubmit} className="space-y-4">
+          <Field label="Appeal type" htmlFor="appeal-type" hint="Justify keeps the leave count; dispute asks for the absence to be removed.">
+            <Select
+              id="appeal-type"
+              value={form.type}
+              onChange={(e) => setForm((prev) => ({ ...prev, type: e.target.value }))}
+            >
+              <option value="justification">Justify — convert to leave</option>
+              <option value="dispute">Dispute — mark as present</option>
+            </Select>
+          </Field>
+
+          <Field label="Reason" htmlFor="appeal-reason" required>
+            <Textarea
+              id="appeal-reason"
+              required
+              rows={3}
+              placeholder="Explain what happened…"
+              value={form.reason}
+              onChange={(e) => setForm((prev) => ({ ...prev, reason: e.target.value }))}
+            />
+          </Field>
+
+          <Field label="Proof URL" htmlFor="appeal-proof" hint="Optional — link to a medical note or similar.">
+            <Input
+              id="appeal-proof"
+              type="url"
+              placeholder="https://…"
+              value={form.proofUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, proofUrl: e.target.value }))}
+            />
+          </Field>
+
+          <p className="flex items-start gap-2 text-xs text-faint">
+            <FileWarning size={13} className="mt-0.5 shrink-0" />
+            Repeated false appeals may be reviewed by your department.
+          </p>
+        </form>
+      </Modal>
     </div>
   );
 }

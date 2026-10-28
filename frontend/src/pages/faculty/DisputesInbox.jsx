@@ -1,127 +1,209 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { Check, ShieldAlert, X } from 'lucide-react';
 import api from '../../services/api';
-import { ShieldAlert, CheckCircle, XCircle } from 'lucide-react';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  Modal,
+  PageHeader,
+  PageLoader,
+  Table,
+  TableEmpty,
+  TBody,
+  Td,
+  Textarea,
+  Th,
+  THead,
+  TR,
+} from '../../components/ui';
 
 export default function DisputesInbox() {
   const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState(null); // { dispute, status }
+  const [remarks, setRemarks] = useState('');
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fetchDisputes();
+    api
+      .get('/attendance-disputes/pending')
+      .then((res) => setDisputes(res.data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchDisputes = async () => {
-    try {
-      const res = await api.get('/attendance-disputes/pending');
-      setDisputes(res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const fetchDisputes = () =>
+    api
+      .get('/attendance-disputes/pending')
+      .then((res) => setDisputes(res.data))
+      .catch(() => {});
+
+  const openDecision = (dispute, status) => {
+    setPending({ dispute, status });
+    setRemarks('');
   };
 
-  const handleResolve = async (id, status) => {
-    const remarks = window.prompt(`Enter remarks for marking as ${status} (optional):`);
-    if (remarks === null) return; // cancelled
-
+  const confirmDecision = async () => {
+    if (!pending) return;
+    setSaving(true);
     try {
-      await api.put(`/attendance-disputes/${id}/resolve`, { status, remarks });
+      await api.put(`/attendance-disputes/${pending.dispute.id}/resolve`, {
+        status: pending.status,
+        remarks,
+      });
+      toast.success(`Marked as ${pending.status}`);
+      setPending(null);
       fetchDisputes();
     } catch (err) {
-      alert(err.response?.data?.error || 'Failed to resolve dispute.');
+      toast.error(err.response?.data?.error || 'Failed to resolve dispute.');
+    } finally {
+      setSaving(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-10 md:w-12 h-10 md:h-12 border-4 border-brand-purple border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <PageLoader label="Loading disputes" />;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-xl md:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Disputes Inbox</h1>
-        <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Review student attendance appeals and justifications.</p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Requests"
+        title="Disputes inbox"
+        description="Student appeals against a marked absence. Approving converts the day to present."
+        actions={
+          disputes.length > 0 ? (
+            <Badge tone="caution" dot>
+              {disputes.length} pending
+            </Badge>
+          ) : null
+        }
+      />
 
-      <div className="bg-white dark:bg-[#12141d] rounded-3xl shadow-glass border border-slate-200 dark:border-[#222430] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-[#050505]">
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date & Time</th>
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Subject & Class</th>
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Type</th>
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Reason</th>
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {disputes.map(d => (
-                <tr key={d.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{new Date(d.date).toLocaleDateString()}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{d.time_slot}</div>
-                  </td>
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{d.student_name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{d.roll_no}</div>
-                  </td>
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{d.subject_name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{d.class_name}-{d.section}</div>
-                  </td>
-                  <td className="px-4 md:px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${
-                      d.type === 'dispute' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-50 text-blue-600 border border-blue-100'
-                    }`}>
-                      {d.type}
-                    </span>
-                  </td>
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="text-sm text-gray-700 dark:text-gray-300 max-w-xs truncate" title={d.reason}>{d.reason}</div>
-                    {d.proof_url && (
-                      <a href={d.proof_url} target="_blank" rel="noreferrer" className="text-xs text-brand-purple hover:underline mt-1 inline-block">View Proof</a>
-                    )}
-                  </td>
-                  <td className="px-4 md:px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button 
-                        onClick={() => handleResolve(d.id, 'approved')}
-                        className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors"
-                        title="Approve"
-                      >
-                        <CheckCircle size={20} />
-                      </button>
-                      <button 
-                        onClick={() => handleResolve(d.id, 'rejected')}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                        title="Reject"
-                      >
-                        <XCircle size={20} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {disputes.length === 0 && (
+      <Card className="overflow-hidden">
+        {disputes.length === 0 ? (
+          <EmptyState
+            icon={ShieldAlert}
+            title="Inbox clear"
+            description="No attendance disputes are waiting for your review."
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <Table className="min-w-[960px]">
+              <THead>
                 <tr>
-                  <td colSpan={6} className="text-center py-12 text-gray-500 dark:text-gray-400">
-                    <ShieldAlert size={48} className="mx-auto text-gray-300 mb-3" />
-                    <p className="font-bold text-slate-900 dark:text-slate-100">All clear!</p>
-                    <p className="text-sm mt-1">No pending disputes or justifications.</p>
-                  </td>
+                  <Th>Session</Th>
+                  <Th>Student</Th>
+                  <Th>Subject</Th>
+                  <Th>Type</Th>
+                  <Th>Reason</Th>
+                  <Th align="right">Decision</Th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </THead>
+              <TBody>
+                {disputes.map((d) => (
+                  <TR key={d.id}>
+                    <Td className="whitespace-nowrap">
+                      <p className="font-semibold text-ink">
+                        {new Date(d.date).toLocaleDateString('en', {
+                          day: '2-digit',
+                          month: 'short',
+                        })}
+                      </p>
+                      <p className="tnum mt-0.5 text-xs text-faint">{d.time_slot}</p>
+                    </Td>
+                    <Td>
+                      <div className="flex items-center gap-2.5">
+                        <Avatar name={d.student_name} size="sm" tone="neutral" />
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold text-ink">{d.student_name}</p>
+                          <p className="font-mono text-2xs text-faint">{d.roll_no}</p>
+                        </div>
+                      </div>
+                    </Td>
+                    <Td>
+                      <p className="font-medium text-ink">{d.subject_name}</p>
+                      <p className="mt-0.5 text-xs text-muted">
+                        {d.class_name}-{d.section}
+                      </p>
+                    </Td>
+                    <Td>
+                      <Badge tone={d.type === 'dispute' ? 'negative' : 'info'}>
+                        {d.type === 'dispute' ? 'Dispute' : 'Justification'}
+                      </Badge>
+                    </Td>
+                    <Td className="max-w-[260px]">
+                      <p className="line-clamp-2 text-muted" title={d.reason}>
+                        {d.reason}
+                      </p>
+                      {d.proof_url ? (
+                        <a
+                          href={d.proof_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-1 inline-block text-xs font-semibold text-accent hover:underline underline-offset-4"
+                        >
+                          View proof
+                        </a>
+                      ) : null}
+                    </Td>
+                    <Td align="right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button size="xs" variant="secondary" onClick={() => openDecision(d, 'approved')}>
+                          <Check size={12} /> Approve
+                        </Button>
+                        <Button size="xs" variant="danger" onClick={() => openDecision(d, 'rejected')}>
+                          <X size={12} /> Reject
+                        </Button>
+                      </div>
+                    </Td>
+                  </TR>
+                ))}
+              </TBody>
+            </Table>
+          </div>
+        )}
+      </Card>
+
+      <Modal
+        open={!!pending}
+        onClose={() => setPending(null)}
+        title={pending?.status === 'approved' ? 'Approve dispute' : 'Reject dispute'}
+        description={
+          pending
+            ? `${pending.dispute.student_name} · ${pending.dispute.subject_name} · ${new Date(
+                pending.dispute.date
+              ).toLocaleDateString()}`
+            : undefined
+        }
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setPending(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant={pending?.status === 'approved' ? 'primary' : 'danger-solid'}
+              onClick={confirmDecision}
+              disabled={saving}
+            >
+              {saving ? 'Saving…' : pending?.status === 'approved' ? 'Approve' : 'Reject'}
+            </Button>
+          </>
+        }
+      >
+        <label htmlFor="dispute-remarks" className="mb-1.5 block text-xs font-semibold text-body">
+          Remarks <span className="font-normal text-faint">(optional)</span>
+        </label>
+        <Textarea
+          id="dispute-remarks"
+          value={remarks}
+          onChange={(e) => setRemarks(e.target.value)}
+          placeholder="Explain the decision for the student…"
+          rows={4}
+        />
+      </Modal>
     </div>
   );
 }

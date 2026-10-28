@@ -1,12 +1,22 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { Bell } from 'lucide-react';
 import api from '../services/api';
-import { HiOutlineBell } from 'react-icons/hi';
+import { cn } from './ui/cn';
 
-export default function NotificationBell({ className }) {
+const timeAgo = (date) => {
+  const mins = Math.floor((Date.now() - new Date(date)) / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1440) return `${Math.floor(mins / 60)}h ago`;
+  return `${Math.floor(mins / 1440)}d ago`;
+};
+
+export default function NotificationBell() {
   const [notifs, setNotifs] = useState([]);
   const [unread, setUnread] = useState(0);
   const [open, setOpen] = useState(false);
-  const ref = useRef();
+  const ref = useRef(null);
 
   useEffect(() => {
     fetchNotifs();
@@ -15,81 +25,133 @@ export default function NotificationBell({ className }) {
   }, []);
 
   useEffect(() => {
-    const handleClick = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+    if (!open) return undefined;
+    const onClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => e.key === 'Escape' && setOpen(false);
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
 
   const fetchNotifs = async () => {
     try {
       const { data } = await api.get('/notifications');
       setNotifs(data.notifications || []);
       setUnread(data.unreadCount || 0);
-    } catch (e) { /* silent */ }
+    } catch {
+      /* silent — the bell is non-critical */
+    }
   };
 
-  const markRead = async (id) => {
-    await api.put(`/notifications/${id}/read`);
-    fetchNotifs();
+  const markRead = async (id, isRead) => {
+    if (isRead) return;
+    try {
+      await api.put(`/notifications/${id}/read`);
+      fetchNotifs();
+    } catch {
+      toast.error('Could not update notification');
+    }
   };
 
   const markAllRead = async () => {
-    await api.put('/notifications/read-all');
-    fetchNotifs();
-  };
-
-  const timeAgo = (date) => {
-    const mins = Math.floor((Date.now() - new Date(date)) / 60000);
-    if (mins < 1) return 'Just now';
-    if (mins < 60) return `${mins}m ago`;
-    if (mins < 1440) return `${Math.floor(mins/60)}h ago`;
-    return `${Math.floor(mins/1440)}d ago`;
+    try {
+      await api.put('/notifications/read-all');
+      fetchNotifs();
+    } catch {
+      toast.error('Could not update notifications');
+    }
   };
 
   return (
     <div className="relative" ref={ref}>
-      <button 
-        className={className || "w-10 h-10 rounded-full bg-white dark:bg-[#12141d] shadow-glass flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-brand-purple hover:scale-105 transition-all border border-slate-200 dark:border-[#222430] relative"} 
-        onClick={() => setOpen(!open)}
-      >
-        <HiOutlineBell size={18} />
-        {unread > 0 && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-purple text-white text-[9px] font-black flex items-center justify-center shadow-sm">
-            {unread > 9 ? '9+' : unread}
-          </span>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-label={`Notifications${unread ? ` (${unread} unread)` : ''}`}
+        aria-expanded={open}
+        className={cn(
+          'relative flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-sunken hover:text-ink',
+          open && 'bg-sunken text-ink'
         )}
+      >
+        <Bell size={16} />
+        {unread > 0 ? (
+          <span className="absolute right-1 top-1 flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-negative opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-negative" />
+          </span>
+        ) : null}
       </button>
 
-      {open && (
-        <div className="absolute right-0 mt-3 w-80 bg-white/80 dark:bg-[#12141d]/80 backdrop-blur-2xl border border-white/50 rounded-3xl shadow-glass z-50 overflow-hidden flex flex-col max-h-[400px] animate-[fadeIn_0.2s_ease-out]">
-          <div className="p-4 flex justify-between items-center border-b border-gray-100/50 bg-white/40 dark:bg-[#12141d]/40">
-            <span className="font-black text-slate-900 dark:text-slate-100">Notifications</span>
-            {unread > 0 && (
-              <button onClick={markAllRead} className="text-[10px] font-bold uppercase tracking-widest text-brand-purple hover:text-brand-dark transition-colors px-2 py-1 rounded-md hover:bg-brand-purple/10">
+      {open ? (
+        <div className="absolute right-0 top-full z-50 mt-2 flex max-h-[420px] w-[340px] animate-scale-in flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-pop">
+          <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+            <div className="flex items-center gap-2">
+              <h4 className="text-[13px] font-bold text-ink">Notifications</h4>
+              {unread > 0 ? (
+                <span className="tnum rounded-full bg-accent-soft px-1.5 py-0.5 text-2xs font-bold text-accent">
+                  {unread}
+                </span>
+              ) : null}
+            </div>
+            {unread > 0 ? (
+              <button
+                type="button"
+                onClick={markAllRead}
+                className="text-2xs font-semibold text-accent hover:underline"
+              >
                 Mark all read
               </button>
+            ) : null}
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {notifs.length === 0 ? (
+              <div className="px-4 py-12 text-center">
+                <Bell size={20} className="mx-auto mb-2 text-faint" />
+                <p className="text-[13px] font-medium text-muted">You're all caught up</p>
+              </div>
+            ) : (
+              notifs.slice(0, 12).map((n) => (
+                <button
+                  key={n.id}
+                  type="button"
+                  onClick={() => markRead(n.id, n.is_read)}
+                  className="flex w-full gap-3 border-b border-line px-4 py-3 text-left transition-colors last:border-0 hover:bg-sunken"
+                >
+                  <span
+                    className={cn(
+                      'mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full',
+                      n.is_read ? 'bg-line-strong' : 'bg-accent'
+                    )}
+                  />
+                  <span className="min-w-0">
+                    <span
+                      className={cn(
+                        'block truncate text-[13px]',
+                        n.is_read ? 'font-medium text-body' : 'font-semibold text-ink'
+                      )}
+                    >
+                      {n.title}
+                    </span>
+                    <span className="mt-0.5 line-clamp-2 block text-xs leading-relaxed text-muted">
+                      {n.message}
+                    </span>
+                    <span className="mt-1 block text-2xs font-medium uppercase tracking-wide text-faint">
+                      {timeAgo(n.created_at)}
+                    </span>
+                  </span>
+                </button>
+              ))
             )}
           </div>
-          <div className="overflow-y-auto flex-1 p-2 space-y-1">
-            {notifs.length === 0 ? (
-              <div className="p-8 text-center text-gray-400 text-sm font-medium">No notifications</div>
-            ) : notifs.slice(0, 10).map(n => (
-              <div 
-                key={n.id} 
-                className={`p-3 rounded-2xl cursor-pointer transition-colors relative overflow-hidden ${!n.is_read ? 'bg-brand-purple/5 hover:bg-brand-purple/10' : 'hover:bg-white/60 dark:bg-[#12141d]/60'}`} 
-                onClick={() => markRead(n.id)}
-              >
-                {!n.is_read && <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-purple" />}
-                <div className={`pl-2`}>
-                  <h4 className={`text-sm ${!n.is_read ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-semibold text-gray-600 dark:text-gray-400'}`}>{n.title}</h4>
-                  <p className={`text-xs mt-1 ${!n.is_read ? 'font-medium text-gray-600 dark:text-gray-400' : 'text-gray-500 dark:text-gray-400'}`}>{n.message}</p>
-                  <time className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">{timeAgo(n.created_at)}</time>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

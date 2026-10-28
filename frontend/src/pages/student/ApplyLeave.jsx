@@ -1,9 +1,44 @@
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
-import toast from 'react-hot-toast';
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Field,
+  Input,
+  PageHeader,
+  Progress,
+  Select,
+  Textarea,
+} from '../../components/ui';
 
 const REASONS = ['Medical', 'Family Emergency', 'Personal', 'Event/Competition', 'Travel', 'Other'];
+
+const OUTCOMES = {
+  approved: {
+    tone: 'positive',
+    icon: CheckCircle2,
+    title: 'Auto-approved',
+    text: 'Your attendance is above 75%, so this leave was approved immediately.',
+  },
+  rejected: {
+    tone: 'negative',
+    icon: XCircle,
+    title: 'Auto-rejected',
+    text: 'Your attendance is below 40%. Leave cannot be granted automatically.',
+  },
+  pending: {
+    tone: 'caution',
+    icon: Clock,
+    title: 'Waiting for review',
+    text: 'Your attendance is between 40% and 75%, so a faculty member will decide.',
+  },
+};
 
 export default function ApplyLeave() {
   const { user } = useAuth();
@@ -19,18 +54,27 @@ export default function ApplyLeave() {
 
   useEffect(() => {
     if (classId) {
-      api.get(`/leave-requests/zone-preview?classId=${classId}`).then(r => setZonePreview(r.data));
+      api
+        .get(`/leave-requests/zone-preview?classId=${classId}`)
+        .then((r) => setZonePreview(r.data))
+        .catch(() => {});
     }
   }, [classId]);
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!fromDate || !toDate || !reason) return toast.error('Please fill all required fields');
+    if (!fromDate || !toDate || !reason) return toast.error('Fill in the dates and reason');
     setSubmitting(true);
     try {
-      const { data } = await api.post('/leave-requests', { classId, fromDate, toDate, reason, description });
+      const { data } = await api.post('/leave-requests', {
+        classId,
+        fromDate,
+        toDate,
+        reason,
+        description,
+      });
       setSubmitted(data);
-      toast.success('Leave request submitted!');
+      toast.success('Leave request submitted');
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to submit');
     }
@@ -38,91 +82,185 @@ export default function ApplyLeave() {
   };
 
   if (submitted) {
+    const outcome = OUTCOMES[submitted.status] ?? OUTCOMES.pending;
+    const Icon = outcome.icon;
+    const pct = Number(submitted.attendance_pct_snapshot) || 0;
+
     return (
-      <div className="bg-white/80 dark:bg-[#12141d]/80 backdrop-blur-xl border border-white/50 rounded-[32px] p-12 max-w-lg mx-auto mt-12 shadow-glass text-center animate-[fadeIn_0.5s_ease-out]">
-        <div className="text-6xl mb-6">
-          {submitted.status === 'approved' ? '✅' : submitted.status === 'rejected' ? '❌' : '⏳'}
-        </div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight mb-3">
-          {submitted.status === 'approved' ? 'Leave Auto-Approved!' :
-           submitted.status === 'rejected' ? 'Leave Auto-Rejected' : 'Leave Pending Review'}
-        </h2>
-        <p className="text-gray-500 dark:text-gray-400 font-medium mb-6">
-          {submitted.status === 'approved' ? 'Your attendance is above 75%. Leave was auto-approved.' :
-           submitted.status === 'rejected' ? `Your attendance is ${submitted.attendance_pct_snapshot}% (below 40%). Leave auto-rejected.` :
-           'Your attendance is between 40-75%. A faculty member will review your request.'}
-        </p>
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold tracking-widest mb-8 ${
-          submitted.zone === 'green' ? 'bg-emerald-100 text-emerald-700' :
-          submitted.zone === 'yellow' ? 'bg-amber-100 text-amber-700' :
-          'bg-red-100 text-red-700'
-        }`}>
-          {submitted.zone === 'green' ? '🟢' : submitted.zone === 'yellow' ? '🟡' : '🔴'} {submitted.zone.toUpperCase()} ZONE — {submitted.attendance_pct_snapshot}%
-        </div>
-        <br />
-        <button 
-          className="bg-brand-purple hover:bg-brand-dark text-white px-4 md:px-6 py-3 rounded-2xl text-sm font-bold shadow-md hover:shadow-lg transition-all"
-          onClick={() => { setSubmitted(null); setFromDate(''); setToDate(''); setReason(''); setDescription(''); }}
-        >
-          Submit Another Request
-        </button>
+      <div className="mx-auto max-w-lg space-y-6">
+        <PageHeader eyebrow="Leave" title="Request submitted" />
+
+        <Card>
+          <CardBody className="flex flex-col items-center py-10 text-center">
+            <span
+              className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full ${
+                outcome.tone === 'positive'
+                  ? 'bg-positive-soft text-positive'
+                  : outcome.tone === 'caution'
+                    ? 'bg-caution-soft text-caution'
+                    : 'bg-negative-soft text-negative'
+              }`}
+            >
+              <Icon size={22} />
+            </span>
+            <h2 className="text-lg font-bold text-ink">{outcome.title}</h2>
+            <p className="mt-1.5 max-w-sm text-[13px] leading-relaxed text-muted">{outcome.text}</p>
+
+            <div className="mt-6 w-full max-w-xs space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <Badge tone={outcome.tone}>
+                  {submitted.zone === 'green'
+                    ? 'Safe zone'
+                    : submitted.zone === 'yellow'
+                      ? 'Warning zone'
+                      : 'Critical zone'}
+                </Badge>
+                <span className="tnum font-bold text-ink">{pct}%</span>
+              </div>
+              <Progress
+                value={pct}
+                tone={
+                  outcome.tone === 'positive'
+                    ? 'positive'
+                    : outcome.tone === 'caution'
+                      ? 'caution'
+                      : 'negative'
+                }
+              />
+            </div>
+
+            <Button
+              variant="primary"
+              className="mt-8 w-full"
+              onClick={() => {
+                setSubmitted(null);
+                setFromDate('');
+                setToDate('');
+                setReason('');
+                setDescription('');
+              }}
+            >
+              Submit another request
+            </Button>
+          </CardBody>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="animate-[fadeIn_0.5s_ease-out] font-sans">
-      <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-2">Apply for Leave</h1>
-      <p className="text-gray-500 dark:text-gray-400 font-medium mb-8">Submit a leave request — your zone determines automatic processing</p>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Leave"
+        title="Apply for leave"
+        description="Your attendance zone decides whether the request is auto-approved, auto-rejected or sent to faculty."
+      />
 
-      {/* Zone Preview */}
-      {zonePreview && (
-        <div className={`p-4 rounded-2xl mb-8 border ${
-          zonePreview.zone === 'green' ? 'bg-emerald-50 border-emerald-100 text-emerald-800' :
-          zonePreview.zone === 'yellow' ? 'bg-amber-50 border-amber-100 text-amber-800' :
-          'bg-red-50 border-red-100 text-red-800'
-        }`}>
-          <div>
-            <strong className="font-black">Your Current Status:</strong> {zonePreview.attendancePct}% attendance
-            <br/><span className="text-sm font-medium opacity-90 mt-1 block">{zonePreview.message}</span>
+      {zonePreview ? (
+        <Card>
+          <div className="flex flex-wrap items-center gap-3 px-5 py-4">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[13px] font-bold text-ink">
+                  Current attendance {zonePreview.attendancePct}%
+                </span>
+                <Badge
+                  tone={
+                    zonePreview.zone === 'green'
+                      ? 'positive'
+                      : zonePreview.zone === 'yellow'
+                        ? 'caution'
+                        : 'negative'
+                  }
+                >
+                  {zonePreview.zone === 'green'
+                    ? 'Auto-approval'
+                    : zonePreview.zone === 'yellow'
+                      ? 'Needs review'
+                      : 'Auto-rejection'}
+                </Badge>
+              </div>
+              <p className="mt-0.5 text-xs text-muted">{zonePreview.message}</p>
+            </div>
+            <Progress
+              value={Number(zonePreview.attendancePct) || 0}
+              tone={
+                zonePreview.zone === 'green'
+                  ? 'positive'
+                  : zonePreview.zone === 'yellow'
+                    ? 'caution'
+                    : 'negative'
+              }
+              className="w-full sm:w-40"
+            />
           </div>
-        </div>
-      )}
+        </Card>
+      ) : null}
 
-      <div className="bg-white/60 dark:bg-[#12141d]/60 backdrop-blur-xl rounded-[32px] p-4 md:p-8 border border-white/50 shadow-glass max-w-2xl">
-        <form onSubmit={submit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <div>
-              <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">From Date <span className="text-red-500">*</span></label>
-              <input type="date" className="w-full bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={fromDate} onChange={e => setFromDate(e.target.value)} required />
+      <Card className="max-w-2xl">
+        <CardHeader>
+          <h2 className="text-[15px] font-bold text-ink">Request details</h2>
+          <p className="mt-0.5 text-xs text-muted">Dates are inclusive of both ends.</p>
+        </CardHeader>
+        <CardBody>
+          <form onSubmit={submit} className="space-y-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="From" htmlFor="leave-from" required>
+                <Input
+                  id="leave-from"
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  required
+                />
+              </Field>
+              <Field label="To" htmlFor="leave-to" required>
+                <Input
+                  id="leave-to"
+                  type="date"
+                  value={toDate}
+                  min={fromDate || undefined}
+                  onChange={(e) => setToDate(e.target.value)}
+                  required
+                />
+              </Field>
             </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">To Date <span className="text-red-500">*</span></label>
-              <input type="date" className="w-full bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm" value={toDate} onChange={e => setToDate(e.target.value)} required />
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Reason <span className="text-red-500">*</span></label>
-            <div className="relative">
-              <select className="w-full appearance-none bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm cursor-pointer" value={reason} onChange={e => setReason(e.target.value)} required>
-                <option value="">-- Select Reason --</option>
-                {REASONS.map(r => <option key={r} value={r}>{r}</option>)}
-              </select>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs">▼</div>
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Description <span className="text-gray-400 lowercase normal-case">(optional)</span></label>
-            <textarea className="w-full bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-brand-purple/20 focus:border-brand-purple transition-all shadow-sm min-h-[120px] resize-y" placeholder="Provide additional details..." value={description} onChange={e => setDescription(e.target.value)} />
-          </div>
-          
-          <button type="submit" className="w-full bg-brand-purple hover:bg-brand-dark text-white py-4 rounded-2xl text-sm font-black tracking-wide shadow-md shadow-brand-purple/20 hover:shadow-lg transition-all" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Leave Request'}
-          </button>
-        </form>
-      </div>
+
+            <Field label="Reason" htmlFor="leave-reason" required>
+              <Select
+                id="leave-reason"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                required
+              >
+                <option value="">Select a reason…</option>
+                {REASONS.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+
+            <Field
+              label="Description"
+              htmlFor="leave-description"
+              hint="Optional — anything faculty should know before deciding."
+            >
+              <Textarea
+                id="leave-description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Add details…"
+              />
+            </Field>
+
+            <Button type="submit" variant="primary" className="w-full" disabled={submitting}>
+              {submitting ? 'Submitting…' : 'Submit leave request'}
+            </Button>
+          </form>
+        </CardBody>
+      </Card>
     </div>
   );
 }

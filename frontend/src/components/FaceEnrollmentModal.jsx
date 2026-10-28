@@ -1,10 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Camera, CameraOff, CheckCircle2, AlertCircle, RefreshCw, X, Upload, Sparkles, UserCheck } from 'lucide-react';
+import { Camera, CameraOff, Check, RefreshCw, Upload, UserCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import { loadFaceApiModels, detectSingleFace } from '../services/faceService';
+import { Button, Field, Modal, Select, Spinner } from './ui';
+import { cn } from './ui/cn';
 
-export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, preselectedStudentId, classStudents = [] }) {
+export default function FaceEnrollmentModal({
+  isOpen,
+  onClose,
+  onEnrolled,
+  preselectedStudentId,
+  classStudents = [],
+}) {
   const [selectedStudentId, setSelectedStudentId] = useState(preselectedStudentId || '');
   const [cameraActive, setCameraActive] = useState(false);
   const [modelsLoading, setModelsLoading] = useState(true);
@@ -19,19 +27,16 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
   const streamRef = useRef(null);
   const detectionTimerRef = useRef(null);
 
-  // Sync preselected student
   useEffect(() => {
     if (preselectedStudentId) setSelectedStudentId(preselectedStudentId);
   }, [preselectedStudentId]);
 
-  // Load models when modal opens
   useEffect(() => {
     if (isOpen) {
       setModelsLoading(true);
       loadFaceApiModels()
         .then(() => setModelsLoading(false))
-        .catch(err => {
-          console.error(err);
+        .catch(() => {
           setModelsLoading(false);
           toast.error('Failed to load face detection models.');
         });
@@ -41,6 +46,7 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
       setCapturedDescriptor(null);
       setFaceDetected(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const stopCamera = useCallback(() => {
@@ -49,7 +55,7 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
       detectionTimerRef.current = null;
     }
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
     setCameraActive(false);
@@ -62,11 +68,7 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
     setCapturedDescriptor(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user',
-        },
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
         audio: false,
       });
 
@@ -80,13 +82,11 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
         };
       }
     } catch (err) {
-      console.error('Camera error:', err);
       setCameraError(err.message || 'Unable to access camera.');
       toast.error('Camera access denied or unavailable.');
     }
   };
 
-  // Run face check every 300ms on video
   const startLiveDetection = () => {
     if (detectionTimerRef.current) clearInterval(detectionTimerRef.current);
     detectionTimerRef.current = setInterval(async () => {
@@ -94,13 +94,12 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
       try {
         const detection = await detectSingleFace(videoRef.current);
         setFaceDetected(!!detection);
-      } catch (e) {
-        // ignore background detection errors
+      } catch {
+        /* background detection failures are not actionable */
       }
     }, 350);
   };
 
-  // Capture frame from video and extract descriptor
   const handleCapture = async () => {
     if (!videoRef.current) return;
     setDetecting(true);
@@ -111,17 +110,15 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 480;
       const ctx = canvas.getContext('2d');
-      // Mirror image horizontally for natural selfie view
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
 
-      // Detect face on captured image
       const detection = await detectSingleFace(canvas);
 
       if (!detection) {
-        toast.error('No clear face detected! Please look directly into the camera and ensure good lighting.');
+        toast.error('No clear face detected. Look straight at the camera in good light.');
         setDetecting(false);
         return;
       }
@@ -129,16 +126,14 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
       setCapturedImage(dataUrl);
       setCapturedDescriptor(Array.from(detection.descriptor));
       stopCamera();
-      toast.success('Face snapshot captured successfully!');
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to analyze captured frame.');
+      toast.success('Face snapshot captured');
+    } catch {
+      toast.error('Could not analyse the captured frame.');
     } finally {
       setDetecting(false);
     }
   };
 
-  // Handle local file upload
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -153,16 +148,16 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
         try {
           const detection = await detectSingleFace(img);
           if (!detection) {
-            toast.error('No face detected in uploaded photo. Please select a clearer portrait.');
+            toast.error('No face found in that photo. Try a clearer portrait.');
             setDetecting(false);
             return;
           }
           setCapturedImage(dataUrl);
           setCapturedDescriptor(Array.from(detection.descriptor));
           stopCamera();
-          toast.success('Face portrait verified successfully!');
-        } catch (err) {
-          toast.error('Error analyzing image.');
+          toast.success('Portrait verified');
+        } catch {
+          toast.error('Could not analyse the image.');
         } finally {
           setDetecting(false);
         }
@@ -172,11 +167,9 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
   };
 
   const handleSaveEnrollment = async () => {
-    if (!selectedStudentId) {
-      return toast.error('Please select a student.');
-    }
+    if (!selectedStudentId) return toast.error('Select a student first.');
     if (!capturedDescriptor || !capturedImage) {
-      return toast.error('Please capture or upload a face portrait first.');
+      return toast.error('Capture or upload a portrait first.');
     }
 
     setIsSubmitting(true);
@@ -188,7 +181,7 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
         angleType: 'front',
       });
 
-      toast.success('Student Face registered successfully in FRS!');
+      toast.success('Face ID registered');
       if (onEnrolled) {
         onEnrolled({
           studentId: parseInt(selectedStudentId, 10),
@@ -199,211 +192,197 @@ export default function FaceEnrollmentModal({ isOpen, onClose, onEnrolled, prese
       }
       onClose();
     } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.error || 'Failed to enroll face.');
+      toast.error(err.response?.data?.error || 'Failed to enrol face.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!isOpen) return null;
-
-  const currentStudent = classStudents.find(s => s.id == selectedStudentId || s.user_id == selectedStudentId);
+  const currentStudent = classStudents.find(
+    (s) => s.id == selectedStudentId || s.user_id == selectedStudentId // eslint-disable-line eqeqeq
+  );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-[#1e202e]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-brand-purple/10 text-brand-purple flex items-center justify-center font-bold">
-              <Sparkles className="w-5 h-5 text-brand-purple" />
-            </div>
-            <div>
-              <h3 className="text-slate-900 dark:text-slate-100 font-bold text-lg">FRS Face Enrollment</h3>
-              <p className="text-gray-400 text-xs font-medium">Register 128-d AI Face ID descriptor in the database</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#1e202e] transition-colors"
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      title="Enrol a face"
+      description="Capture one clear portrait per student. The 128-d descriptor is stored, not the photo."
+      size="md"
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSaveEnrollment}
+            disabled={!capturedDescriptor || !selectedStudentId || isSubmitting}
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="p-6 overflow-y-auto space-y-5">
-          {/* Student selection */}
-          <div>
-            <label className="block text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">
-              Select Student to Enroll
-            </label>
-            {classStudents.length > 0 ? (
-              <select
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#0a0b10] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all cursor-pointer"
-                value={selectedStudentId}
-                onChange={(e) => setSelectedStudentId(e.target.value)}
-              >
-                <option value="">-- Choose Student from Class --</option>
-                {classStudents.map((s) => (
-                  <option key={s.id || s.user_id} value={s.id || s.user_id}>
-                    {s.roll_no} — {s.full_name}
-                  </option>
-                ))}
-              </select>
+            {isSubmitting ? (
+              <>
+                <Spinner size="sm" /> Saving…
+              </>
             ) : (
-              <input
-                type="text"
-                placeholder="Student User ID"
-                value={selectedStudentId}
-                onChange={(e) => setSelectedStudentId(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#0a0b10] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 font-medium"
+              <>
+                <Check size={13} /> Save face ID
+              </>
+            )}
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <Field label="Student" htmlFor="face-student">
+          {classStudents.length > 0 ? (
+            <Select
+              id="face-student"
+              value={selectedStudentId}
+              onChange={(e) => setSelectedStudentId(e.target.value)}
+            >
+              <option value="">Choose a student…</option>
+              {classStudents.map((s) => (
+                <option key={s.id || s.user_id} value={s.id || s.user_id}>
+                  {s.roll_no} — {s.full_name}
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <input
+              id="face-student"
+              type="text"
+              placeholder="Student user ID"
+              value={selectedStudentId}
+              onChange={(e) => setSelectedStudentId(e.target.value)}
+              className="h-9 w-full rounded-md border border-line bg-surface px-3 text-[13px] text-ink shadow-xs placeholder:text-faint focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/12"
+            />
+          )}
+        </Field>
+
+        {currentStudent ? (
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent">
+            <UserCheck size={13} /> {currentStudent.full_name} · {currentStudent.roll_no}
+          </p>
+        ) : null}
+
+        {/* Viewfinder */}
+        <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-md bg-neutral-950">
+          {modelsLoading ? (
+            <div className="flex flex-col items-center gap-2.5 text-center">
+              <Spinner className="border-white/25 border-t-white" />
+              <p className="text-xs text-neutral-400">Loading face models…</p>
+            </div>
+          ) : capturedImage ? (
+            <div className="relative h-full w-full">
+              <img src={capturedImage} alt="Captured face" className="h-full w-full object-cover" />
+              <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full bg-emerald-600/95 px-2.5 py-1 text-2xs font-bold text-white">
+                <Check size={11} /> Verified
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setCapturedImage(null);
+                  setCapturedDescriptor(null);
+                  startCamera();
+                }}
+                className="absolute bottom-2.5 right-2.5 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-2.5 py-1.5 text-2xs font-semibold text-white transition-colors hover:bg-black"
+              >
+                <RefreshCw size={11} /> Retake
+              </button>
+            </div>
+          ) : cameraActive ? (
+            <div className="relative flex h-full w-full items-center justify-center">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="h-full w-full -scale-x-100 object-cover"
               />
-            )}
-            {currentStudent && (
-              <div className="mt-2 text-xs text-brand-purple font-semibold flex items-center gap-1.5">
-                <UserCheck className="w-4 h-4" /> Enrolling Face ID for: {currentStudent.full_name} ({currentStudent.roll_no})
-              </div>
-            )}
-          </div>
 
-          {/* Camera Viewfinder & Preview */}
-          <div className="relative rounded-2xl overflow-hidden bg-slate-900 aspect-video flex items-center justify-center border-2 border-slate-800 shadow-inner">
-            {modelsLoading ? (
-              <div className="text-center text-gray-400 p-6">
-                <div className="w-8 h-8 border-2 border-brand-purple border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm font-medium">Loading AI Neural Face Models...</p>
-              </div>
-            ) : capturedImage ? (
-              <div className="relative w-full h-full">
-                <img src={capturedImage} alt="Captured Face" className="w-full h-full object-cover" />
-                <div className="absolute top-3 left-3 bg-green-500/90 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 backdrop-blur-md shadow-lg">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Face Verified (128-d descriptor ready)
-                </div>
-                <button
-                  onClick={() => {
-                    setCapturedImage(null);
-                    setCapturedDescriptor(null);
-                    startCamera();
-                  }}
-                  className="absolute bottom-3 right-3 bg-black/70 hover:bg-black text-white text-xs font-semibold px-3 py-1.5 rounded-xl backdrop-blur-md transition-all flex items-center gap-1.5"
+              <div
+                className={cn(
+                  'pointer-events-none absolute flex h-44 w-36 items-center justify-center rounded-[50%] border-2 transition-all duration-300',
+                  faceDetected
+                    ? 'scale-105 border-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.35)]'
+                    : 'animate-pulse border-dashed border-white/40'
+                )}
+              >
+                <span
+                  className={cn(
+                    'rounded px-2 py-0.5 text-2xs font-bold',
+                    faceDetected ? 'bg-emerald-500 text-white' : 'bg-black/60 text-white/80'
+                  )}
                 >
-                  <RefreshCw className="w-3.5 h-3.5" /> Retake
-                </button>
+                  {faceDetected ? 'Face locked' : 'Align your face'}
+                </span>
               </div>
-            ) : cameraActive ? (
-              <div className="relative w-full h-full flex items-center justify-center">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full h-full object-cover transform scale-x-[-1]"
-                />
 
-                {/* Face Guide Oval */}
-                <div className={`absolute w-44 h-56 rounded-[50%] border-2 transition-all duration-300 pointer-events-none flex items-center justify-center ${
-                  faceDetected ? 'border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.4)] scale-105' : 'border-dashed border-white/50 animate-pulse'
-                }`}>
-                  <span className={`text-[11px] font-bold px-2 py-1 rounded-md backdrop-blur-md shadow ${
-                    faceDetected ? 'bg-green-500 text-white' : 'bg-black/60 text-white/80'
-                  }`}>
-                    {faceDetected ? '✓ Face Locked' : 'Align Face Here'}
-                  </span>
-                </div>
-
-                <div className="absolute bottom-3 left-3 flex gap-2">
-                  <span className="bg-black/60 text-white text-[11px] px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    {faceDetected ? '🟢 Ready to capture' : '🟡 Looking for face...'}
-                  </span>
-                </div>
+              <span className="absolute bottom-2.5 left-2.5 rounded-full bg-black/60 px-2 py-0.5 text-2xs font-medium text-white backdrop-blur">
+                {faceDetected ? 'Ready to capture' : 'Looking for a face…'}
+              </span>
+            </div>
+          ) : (
+            <div className="max-w-xs space-y-3 p-6 text-center">
+              <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-neutral-300">
+                <Camera size={20} />
+              </span>
+              <div>
+                <p className="text-[13px] font-semibold text-white">Camera offline</p>
+                <p className="mt-1 text-xs leading-relaxed text-neutral-400">
+                  Use the webcam, or upload a portrait photo from disk.
+                </p>
               </div>
-            ) : (
-              <div className="text-center p-6 space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-slate-800 text-gray-400 flex items-center justify-center mx-auto">
-                  <Camera className="w-7 h-7" />
-                </div>
-                <div>
-                  <h4 className="text-white font-bold text-sm">Camera Offline</h4>
-                  <p className="text-gray-400 text-xs max-w-xs mx-auto mt-1">
-                    Turn on the webcam to scan a student's face, or upload a portrait photo.
-                  </p>
-                </div>
-                <div className="flex justify-center gap-3">
-                  <button
-                    onClick={startCamera}
-                    className="px-4 py-2 rounded-xl bg-brand-purple text-white text-xs font-bold shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all flex items-center gap-1.5"
-                  >
-                    <Camera className="w-4 h-4" /> Start Camera
-                  </button>
-                  <label className="px-4 py-2 rounded-xl bg-slate-800 text-gray-200 text-xs font-bold hover:bg-slate-700 transition-all cursor-pointer flex items-center gap-1.5">
-                    <Upload className="w-4 h-4" /> Upload Photo
-                    <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
-                  </label>
-                </div>
-                {cameraError && (
-                  <p className="text-red-400 text-xs flex items-center justify-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" /> {cameraError}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Action buttons during camera active */}
-          {cameraActive && !capturedImage && (
-            <div className="flex gap-3">
-              <button
-                onClick={stopCamera}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-[#1e202e] text-gray-600 dark:text-gray-300 font-bold text-xs hover:bg-slate-200 transition-all flex items-center justify-center gap-1.5"
-              >
-                <CameraOff className="w-4 h-4" /> Cancel Camera
-              </button>
-              <button
-                onClick={handleCapture}
-                disabled={detecting}
-                className="flex-[2] py-2.5 rounded-xl bg-brand-purple text-white font-bold text-xs shadow-lg shadow-brand-purple/30 hover:opacity-90 transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
-              >
-                {detecting ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" /> Analyzing Face...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="w-4 h-4" /> Capture Face Snapshot
-                  </>
-                )}
-              </button>
+              {cameraError ? (
+                <p className="text-2xs text-red-400">{cameraError}</p>
+              ) : null}
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="p-6 bg-slate-50 dark:bg-[#0a0b10] border-t border-slate-100 dark:border-[#1e202e] flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-white dark:bg-[#12141d] border border-slate-200 dark:border-[#222430] text-gray-600 dark:text-gray-400 font-bold text-sm hover:bg-slate-50 transition-all"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSaveEnrollment}
-            disabled={!capturedDescriptor || !selectedStudentId || isSubmitting}
-            className="px-6 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-sm shadow-lg shadow-green-600/30 transition-all disabled:opacity-50 flex items-center gap-2"
-          >
-            {isSubmitting ? (
+        {!capturedImage ? (
+          <div className="flex flex-wrap gap-2">
+            {cameraActive ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" /> Saving to Database...
+                <Button variant="secondary" onClick={stopCamera} className="flex-1">
+                  <CameraOff size={13} /> Cancel camera
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleCapture}
+                  disabled={detecting}
+                  className="flex-[2]"
+                >
+                  {detecting ? (
+                    <>
+                      <Spinner size="sm" /> Analysing…
+                    </>
+                  ) : (
+                    <>
+                      <Camera size={13} /> Capture snapshot
+                    </>
+                  )}
+                </Button>
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-4 h-4" /> Save & Enroll Student
+                <Button
+                  variant="primary"
+                  onClick={startCamera}
+                  disabled={modelsLoading || !!capturedImage}
+                  className="flex-1"
+                >
+                  <Camera size={13} /> Start camera
+                </Button>
+                <Button as="label" variant="secondary" className="flex-1 cursor-pointer">
+                  <Upload size={13} /> Upload photo
+                  <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+                </Button>
               </>
             )}
-          </button>
-        </div>
+          </div>
+        ) : null}
       </div>
-    </div>
+    </Modal>
   );
 }

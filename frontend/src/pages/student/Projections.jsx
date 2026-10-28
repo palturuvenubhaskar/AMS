@@ -1,7 +1,25 @@
 import { useState, useEffect } from 'react';
+import {
+  AlertTriangle,
+  CalendarDays,
+  CheckCircle2,
+  Target,
+  TrendingDown,
+  TrendingUp,
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
-import { TrendingUp, TrendingDown, CheckCircle, AlertTriangle, ShieldCheck } from 'lucide-react';
+import {
+  AnimatedNumber,
+  Card,
+  CardBody,
+  CardHeader,
+  EmptyState,
+  PageHeader,
+  PageLoader,
+  Progress,
+  StatCard,
+} from '../../components/ui';
 
 export default function Projections() {
   const { user } = useAuth();
@@ -9,108 +27,140 @@ export default function Projections() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get(`/dashboard/predictions/${user?.id}`)
-      .then(res => setData(res.data))
-      .catch(console.error)
+    api
+      .get(`/dashboard/predictions/${user?.id}`)
+      .then((res) => setData(res.data))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [user]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-10 md:w-12 h-10 md:h-12 border-4 border-brand-purple border-t-transparent rounded-full animate-spin drop-shadow-md" />
-      </div>
-    );
-  }
+  if (loading) return <PageLoader label="Running projections" />;
 
   if (!data) {
     return (
-      <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-bold bg-white dark:bg-[#12141d] rounded-3xl shadow-glass border border-slate-200 dark:border-[#222430]">
-        No attendance data found to run projections.
+      <div className="space-y-6">
+        <PageHeader eyebrow="Academics" title="Attendance projections" />
+        <Card>
+          <EmptyState
+            icon={Target}
+            title="Not enough data yet"
+            description="Projections need a few marked sessions before they mean anything."
+          />
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-slate-900 dark:text-slate-100 text-xl md:text-3xl font-black tracking-tight mb-1">Attendance Projections</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Mathematical projection for the remainder of the semester</p>
-        </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Academics"
+        title="Attendance projections"
+        description="Where your attendance lands if the rest of the semester goes well — or badly."
+      />
+
+      <div className="stagger grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <StatCard
+          label="Classes held"
+          value={<AnimatedNumber value={data.totalConducted || 0} />}
+          icon={CalendarDays}
+          tone="neutral"
+          hint="So far this semester"
+        />
+        <StatCard
+          label="Classes remaining"
+          value={<AnimatedNumber value={data.remainingClasses || 0} />}
+          icon={CalendarDays}
+          tone="info"
+          hint="Estimated until the end"
+        />
+        <StatCard
+          label="Best case"
+          value={`${data.maxPossiblePct}%`}
+          icon={TrendingUp}
+          tone="positive"
+          hint="Attend everything left"
+        />
+        <StatCard
+          label="Worst case"
+          value={`${data.minPossiblePct}%`}
+          icon={TrendingDown}
+          tone="negative"
+          hint="Miss everything left"
+        />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Conducted Classes</div>
-          <div className="text-2xl md:text-4xl font-black text-slate-900 dark:text-slate-100">{data.totalConducted}</div>
-          <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Classes held so far</div>
-        </div>
-
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Remaining Classes</div>
-          <div className="text-2xl md:text-4xl font-black text-slate-900 dark:text-slate-100">{data.remainingClasses}</div>
-          <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Estimated until end of semester</div>
-        </div>
-
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-            <TrendingUp size={64} />
-          </div>
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Max Possible</div>
-          <div className="text-2xl md:text-4xl font-black text-emerald-500">{data.maxPossiblePct}%</div>
-          <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">If you attend every remaining class</div>
-        </div>
-
-        <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-6 shadow-glass border border-slate-200 dark:border-[#222430] flex flex-col justify-between relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-            <TrendingDown size={64} />
-          </div>
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Min Possible</div>
-          <div className="text-2xl md:text-4xl font-black text-red-500">{data.minPossiblePct}%</div>
-          <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">If you miss every remaining class</div>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-[#12141d] rounded-3xl p-4 md:p-8 shadow-glass border border-slate-200 dark:border-[#222430] mt-8">
-        <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 mb-6">Actionable Insights</h2>
-        
-        <div className="space-y-4">
-          <div className="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430]">
-            <ShieldCheck className="text-brand-purple mt-1 flex-shrink-0" size={24} />
-            <div>
-              <h3 className="font-bold text-slate-900 dark:text-slate-100">Target: 75% Attendance</h3>
-              <p className="text-gray-600 dark:text-gray-400 font-medium text-sm mt-1">
-                You need to attend <strong className="text-brand-purple text-lg">{data.requiredFor75}</strong> more classes out of the remaining {data.remainingClasses} to secure 75% attendance.
+      <Card>
+        <CardHeader>
+          <h2 className="text-[15px] font-bold text-ink">The 75% target</h2>
+          <p className="mt-0.5 text-xs text-muted">
+            The minimum attendance most institutions require to sit exams.
+          </p>
+        </CardHeader>
+        <CardBody className="space-y-5">
+          <div>
+            <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+              <p className="text-[13px] text-body">
+                Attend{' '}
+                <strong className="tnum text-base font-bold text-ink">
+                  {data.requiredFor75}
+                </strong>{' '}
+                more of the {data.remainingClasses} remaining classes to reach 75%.
               </p>
+              <span className="text-2xs font-bold uppercase tracking-[0.08em] text-faint">
+                Goal 75%
+              </span>
             </div>
+            <Progress
+              value={
+                data.remainingClasses
+                  ? Math.min(100, (data.safeToBunk / Math.max(data.remainingClasses, 1)) * 100)
+                  : 0
+              }
+              tone={data.canReach75 ? 'positive' : 'negative'}
+            />
           </div>
 
-          {!data.canReach75 && (
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-red-50 border border-red-100">
-              <AlertTriangle className="text-red-500 mt-1 flex-shrink-0" size={24} />
+          {data.canReach75 && data.safeToBunk > 0 ? (
+            <div className="flex items-start gap-3 rounded-md border border-positive/20 bg-positive-soft px-4 py-3">
+              <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-positive" />
               <div>
-                <h3 className="font-bold text-red-700">Critical Warning</h3>
-                <p className="text-red-600 font-medium text-sm mt-1">
-                  It is mathematically impossible to reach 75% even if you attend all remaining classes. Please contact your HOD immediately for condonation procedures.
+                <p className="text-[13px] font-bold text-positive">Safe margin</p>
+                <p className="mt-0.5 text-xs text-body">
+                  You can miss{' '}
+                  <strong className="tnum font-bold">{data.safeToBunk}</strong> classes and still
+                  stay at or above 75%.
                 </p>
               </div>
             </div>
-          )}
+          ) : null}
 
-          {data.canReach75 && data.safeToBunk > 0 && (
-            <div className="flex items-start gap-4 p-5 rounded-2xl bg-emerald-50 border border-emerald-100">
-              <CheckCircle className="text-emerald-500 mt-1 flex-shrink-0" size={24} />
+          {!data.canReach75 ? (
+            <div className="flex items-start gap-3 rounded-md border border-negative/20 bg-negative-soft px-4 py-3">
+              <AlertTriangle size={16} className="mt-0.5 shrink-0 text-negative" />
               <div>
-                <h3 className="font-bold text-emerald-700">Safe Margin</h3>
-                <p className="text-emerald-600 font-medium text-sm mt-1">
-                  You can safely miss <strong className="text-emerald-700 text-lg">{data.safeToBunk}</strong> classes without falling below the 75% threshold.
+                <p className="text-[13px] font-bold text-negative">75% is out of reach</p>
+                <p className="mt-0.5 text-xs text-body">
+                  Even attending every remaining class will not get you there. Contact your HOD
+                  about condonation.
                 </p>
               </div>
             </div>
-          )}
-        </div>
-      </div>
+          ) : null}
+
+          {data.canReach75 && !data.safeToBunk ? (
+            <div className="flex items-start gap-3 rounded-md border border-caution/20 bg-caution-soft px-4 py-3">
+              <AlertTriangle size={16} className="mt-0.5 shrink-0 text-caution" />
+              <div>
+                <p className="text-[13px] font-bold text-caution">No margin left</p>
+                <p className="mt-0.5 text-xs text-body">
+                  You are exactly on the line — every remaining class counts.
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </CardBody>
+      </Card>
     </div>
   );
 }

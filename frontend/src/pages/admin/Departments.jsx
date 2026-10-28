@@ -1,7 +1,23 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { Building2, Plus, Pencil, Trash2, X } from 'lucide-react';
+import { Building2, Pencil, Plus, Trash2 } from 'lucide-react';
+import {
+  Badge,
+  Button,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  Table,
+  TableEmpty,
+  TableShell,
+  TBody,
+  Td,
+  Th,
+  THead,
+  TR,
+} from '../../components/ui';
 
 export default function Departments() {
   const [departments, setDepartments] = useState([]);
@@ -10,13 +26,16 @@ export default function Departments() {
   const [form, setForm] = useState({ name: '', code: '' });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => {
+    fetch();
+  }, []);
+
   const fetch = async () => {
     setLoading(true);
     try {
       const r = await api.get('/departments');
       setDepartments(r.data);
-    } catch (err) {
+    } catch {
       toast.error('Failed to load departments');
     }
     setLoading(false);
@@ -32,127 +51,161 @@ export default function Departments() {
         await api.post('/departments', form);
         toast.success('Department created');
       }
-      fetch(); setModal(false); setEditing(null); setForm({ name: '', code: '' });
-    } catch (err) { toast.error(err.response?.data?.error || 'Failed'); }
+      fetch();
+      setModal(false);
+      setEditing(null);
+      setForm({ name: '', code: '' });
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Could not save department');
+    }
   };
 
   const del = async (id) => {
     if (!confirm('Delete this department?')) return;
-    try { await api.delete(`/departments/${id}`); toast.success('Deleted'); fetch(); }
-    catch (err) { toast.error(err.response?.data?.error || 'Failed'); }
+    try {
+      await api.delete(`/departments/${id}`);
+      toast.success('Department deleted');
+      fetch();
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Could not delete department');
+    }
+  };
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ name: '', code: '' });
+    setModal(true);
+  };
+
+  const openEdit = (department) => {
+    setEditing(department);
+    setForm({ name: department.name, code: department.code });
+    setModal(true);
   };
 
   return (
-    <div className="space-y-6 animate-[fadeIn_0.5s_ease-out] font-sans">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#12141d] p-4 md:p-6 rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-        <div className="flex items-center gap-4">
-          <div className="w-10 md:w-12 h-10 md:h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-sm">
-            <Building2 size={24} />
-          </div>
-          <div>
-            <h1 className="text-slate-900 dark:text-slate-100 text-2xl font-black tracking-tight mb-1">Departments</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Manage university departments</p>
-          </div>
-        </div>
-        
-        <button 
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-indigo-600/20 transition-all flex items-center gap-2"
-          onClick={() => { setEditing(null); setForm({name:'',code:''}); setModal(true); }}
-        >
-          <Plus size={18} /> Add Department
-        </button>
-      </div>
+    <div className="space-y-5">
+      <PageHeader
+        eyebrow="Academics"
+        title="Departments"
+        description="The organisational units that own classes, subjects and faculty."
+        actions={
+          <Button variant="primary" onClick={openCreate}>
+            <Plus size={15} /> New department
+          </Button>
+        }
+      />
 
-      <div className="bg-white dark:bg-[#12141d] rounded-[24px] border border-slate-200 dark:border-[#222430] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center text-gray-400 font-medium">Loading departments...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[600px]">
-              <thead>
-                <tr className="bg-gray-50/50">
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 w-20">ID</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Name</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">Code</th>
-                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {departments.map(d => (
-                  <tr key={d.id} className="group hover:bg-indigo-50/30 transition-colors border-b border-gray-50 last:border-0">
-                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-gray-400">#{d.id}</td>
-                    <td className="px-4 md:px-6 py-4 font-bold text-sm text-slate-900 dark:text-slate-100">{d.name}</td>
-                    <td className="px-4 md:px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-palette-light/20 text-palette-dark border border-blue-200 text-xs font-bold tracking-widest">
-                        {d.code}
-                      </span>
-                    </td>
-                    <td className="px-4 md:px-6 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-[#050505] hover:bg-indigo-50 text-gray-400 hover:text-indigo-600 transition-colors"
-                          onClick={() => { setEditing(d); setForm({name:d.name,code:d.code}); setModal(true); }}
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 dark:bg-[#050505] hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
-                          onClick={() => del(d.id)}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-                {departments.length === 0 && (
-                  <tr><td colSpan="4" className="px-4 md:px-6 py-12 text-center text-gray-400 font-medium">No departments found.</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      <TableShell>
+        <Table className="min-w-[560px]">
+          <THead>
+            <tr>
+              <Th className="w-16">ID</Th>
+              <Th>Name</Th>
+              <Th className="w-32">Code</Th>
+              <Th align="right" className="w-28">
+                Actions
+              </Th>
+            </tr>
+          </THead>
+          <TBody>
+            {loading ? (
+              <tr>
+                <Td colSpan={4} className="py-12 text-center text-xs font-medium text-muted">
+                  Loading departments…
+                </Td>
+              </tr>
+            ) : departments.length === 0 ? (
+              <TableEmpty
+                colSpan={4}
+                icon={Building2}
+                title="No departments yet"
+                description="Create your first department to start adding classes and subjects."
+                action={
+                  <Button size="sm" onClick={openCreate}>
+                    <Plus size={14} /> Add department
+                  </Button>
+                }
+              />
+            ) : (
+              departments.map((d) => (
+                <TR key={d.id} className="group">
+                  <Td className="font-mono text-2xs text-faint">#{d.id}</Td>
+                  <Td className="font-semibold text-ink">{d.name}</Td>
+                  <Td>
+                    <Badge tone="neutral" className="font-mono tracking-wide">
+                      {d.code}
+                    </Badge>
+                  </Td>
+                  <Td align="right">
+                    <div className="flex justify-end gap-1 opacity-60 transition-opacity group-hover:opacity-100">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => openEdit(d)}
+                        title="Edit department"
+                        aria-label={`Edit ${d.name}`}
+                      >
+                        <Pencil size={14} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => del(d.id)}
+                        title="Delete department"
+                        aria-label={`Delete ${d.name}`}
+                        className="hover:bg-negative-soft hover:text-negative"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </Td>
+                </TR>
+              ))
+            )}
+          </TBody>
+        </Table>
+      </TableShell>
 
-      {/* Modal */}
-      {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-palette-dark/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
-          <div className="bg-white dark:bg-[#12141d] rounded-[24px] shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-              <h3 className="font-black text-slate-900 dark:text-slate-100">{editing ? 'Edit' : 'Add'} Department</h3>
-              <button onClick={() => setModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors">
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={save} className="p-4 md:p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Name</label>
-                <input 
-                  className="w-full bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                  value={form.name} onChange={e => setForm(p => ({...p,name:e.target.value}))} required 
-                  placeholder="e.g. Computer Science"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Code</label>
-                <input 
-                  className="w-full bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-[#222430] text-slate-900 dark:text-slate-100 text-sm font-semibold rounded-xl px-4 py-3 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                  value={form.code} onChange={e => setForm(p => ({...p,code:e.target.value}))} required 
-                  placeholder="e.g. CSE"
-                />
-              </div>
-              <div className="flex justify-end gap-3 mt-8">
-                <button type="button" className="px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-50 dark:bg-[#050505] text-gray-500 dark:text-gray-400 hover:bg-slate-100 dark:bg-[#12141d] transition-colors" onClick={() => setModal(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="px-5 py-2.5 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 transition-colors">
-                  Save Department
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <Modal
+        open={modal}
+        onClose={() => setModal(false)}
+        title={editing ? 'Edit department' : 'New department'}
+        description="Departments group classes, subjects and faculty together."
+        size="sm"
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" form="department-form">
+              {editing ? 'Save changes' : 'Create department'}
+            </Button>
+          </>
+        }
+      >
+        <form id="department-form" onSubmit={save} className="space-y-4">
+          <Field label="Department name" htmlFor="dept-name" required>
+            <Input
+              id="dept-name"
+              value={form.name}
+              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+              placeholder="Computer Science and Engineering"
+              required
+            />
+          </Field>
+          <Field label="Short code" htmlFor="dept-code" hint="Used on timetables and reports." required>
+            <Input
+              id="dept-code"
+              value={form.code}
+              onChange={(e) => setForm((p) => ({ ...p, code: e.target.value.toUpperCase() }))}
+              placeholder="CSE"
+              className="font-mono uppercase"
+              required
+            />
+          </Field>
+        </form>
+      </Modal>
     </div>
   );
 }

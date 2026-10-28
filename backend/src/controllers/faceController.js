@@ -47,6 +47,7 @@ exports.enrollFace = async (req, res, next) => {
         const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
         const base64Data = matches[2];
         const fileName = `face_${studentId}_${Date.now()}.${ext}`;
+        const filePath = path.join(facesDir, fileName);
         try {
           await fs.promises.writeFile(filePath, Buffer.from(base64Data, 'base64'));
           imagePath = `/uploads/faces/${fileName}`;

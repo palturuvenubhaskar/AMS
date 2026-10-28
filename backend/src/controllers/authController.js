@@ -20,7 +20,10 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ error: 'ID Number and password are required.' });
     }
 
-    const result = await db.query('SELECT * FROM users WHERE (email = $1 OR split_part(email, \'@\', 1) = $1) AND is_active = true', [loginId]);
+    const result = await db.query(
+      "SELECT * FROM users WHERE (LOWER(email) = LOWER($1) OR LOWER(split_part(email, '@', 1)) = LOWER($1)) AND is_active = true",
+      [loginId]
+    );
     if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
@@ -102,14 +105,23 @@ exports.register = async (req, res, next) => {
   }
 };
 
-// POST /auth/register-admin (Open for initial setup)
+// POST /auth/register-admin (First-run bootstrap only)
 exports.registerAdmin = async (req, res, next) => {
   try {
     const { email, password, fullName, phone } = req.body;
     if (!email || !password || !fullName) {
       return res.status(400).json({ error: 'Email, password, and full name are required.' });
     }
-    
+
+    // Once an administrator exists, bootstrap is closed: new admins are created
+    // by an existing admin from the user directory.
+    const adminCount = await db.query("SELECT COUNT(*)::int AS count FROM users WHERE role = 'admin'");
+    if (adminCount.rows[0].count > 0) {
+      return res.status(403).json({
+        error: 'Setup is already complete. Ask an existing administrator to create your account.',
+      });
+    }
+
     // Explicitly set role to admin
     const role = 'admin';
 
@@ -120,6 +132,16 @@ exports.registerAdmin = async (req, res, next) => {
     );
 
     res.status(201).json({ user: result.rows[0], message: 'Admin user created successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET /auth/setup-status — lets the login screen know whether bootstrap is still open
+exports.setupStatus = async (req, res, next) => {
+  try {
+    const adminCount = await db.query("SELECT COUNT(*)::int AS count FROM users WHERE role = 'admin'");
+    res.json({ needsSetup: adminCount.rows[0].count === 0 });
   } catch (err) {
     next(err);
   }

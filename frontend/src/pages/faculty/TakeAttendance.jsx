@@ -19,6 +19,7 @@ import {
   Select,
 } from '../../components/ui';
 import { cn } from '../../components/ui/cn';
+import { todayISO } from '../../utils/format';
 
 const STEPS = ['Class', 'Subject & slot', 'Mark', 'Done'];
 
@@ -72,7 +73,7 @@ export default function TakeAttendance() {
   const [students, setStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(todayISO());
   const [timeSlot, setTimeSlot] = useState('');
   const [mode, setMode] = useState('manual');
   const [records, setRecords] = useState({});

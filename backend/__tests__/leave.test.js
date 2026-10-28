@@ -30,16 +30,17 @@ describe('Leave Module Tests', () => {
   describe('POST /api/leave-requests', () => {
     it('TC-LV-001: Apply for Leave', async () => {
       db.query
+        .mockResolvedValueOnce({ rows: [{ class_id: 1 }] }) // student's class lookup
         .mockResolvedValueOnce({ rows: [{ id: 1, status: 'pending', attendance_pct_snapshot: 60 }] }) // INSERT leave
         .mockResolvedValueOnce({ rows: [] }); // INSERT notification
 
       const res = await request(app)
         .post('/api/leave-requests')
         .set('Authorization', `Bearer ${studentToken}`)
-        .send({ classId: 1, fromDate: '2026-09-01', toDate: '2026-09-02', reason: 'Sick', description: 'Fever' });
+        .send({ fromDate: '2026-09-01', toDate: '2026-09-02', reason: 'Sick', description: 'Fever' });
 
       expect(res.status).toBe(201);
-      expect(db.query).toHaveBeenCalledTimes(2);
+      expect(db.query).toHaveBeenCalledTimes(3);
     });
 
     it('TC-LV-002: Apply for Leave - Missing Fields', async () => {

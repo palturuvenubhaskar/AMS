@@ -265,8 +265,8 @@ export default function AttendanceMatrix({ externalClassId, onExternalClassChang
                       'tnum px-3 py-2 text-center text-xs font-bold',
                       matrixData.dates.length === 0 && 'text-faint',
                       matrixData.dates.length > 0 && s.percentage >= 75 && 'bg-positive-soft text-positive',
-                      matrixData.dates.length > 0 && s.percentage >= 40 && s.percentage < 75 && 'bg-caution-soft text-caution',
-                      matrixData.dates.length > 0 && s.percentage < 40 && 'bg-negative-soft text-negative'
+                      matrixData.dates.length > 0 && s.percentage >= 60 && s.percentage < 75 && 'bg-caution-soft text-caution',
+                      matrixData.dates.length > 0 && s.percentage < 60 && 'bg-negative-soft text-negative'
                     )}
                   >
                     {matrixData.dates.length === 0 ? '—' : s.percentage.toFixed(1)}

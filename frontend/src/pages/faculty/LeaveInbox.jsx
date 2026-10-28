@@ -93,7 +93,7 @@ export default function LeaveInbox() {
       <PageHeader
         eyebrow="Requests"
         title="Leave inbox"
-        description="Yellow-zone leave requests (40–75% attendance) waiting for a decision."
+        description="Yellow-zone leave requests (60–74% attendance) waiting for a decision."
         actions={
           leaves.length > 0 ? <Badge tone="caution" dot>{leaves.length} pending</Badge> : null
         }

@@ -3,10 +3,20 @@ const db = require('../config/db');
 // POST /leave-requests
 exports.apply = async (req, res, next) => {
   try {
-    const { classId, fromDate, toDate, reason, description, proofUrl } = req.body;
-    if (!classId || !fromDate || !toDate || !reason) {
-      return res.status(400).json({ error: 'Class, dates, and reason are required.' });
+    const { fromDate, toDate, reason, description, proofUrl } = req.body;
+    if (!fromDate || !toDate || !reason) {
+      return res.status(400).json({ error: 'Dates and reason are required.' });
     }
+    if (new Date(toDate) < new Date(fromDate)) {
+      return res.status(400).json({ error: 'The end date cannot be before the start date.' });
+    }
+
+    // A student can only apply for leave against the class they are enrolled in.
+    const student = await db.query('SELECT class_id FROM students WHERE user_id = $1', [req.user.id]);
+    if (student.rows.length === 0) {
+      return res.status(404).json({ error: 'Student record not found.' });
+    }
+    const classId = student.rows[0].class_id;
 
     // The DB trigger (process_leave_request) handles zone calculation and auto-approve/reject
     const result = await db.query(
@@ -229,7 +239,12 @@ exports.zonePreview = async (req, res, next) => {
     );
 
     if (result.rows.length === 0) {
-      return res.json({ attendancePct: 100, zone: 'green', message: 'No attendance data yet. Leave will be auto-approved.' });
+      return res.json({
+        attendancePct: null,
+        zone: 'green',
+        hasData: false,
+        message: 'No attendance data yet, so this leave will be auto-approved.',
+      });
     }
 
     const data = result.rows[0];
@@ -241,6 +256,7 @@ exports.zonePreview = async (req, res, next) => {
     res.json({
       attendancePct: parseFloat(data.attendance_pct),
       zone: data.zone,
+      hasData: true,
       totalPresent: parseInt(data.total_present),
       totalAbsent: parseInt(data.total_absent),
       totalSessions: parseInt(data.total_sessions),

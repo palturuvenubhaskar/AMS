@@ -46,13 +46,13 @@ const ZONES = {
     tone: 'caution',
     icon: AlertTriangle,
     title: 'Warning zone',
-    text: 'Between 40% and 74% — leave requests need faculty review.',
+    text: 'Between 60% and 74% — leave requests need faculty review.',
   },
   red: {
     tone: 'negative',
     icon: XCircle,
     title: 'Critical zone',
-    text: 'Below 40% — leave is auto-rejected. Attendance needs immediate attention.',
+    text: 'Below 60% — leave is auto-rejected. Attendance needs immediate attention.',
   },
 };
 
@@ -113,7 +113,7 @@ export default function MyAttendance() {
     (Number(summary?.total_absent) || 0) +
     (Number(summary?.total_on_leave) || 0);
   const hasSessions = sessionCount > 0;
-  const zoneKey = summary?.zone || (pct >= 75 ? 'green' : pct >= 40 ? 'yellow' : 'red');
+  const zoneKey = summary?.zone || (pct >= 75 ? 'green' : pct >= 60 ? 'yellow' : 'red');
   const zone = hasSessions
     ? ZONES[zoneKey] ?? ZONES.red
     : { tone: 'neutral', icon: Clock, title: 'No sessions yet', text: 'Your zone appears once your first class is marked.' };

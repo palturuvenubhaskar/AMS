@@ -92,39 +92,48 @@ exports.getHeatmap = async (req, res, next) => {
 exports.getStudentStats = async (req, res, next) => {
   try {
     const { search, sort, order, page, limit } = req.query;
-    const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 20;
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(200, Math.max(1, parseInt(limit, 10) || 20));
     const offset = (pageNum - 1) * limitNum;
+
+    const sortable = {
+      roll_no: 'v.roll_no',
+      name: 'v.student_name',
+      pct: 'v.attendance_pct',
+      zone: 'v.zone',
+      present: 'v.total_present',
+      absent: 'v.total_absent',
+    };
+    const sortCol = sortable[sort] || sortable.roll_no;
+    const sortOrder = order === 'desc' ? 'DESC' : 'ASC';
 
     let query = `SELECT v.*, u.email, u.phone, u.is_active
                  FROM v_student_attendance_summary v
                  JOIN users u ON v.student_id = u.id
                  WHERE v.class_id = $1`;
+    let countQuery = 'SELECT COUNT(*) FROM v_student_attendance_summary v WHERE v.class_id = $1';
     const params = [req.params.id];
 
     if (search) {
-      query += ` AND (LOWER(v.student_name) LIKE $${params.length + 1} OR LOWER(v.roll_no) LIKE $${params.length + 1})`;
+      const clause = ` AND (LOWER(v.student_name) LIKE $2 OR LOWER(v.roll_no) LIKE $2)`;
+      query += clause;
+      countQuery += clause;
       params.push(`%${search.toLowerCase()}%`);
     }
 
-    const sortCol = sort || 'roll_no';
-    const sortOrder = order === 'desc' ? 'DESC' : 'ASC';
     query += ` ORDER BY ${sortCol} ${sortOrder}`;
     query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-    params.push(limitNum, offset);
 
-    const result = await db.query(query, params);
+    const result = await db.query(query, [...params, limitNum, offset]);
 
-    // Total count
-    const countResult = await db.query(
-      'SELECT COUNT(*) FROM v_student_attendance_summary WHERE class_id = $1', [req.params.id]
-    );
+    const countResult = await db.query(countQuery, params);
+    const total = parseInt(countResult.rows[0].count, 10);
 
     res.json({
       students: result.rows,
-      total: parseInt(countResult.rows[0].count),
+      total,
       page: pageNum,
-      totalPages: Math.ceil(parseInt(countResult.rows[0].count) / limitNum),
+      totalPages: Math.ceil(total / limitNum),
     });
   } catch (err) { next(err); }
 };
@@ -142,7 +151,8 @@ exports.getAlerts = async (req, res, next) => {
     redZone.rows.forEach(s => {
       alerts.push({
         type: 'critical', category: 'low_attendance',
-        message: `${s.student_name} (${s.roll_no}) has ${s.attendance_pct}% attendance`,
+        title: s.student_name,
+        message: `${s.roll_no} · ${s.class_name} · ${s.attendance_pct}% attendance`,
         class: s.class_name,
       });
     });
@@ -154,7 +164,8 @@ exports.getAlerts = async (req, res, next) => {
     if (parseInt(pendingLeaves.rows[0].count) > 0) {
       alerts.push({
         type: 'warning', category: 'pending_leaves',
-        message: `${pendingLeaves.rows[0].count} yellow zone leave requests pending review`,
+        title: 'Leave requests awaiting review',
+        message: `${pendingLeaves.rows[0].count} yellow zone leave request${pendingLeaves.rows[0].count === '1' ? '' : 's'} pending`,
       });
     }
 
@@ -230,40 +241,63 @@ exports.getMatrix = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 // GET /dashboard/predictions/:studentId
+const TEACHING_WEEKS_PER_SEMESTER = 15;
+
 exports.getPredictions = async (req, res, next) => {
   try {
-    const studentId = req.params.studentId;
-    
+    const studentId = parseInt(req.params.studentId, 10);
+    if (!studentId) {
+      return res.status(400).json({ error: 'Valid studentId is required.' });
+    }
+
+    if (req.user.role === 'student' && req.user.id !== studentId) {
+      return res.status(403).json({ error: 'You can only view your own projections.' });
+    }
+
+    if (req.user.role === 'parent') {
+      const ward = await db.query(
+        'SELECT 1 FROM student_parents WHERE parent_id = $1 AND student_id = $2',
+        [req.user.id, studentId]
+      );
+      if (ward.rows.length === 0) {
+        return res.status(403).json({ error: 'You can only view projections for your own ward.' });
+      }
+    }
+
     const summary = await db.query(
-      `SELECT * FROM v_student_attendance_summary WHERE student_id = $1`, [studentId]
+      'SELECT * FROM v_student_attendance_summary WHERE student_id = $1',
+      [studentId]
     );
     if (!summary.rows.length) return res.json(null);
 
-    const totalConducted = parseInt(data.total_sessions || data.total_classes || 0);
-    const present = parseInt(data.total_present || data.present_classes || 0);
-    
-    // Assume semester has ~400 total classes
-    const TOTAL_SEMESTER_CLASSES = 400;
-    const remainingClasses = Math.max(0, TOTAL_SEMESTER_CLASSES - totalConducted);
-    
-    const requiredTo75 = Math.ceil((0.75 * TOTAL_SEMESTER_CLASSES) - present);
-    const maxPossiblePct = ((present + remainingClasses) / TOTAL_SEMESTER_CLASSES * 100).toFixed(1);
-    const minPossiblePct = ((present) / TOTAL_SEMESTER_CLASSES * 100).toFixed(1);
-    
-    let safeToBunk = 0;
-    if (present >= (0.75 * TOTAL_SEMESTER_CLASSES)) {
-      safeToBunk = Math.floor(present / 0.75 - TOTAL_SEMESTER_CLASSES);
-    }
+    const data = summary.rows[0];
+    const totalConducted = parseInt(data.total_sessions, 10) || 0;
+    const present = parseInt(data.total_present, 10) || 0;
+
+    // Project against a full semester: the class timetable tells us how many
+    // classes a week the student actually has, over a standard 15-week term.
+    const slots = await db.query(
+      'SELECT COUNT(*)::int AS per_week FROM timetables WHERE class_id = $1',
+      [data.class_id]
+    );
+    const perWeek = slots.rows[0]?.per_week || 0;
+    const plannedTotal = Math.max(totalConducted, perWeek * TEACHING_WEEKS_PER_SEMESTER);
+    const remainingClasses = Math.max(0, plannedTotal - totalConducted);
+
+    const needed = Math.max(0, Math.ceil(0.75 * plannedTotal) - present);
+    const canReach75 = needed <= remainingClasses;
+    const pct = (value) =>
+      plannedTotal === 0 ? 0 : parseFloat(((value / plannedTotal) * 100).toFixed(1));
 
     res.json({
       totalConducted,
       present,
       remainingClasses,
-      requiredFor75: Math.max(0, requiredTo75),
-      canReach75: requiredTo75 <= remainingClasses,
-      maxPossiblePct: parseFloat(maxPossiblePct),
-      minPossiblePct: parseFloat(minPossiblePct),
-      safeToBunk: Math.max(0, safeToBunk)
+      requiredFor75: needed,
+      canReach75,
+      safeToBunk: canReach75 ? remainingClasses - needed : 0,
+      maxPossiblePct: pct(present + remainingClasses),
+      minPossiblePct: pct(present),
     });
   } catch (err) { next(err); }
 };

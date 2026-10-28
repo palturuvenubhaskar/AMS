@@ -25,6 +25,9 @@ exports.getAll = async (req, res, next) => {
 // GET /timetables/weekly/:classId
 exports.getWeekly = async (req, res, next) => {
   try {
+    const classId = parseInt(req.params.classId, 10);
+    if (!classId) return res.status(400).json({ error: 'Valid class id is required.' });
+
     const result = await db.query(
       `SELECT t.*, s.name as subject_name, s.code as subject_code,
               u.full_name as faculty_name
@@ -32,7 +35,7 @@ exports.getWeekly = async (req, res, next) => {
        JOIN subjects s ON t.subject_id = s.id
        LEFT JOIN users u ON t.faculty_id = u.id
        WHERE t.class_id = $1
-       ORDER BY t.day_of_week, t.start_time`, [req.params.classId]
+       ORDER BY t.day_of_week, t.start_time`, [classId]
     );
 
     // Group by day

@@ -98,7 +98,8 @@ describe('Student & Class Management (SCM) Tests', () => {
         .delete('/api/classes/1')
         .set('Authorization', `Bearer ${adminToken}`);
 
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(409);
+      expect(res.body.error).toContain('still has students');
     });
   });
 

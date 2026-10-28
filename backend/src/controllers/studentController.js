@@ -3,6 +3,26 @@ const db = require('../config/db');
 const fs = require('fs');
 const { parse } = require('csv-parse');
 
+/**
+ * Students may only read their own records; parents only their wards.
+ * Staff (admin/faculty) can read any student. Returns an error object or null.
+ */
+async function denyIfNotAllowed(req, studentId) {
+  if (req.user.role === 'student' && req.user.id !== studentId) {
+    return { status: 403, error: 'You can only view your own attendance.' };
+  }
+  if (req.user.role === 'parent') {
+    const ward = await db.query(
+      'SELECT 1 FROM student_parents WHERE parent_id = $1 AND student_id = $2',
+      [req.user.id, studentId]
+    );
+    if (ward.rows.length === 0) {
+      return { status: 403, error: 'You can only view attendance for your own ward.' };
+    }
+  }
+  return null;
+}
+
 exports.bulkImport = async (req, res, next) => {
   if (!req.file) return res.status(400).json({ error: 'No CSV file uploaded' });
   const { classId } = req.body;
@@ -72,16 +92,17 @@ exports.bulkImport = async (req, res, next) => {
 exports.register = async (req, res, next) => {
   try {
     const { fullName, rollNo, classId, enrollmentNo, phone } = req.body;
-    const email = req.body.email || `${rollNo.toLowerCase()}@alits.edu.in`;
-    
+
     if (!fullName || !rollNo || !classId) {
       return res.status(400).json({ error: 'Name, roll no, and class are required.' });
     }
 
+    const email = req.body.email || `${String(rollNo).toLowerCase()}@alits.edu.in`;
+
     const client = await db.pool.connect();
     try {
       await client.query('BEGIN');
-      const defaultPassword = 'Aams@2026';
+      const defaultPassword = 'Ams@2026';
       const passwordHash = await bcrypt.hash(defaultPassword, 12);
 
       const userResult = await client.query(
@@ -131,7 +152,12 @@ exports.getProfile = async (req, res, next) => {
 // GET /students/:id/attendance
 exports.getAttendance = async (req, res, next) => {
   try {
-    const studentId = req.params.id === 'me' ? req.user.id : parseInt(req.params.id);
+    const studentId = req.params.id === 'me' ? req.user.id : parseInt(req.params.id, 10);
+    if (!studentId) return res.status(400).json({ error: 'Valid student id is required.' });
+
+    const denied = await denyIfNotAllowed(req, studentId);
+    if (denied) return res.status(denied.status).json({ error: denied.error });
+
     const result = await db.query(
       `SELECT ar.*, sess.date, sess.time_slot, sess.mode,
               sub.name as subject_name, sub.code as subject_code,
@@ -152,7 +178,12 @@ exports.getAttendance = async (req, res, next) => {
 // GET /students/:id/attendance/summary
 exports.getAttendanceSummary = async (req, res, next) => {
   try {
-    const studentId = req.params.id === 'me' ? req.user.id : parseInt(req.params.id);
+    const studentId = req.params.id === 'me' ? req.user.id : parseInt(req.params.id, 10);
+    if (!studentId) return res.status(400).json({ error: 'Valid student id is required.' });
+
+    const denied = await denyIfNotAllowed(req, studentId);
+    if (denied) return res.status(denied.status).json({ error: denied.error });
+
     const result = await db.query(
       'SELECT * FROM v_student_attendance_summary WHERE student_id = $1', [studentId]
     );
@@ -190,7 +221,7 @@ exports.createUser = async (req, res, next) => {
       return res.status(400).json({ error: 'Invalid role.' });
     }
 
-    const defaultPassword = 'Aams@2026';
+    const defaultPassword = 'Ams@2026';
     const passwordHash = await bcrypt.hash(defaultPassword, 12);
 
     const result = await db.query(

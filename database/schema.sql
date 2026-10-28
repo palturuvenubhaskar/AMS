@@ -338,7 +338,7 @@ SELECT
     END AS attendance_pct,
     CASE 
         WHEN COUNT(ar.id) = 0 THEN 'green'
-        WHEN (COUNT(ar.id) FILTER (WHERE ar.status = 'present') * 100.0 / COUNT(ar.id)) > 75 THEN 'green'
+        WHEN (COUNT(ar.id) FILTER (WHERE ar.status = 'present') * 100.0 / COUNT(ar.id)) >= 75 THEN 'green'
         WHEN (COUNT(ar.id) FILTER (WHERE ar.status = 'present') * 100.0 / COUNT(ar.id)) >= 60 THEN 'yellow'
         ELSE 'red'
     END AS zone
@@ -424,7 +424,7 @@ BEGIN
 
     NEW.attendance_pct_snapshot := v_attendance_pct;
 
-    IF v_attendance_pct > 75 THEN
+    IF v_attendance_pct >= 75 THEN
         NEW.zone := 'green';
         NEW.status := 'approved';
         NEW.decision_by := 'system';

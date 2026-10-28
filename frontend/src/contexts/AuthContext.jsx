@@ -46,7 +46,10 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try { await api.post('/auth/logout'); } catch (e) { /* ignore */ }
-    localStorage.clear();
+    // Keep UI preferences (theme, etc.); only drop the session.
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
     setUser(null);
   };
 

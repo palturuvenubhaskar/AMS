@@ -159,12 +159,24 @@ exports.resolveDispute = async (req, res, next) => {
 
     await client.query('COMMIT');
 
+    const notifTitle = `Absence ${dispute.type === 'justification' ? 'justification' : 'dispute'} ${status}`;
+    const notifMessage = `Your ${dispute.type} was ${status} by the faculty.${remarks ? ` ${remarks}` : ''}`;
+
+    try {
+      await db.query(
+        'INSERT INTO notifications (user_id, type, title, message) VALUES ($1, $2, $3, $4)',
+        [dispute.student_id, 'dispute_decision', notifTitle, notifMessage]
+      );
+    } catch (e) {
+      console.error('Could not store dispute notification:', e.message);
+    }
+
     // Send notification
     const io = req.app.get('io');
     if (io) {
       io.to(`user_${dispute.student_id}`).emit('notification', {
-        title: `Absence ${dispute.type === 'justification' ? 'Justification' : 'Dispute'} ${status}`,
-        message: `Your request has been ${status} by the faculty.`
+        title: notifTitle,
+        message: notifMessage,
       });
     }
 

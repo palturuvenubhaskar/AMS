@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Eye, EyeOff, Lock, Mail, ScanFace, ShieldCheck, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 import Button from '../components/ui/Button';
 import { Field, Input } from '../components/ui/Field';
 import { BrandMark } from '../components/layouts/AppLayout';
@@ -32,8 +33,16 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [needsSetup, setNeedsSetup] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    api
+      .get('/auth/setup-status')
+      .then(({ data }) => setNeedsSetup(Boolean(data?.needsSetup)))
+      .catch(() => setNeedsSetup(false));
+  }, []);
 
   const submit = async (identifier, secret) => {
     setError('');
@@ -199,36 +208,40 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="mt-5 text-center text-xs text-muted">
-            Setting up a new institution?{' '}
-            <Link to="/admin-register" className="font-semibold text-accent hover:underline">
-              Register as admin
-            </Link>
-          </p>
-
-          {/* demo accounts — useful while evaluating */}
-          <div className="mt-9 border-t border-line pt-5">
-            <p className="mb-3 text-2xs font-bold uppercase tracking-[0.12em] text-faint">
-              Demo accounts
+          {needsSetup ? (
+            <p className="mt-5 text-center text-xs text-muted">
+              Setting up a new institution?{' '}
+              <Link to="/admin-register" className="font-semibold text-accent hover:underline">
+                Register as admin
+              </Link>
             </p>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: 'Admin', email: 'admin@ams.edu' },
-                { label: 'Faculty', email: 'sruthi@alits.edu.in' },
-                { label: 'Student', email: '242G1A05X2@alits.edu.in' },
-              ].map((role) => (
-                <button
-                  key={role.label}
-                  type="button"
-                  onClick={() => submit(role.email, 'Ams@2026')}
-                  disabled={loading}
-                  className="rounded-md border border-line bg-surface py-2 text-2xs font-semibold text-muted shadow-xs transition-colors hover:border-line-strong hover:bg-sunken hover:text-ink disabled:opacity-50"
-                >
-                  {role.label}
-                </button>
-              ))}
+          ) : null}
+
+          {/* demo accounts — local development only, never in a deployed build */}
+          {import.meta.env.DEV ? (
+            <div className="mt-9 border-t border-line pt-5">
+              <p className="mb-3 text-2xs font-bold uppercase tracking-[0.12em] text-faint">
+                Demo accounts
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: 'Admin', email: 'admin@ams.edu' },
+                  { label: 'Faculty', email: 'sruthi@alits.edu.in' },
+                  { label: 'Student', email: '242G1A05X2@alits.edu.in' },
+                ].map((role) => (
+                  <button
+                    key={role.label}
+                    type="button"
+                    onClick={() => submit(role.email, 'Ams@2026')}
+                    disabled={loading}
+                    className="rounded-md border border-line bg-surface py-2 text-2xs font-semibold text-muted shadow-xs transition-colors hover:border-line-strong hover:bg-sunken hover:text-ink disabled:opacity-50"
+                  >
+                    {role.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </main>
     </div>

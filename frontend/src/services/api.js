@@ -17,13 +17,22 @@ api.interceptors.request.use((config) => {
 let isRefreshing = false;
 let refreshSubscribers = [];
 
-const subscribeTokenRefresh = (cb) => {
-  refreshSubscribers.push(cb);
+const subscribeTokenRefresh = (resolve, reject) => {
+  refreshSubscribers.push({ resolve, reject });
 };
 
-const onRefreshed = (token) => {
-  refreshSubscribers.forEach((cb) => cb(token));
+const settleSubscribers = (error, token) => {
+  refreshSubscribers.forEach(({ resolve, reject }) => {
+    if (error) reject(error);
+    else resolve(token);
+  });
   refreshSubscribers = [];
+};
+
+const clearSession = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
 };
 
 // Intercept responses to handle token refresh
@@ -33,11 +42,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401 && error.response?.data?.code === 'TOKEN_EXPIRED' && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise((resolve) => {
-          subscribeTokenRefresh((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(api(originalRequest));
-          });
+        return new Promise((resolve, reject) => {
+          subscribeTokenRefresh(resolve, reject);
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
         });
       }
 
@@ -54,13 +63,11 @@ api.interceptors.response.use(
           localStorage.setItem('refreshToken', data.refreshToken);
         }
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-        onRefreshed(data.accessToken);
+        settleSubscribers(null, data.accessToken);
         return api(originalRequest);
       } catch (err) {
-        refreshSubscribers = [];
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
+        settleSubscribers(err);
+        clearSession();
         if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
           window.location.href = '/login';
         }

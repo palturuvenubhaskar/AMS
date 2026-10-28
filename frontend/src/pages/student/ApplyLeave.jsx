@@ -30,13 +30,13 @@ const OUTCOMES = {
     tone: 'negative',
     icon: XCircle,
     title: 'Auto-rejected',
-    text: 'Your attendance is below 40%. Leave cannot be granted automatically.',
+    text: 'Your attendance is below 60%. Leave cannot be granted automatically.',
   },
   pending: {
     tone: 'caution',
     icon: Clock,
     title: 'Waiting for review',
-    text: 'Your attendance is between 40% and 75%, so a faculty member will decide.',
+    text: 'Your attendance is between 60% and 74%, so a faculty member will decide.',
   },
 };
 
@@ -162,7 +162,9 @@ export default function ApplyLeave() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[13px] font-bold text-ink">
-                  Current attendance {zonePreview.attendancePct}%
+                  {zonePreview.hasData === false
+                    ? 'No sessions marked yet'
+                    : `Current attendance ${zonePreview.attendancePct}%`}
                 </span>
                 <Badge
                   tone={

@@ -23,7 +23,9 @@ exports.getWardSummary = async (req, res, next) => {
     const summary = [];
     for (const ward of wards.rows) {
       const attSummary = await db.query(
-        `SELECT total_classes, present_classes, absent_classes, leave_classes, attendance_pct, zone
+        `SELECT total_sessions AS total_classes, total_present AS present_classes,
+                total_absent AS absent_classes, total_on_leave AS leave_classes,
+                attendance_pct, zone
          FROM v_student_attendance_summary
          WHERE student_id = $1`, [ward.student_id]
       );

@@ -65,7 +65,14 @@ exports.delete = async (req, res, next) => {
     const result = await db.query('DELETE FROM classes WHERE id = $1 RETURNING *', [req.params.id]);
     if (result.rows.length === 0) return res.status(404).json({ error: 'Class not found.' });
     res.json({ message: 'Class deleted.' });
-  } catch (err) { next(err); }
+  } catch (err) {
+    if (err.code === '23503') {
+      return res.status(409).json({
+        error: 'This class still has students, timetable slots or attendance history. Move or remove them first.',
+      });
+    }
+    next(err);
+  }
 };
 
 // GET /classes/:id/students

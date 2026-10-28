@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { formatTime } from '../../utils/format';
 import AttendanceMatrix from './AttendanceMatrix';
 import {
   AnimatedNumber,
@@ -50,8 +51,8 @@ import {
 
 const ZONES = [
   { key: 'green', label: 'On track', hint: '75% and above', tone: 'positive' },
-  { key: 'yellow', label: 'Warning', hint: '40 – 74%', tone: 'caution' },
-  { key: 'red', label: 'Critical', hint: 'Below 40%', tone: 'negative' },
+  { key: 'yellow', label: 'Warning', hint: '60 – 74%', tone: 'caution' },
+  { key: 'red', label: 'Critical', hint: 'Below 60%', tone: 'negative' },
 ];
 
 function TrendTooltip({ active, payload, label }) {
@@ -124,10 +125,10 @@ export default function FacultyDashboard() {
         .get(`/dashboard/classes/${selectedClass}/zones`)
         .catch(() => ({ data: { green: 0, yellow: 0, red: 0 } })),
       api
-        .get(`/dashboard/classes/${selectedClass}/students`)
+        .get(`/dashboard/classes/${selectedClass}/students?limit=200`)
         .catch(() => ({ data: { students: [] } })),
       api.get('/dashboard/alerts').catch(() => ({ data: [] })),
-      api.get(`/timetables/weekly/${user?.id || 1}`).catch(() => ({ data: [] })),
+      api.get(`/timetables/weekly/${selectedClass}`).catch(() => ({ data: {} })),
     ])
       .then(([sumRes, trendRes, zoneRes, studRes, alertRes, schedRes]) => {
         setSummary(sumRes.data || null);
@@ -147,10 +148,12 @@ export default function FacultyDashboard() {
 
         setAlerts([...atRisk, ...(alertRes.data || [])]);
 
-        const today = new Date().toLocaleDateString('en', { weekday: 'long' }).toLowerCase();
-        setSchedule(
-          (schedRes.data || []).filter((s) => s.day?.toLowerCase() === today)
+        // The weekly endpoint returns { "0": { day, slots }, ... } keyed by day number.
+        const today = new Date().getDay();
+        const todayKey = Object.keys(schedRes.data || {}).find(
+          (key) => Number(key) === today
         );
+        setSchedule(schedRes.data?.[todayKey]?.slots || []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -339,8 +342,8 @@ export default function FacultyDashboard() {
                       {slot.subject_name || slot.subject_code}
                     </p>
                     <p className="mt-0.5 text-xs text-muted">
-                      {slot.time_slot}
-                      {slot.room_no ? ` · Room ${slot.room_no}` : ''}
+                      {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                      {slot.room ? ` · Room ${slot.room}` : ''}
                     </p>
                   </div>
                 </li>

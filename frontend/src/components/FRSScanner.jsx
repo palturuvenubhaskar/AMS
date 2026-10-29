@@ -126,39 +126,14 @@ export default function FRSScanner({ classId, students = [], records = {}, onUpd
     }
     setCameraActive(false);
     setActiveFacesCount(0);
+    if (videoRef.current) videoRef.current.srcObject = null;
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
       ctx?.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
   }, []);
 
-  const startCamera = async (deviceId) => {
-    stopCamera();
-    try {
-      const constraints = {
-        video: deviceId
-          ? { deviceId: { exact: deviceId } }
-          : { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false,
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      streamRef.current = stream;
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play();
-          setCameraActive(true);
-          runDetectionLoop();
-        };
-      }
-    } catch {
-      toast.error('Could not open the camera. Check the browser permission.');
-    }
-  };
-
-  const runDetectionLoop = () => {
+  const runDetectionLoop = useCallback(() => {
     const detect = async (timestamp) => {
       if (!videoRef.current || videoRef.current.paused || videoRef.current.ended) {
         animationFrameRef.current = requestAnimationFrame(detect);
@@ -173,10 +148,21 @@ export default function FRSScanner({ classId, students = [], records = {}, onUpd
           const canvas = canvasRef.current;
 
           if (canvas && video.videoWidth > 0 && video.videoHeight > 0) {
-            if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
-              canvas.width = video.videoWidth;
-              canvas.height = video.videoHeight;
+            // Size the overlay canvas to the on-screen video box, then map detection boxes
+            // from the intrinsic frame into that box (letterbox offsets included).
+            const displayWidth = video.clientWidth || video.videoWidth;
+            const displayHeight = video.clientHeight || video.videoHeight;
+            if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+              canvas.width = displayWidth;
+              canvas.height = displayHeight;
             }
+
+            const fitScale = Math.min(
+              displayWidth / video.videoWidth,
+              displayHeight / video.videoHeight
+            );
+            const offsetX = (displayWidth - video.videoWidth * fitScale) / 2;
+            const offsetY = (displayHeight - video.videoHeight * fitScale) / 2;
 
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -187,7 +173,13 @@ export default function FRSScanner({ classId, students = [], records = {}, onUpd
             const matcher = matcherRef.current;
 
             for (const d of detections) {
-              const { box } = d.detection;
+              const rawBox = d.detection.box;
+              const box = {
+                x: offsetX + rawBox.x * fitScale,
+                y: offsetY + rawBox.y * fitScale,
+                width: rawBox.width * fitScale,
+                height: rawBox.height * fitScale,
+              };
               let label = 'Unknown face';
               let isMatch = false;
               let studentInfo = null;
@@ -294,7 +286,50 @@ export default function FRSScanner({ classId, students = [], records = {}, onUpd
     };
 
     animationFrameRef.current = requestAnimationFrame(detect);
-  };
+  }, [students, onUpdateRecord, playRecognitionSound]);
+
+  const startCamera = useCallback(
+    async (deviceId) => {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        toast.error('This browser does not expose a camera API. Use HTTPS or localhost.');
+        return;
+      }
+
+      stopCamera();
+      try {
+        const constraints = {
+          video: deviceId
+            ? { deviceId: { exact: deviceId } }
+            : { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false,
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = stream;
+
+        const video = videoRef.current;
+        if (!video) {
+          stream.getTracks().forEach((t) => t.stop());
+          streamRef.current = null;
+          return;
+        }
+
+        video.srcObject = stream;
+        await video.play().catch(() => {});
+        setCameraActive(true);
+        if (!animationFrameRef.current) runDetectionLoop();
+      } catch (err) {
+        if (err?.name === 'NotAllowedError' || err?.name === 'SecurityError') {
+          toast.error('Camera blocked. Allow camera access for this site and retry.');
+        } else if (err?.name === 'NotFoundError' || err?.name === 'OverconstrainedError') {
+          toast.error('No camera found. Plug one in and retry.');
+        } else {
+          toast.error('Could not open the camera. Check the browser permission.');
+        }
+      }
+    },
+    [runDetectionLoop, stopCamera]
+  );
 
   const handleDeviceChange = (e) => {
     const devId = e.target.value;
@@ -396,6 +431,25 @@ export default function FRSScanner({ classId, students = [], records = {}, onUpd
       <div className="grid lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* Viewport — intentionally dark, it holds a live video feed. */}
         <div className="relative flex min-h-[320px] items-center justify-center overflow-hidden bg-neutral-950">
+          <div
+            className={cn(
+              'relative w-full',
+              (!cameraActive || loadingModels) && 'hidden'
+            )}
+          >
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="block max-h-[460px] w-full object-contain"
+            />
+            <canvas
+              ref={canvasRef}
+              className="pointer-events-none absolute inset-0 h-full w-full"
+            />
+          </div>
+
           {loadingModels ? (
             <div className="flex flex-col items-center gap-3 p-8 text-center">
               <Spinner size="lg" className="border-white/25 border-t-white" />
@@ -406,18 +460,6 @@ export default function FRSScanner({ classId, students = [], records = {}, onUpd
             </div>
           ) : cameraActive ? (
             <>
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="max-h-[460px] w-full object-contain"
-              />
-              <canvas
-                ref={canvasRef}
-                className="pointer-events-none absolute inset-0 h-full w-full object-contain"
-              />
-
               <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-black/65 px-2.5 py-1 text-2xs font-semibold text-white backdrop-blur">
                   <span
